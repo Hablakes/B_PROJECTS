@@ -74,6 +74,8 @@ def create_movie_information_index():
                 continue
 
             for track in test.tracks:
+                if track.track_type == 'General':
+                    movie_index_file_results[movie_title_key]['RUNTIME'] = str(track.other_duration)
                 if track.track_type == 'Video':
                     movie_index_file_results[movie_title_key]['DIRECTORY'] = movie_title_key
                     movie_index_file_results[movie_title_key]['TITLE'] = title.get('title')
@@ -91,9 +93,6 @@ def create_movie_information_index():
 
                         if '<rating>' in line_item:
                             movie_index_file_results[movie_title_key]['RATING'] = line_item
-
-                        if '<runtime>' in line_item:
-                            movie_index_file_results[movie_title_key]['RUN-TIME'] = line_item
             except Exception as e:
                 print('ERROR: ', e)
                 print('FILE: ', movie_file[0])
@@ -130,7 +129,7 @@ def create_tv_information_index():
 
             for track in test.tracks:
                 if track.track_type == 'General':
-                    print(track.to_data())
+                    tv_index_file_results[tv_title_key]['RUNTIME'] = str(track.other_duration)
                 if track.track_type == 'Video':
                     tv_index_file_results[tv_title_key]['DIRECTORY'] = tv_folder_title
                     tv_index_file_results[tv_title_key]['TITLE'] = title.get('title')
@@ -167,9 +166,6 @@ def create_tv_information_index():
 
                         if '<rating>' in line:
                             tv_index_file_results[tv_title_key]['RATING'] = line
-
-                        if '<runtime>' in line:
-                            tv_index_file_results[tv_title_key]['RUN-TIME'] = line
             except Exception as e:
                 print('ERROR: ', e)
                 print('FILE: ', tv_file[0])
