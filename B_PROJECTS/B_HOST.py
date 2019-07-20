@@ -44,20 +44,6 @@ def launch_programs():
 
             os.startfile('C:/Windows/System32/cmd.exe')
 
-        elif str(commands_entered[0]).lower() in str("Work Programs").lower():
-            engine.say("Work Programs")
-            engine.runAndWait()
-            engine.stop()
-
-            os.startfile("C:/Program Files (x86)/Microsoft Office/root/Office16/OUTLOOK.EXE")
-
-            os.startfile(firefox)
-
-            os.startfile(chrome)
-            webbrowser.get(chrome_path).open("https://outlook.live.com")
-            webbrowser.get(chrome_path).open("https://drive.google.com")
-            webbrowser.get(chrome_path).open("https://github.com/Hablakes")
-
         else:
             engine.say("I Cant Understand That Request Right Now")
             engine.runAndWait()
