@@ -1,57 +1,45 @@
-import os
 import platform
-
 import pyttsx3
-import webbrowser
-
-from tkinter import *
+from tkinter import Button, Entry, Label, Tk, mainloop
 
 engine = pyttsx3.init()
 
-commands_entered = []
+
+def main():
+    while True:
+        launch_programs()
 
 
 def get_commands_gui():
+    command_entered = []
     root = Tk()
-    Label(root, text="YES?").grid(row=0, sticky=W)
-    c_1 = Entry(root)
-    c_1.grid(row=0, column=1)
+    Label(root, text="YES?").grid(row=0)
+    command = Entry(root)
+    command.grid(row=0, column=1)
 
     def get_command_globals():
-        commands_entered.append(c_1.get())
+        command_entered.append(command.get())
         root.destroy()
 
-    Button(root, text='ENTER COMMAND', command=get_command_globals).grid(row=0, sticky=W)
+    Button(root, text='ENTER COMMAND', command=get_command_globals).grid(row=0)
     mainloop()
+    return command_entered[0]
 
 
 def launch_programs():
-    get_commands_gui()
+    available_programs_list = []
+    commands_entered = [get_commands_gui()]
 
     system_platform = platform.system()
 
     if str(system_platform).lower() in str("Windows").lower():
-
-        chrome = 'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe'
-        chrome_path = str(chrome + '%s')
-        firefox = 'C:/Program Files (x86)/Mozilla Firefox/firefox.exe'
-        firefox_path = str(firefox + '%s')
-
-        if str(commands_entered[0]).lower() in str("Command Prompt").lower() or str("cmd").lower():
-            engine.say("Command Prompt")
-            engine.runAndWait()
-            engine.stop()
-
-            os.startfile('C:/Windows/System32/cmd.exe')
-
-        else:
-            engine.say("I Cant Understand That Request Right Now")
-            engine.runAndWait()
-            engine.stop()
-            quit()
+        engine.say(str(commands_entered))
+        engine.runAndWait()
+        engine.stop()
 
     else:
         print("Still working on Linux")
 
 
-launch_programs()
+if __name__ == '__main__':
+    main()
