@@ -62,20 +62,30 @@ def directory_selection():
         print('ENTER PATH OF TV DIRECTORY, IF NONE HIT CANCEL: ', '\n')
         tv_dir_input = tk_gui_file_browser_window()
 
+        alternate_directory_prompt = input('ALTERNATE DIRECTORIES? - Y/N').lower()
+        if alternate_directory_prompt == str('y'):
 
-        print('ENTER PATH OF ALTERNATE MOVIE DIRECTORY, IF NONE HIT CANCEL: ', '\n')
-        movie_alt_dir_input = tk_gui_file_browser_window()
-        print('ENTER PATH OF ALTERNATE TV DIRECTORY, IF NONE HIT CANCEL: ', '\n')
-        tv_alt_dir_input = tk_gui_file_browser_window()
-        separator_3()
+            print('ENTER PATH OF ALTERNATE MOVIE DIRECTORY, IF NONE HIT CANCEL: ', '\n')
+            movie_alt_dir_input = tk_gui_file_browser_window()
+            print('ENTER PATH OF ALTERNATE TV DIRECTORY, IF NONE HIT CANCEL: ', '\n')
+            tv_alt_dir_input = tk_gui_file_browser_window()
 
-        user_info_dict = {'user:': username, 'movie_dir:': movie_dir_input, 'tv_dir:': tv_dir_input,
-                          'movie_alt_dir:': movie_alt_dir_input, 'tv_alt_dir:': tv_alt_dir_input}
+            separator_3()
+            user_info_dict = {'user:': username, 'movie_dir:': movie_dir_input, 'tv_dir:': tv_dir_input,
+                              'movie_alt_dir:': movie_alt_dir_input, 'tv_alt_dir:': tv_alt_dir_input}
+            with open(user_info_file, 'w', encoding='UTF-8', newline='') as f:
+                csv_writer = csv.writer(f)
+                for user_data in user_info_dict.items():
+                    csv_writer.writerow(user_data)
 
-        with open(user_info_file, 'w', encoding='UTF-8', newline='') as f:
-            csv_writer = csv.writer(f)
-            for user_data in user_info_dict.items():
-                csv_writer.writerow(user_data)
+        elif alternate_directory_prompt != str('y'):
+            separator_3()
+            user_info_dict = {'user:': username, 'movie_dir:': movie_dir_input, 'tv_dir:': tv_dir_input,
+                              'movie_alt_dir:': '', 'tv_alt_dir:': ''}
+            with open(user_info_file, 'w', encoding='UTF-8', newline='') as f:
+                csv_writer = csv.writer(f)
+                for user_data in user_info_dict.items():
+                    csv_writer.writerow(user_data)
 
     except (TypeError, ValueError) as e:
         print('\n', 'INPUT ERROR: ', e, '\n')
