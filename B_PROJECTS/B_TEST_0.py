@@ -2,13 +2,10 @@ import csv
 import os
 import pathlib
 
-import pyfiglet
-
 from tkinter import filedialog, Tk
 
 
-index_folder = '~/{0}_MEDIA_INDEX'
-username = None
+username = 'TEST'
 
 
 def separator_1():
@@ -46,7 +43,6 @@ def tk_gui_file_selection_window():
 def directory_selection():
 
     try:
-        user_info_file = os.path.expanduser((index_folder + '/{0}_USER_INFO.csv').format(username))
 
         print('ENTER PATH OF MOVIE DIRECTORY, IF NONE HIT CANCEL: ', '\n')
         movie_dir_input = tk_gui_file_browser_window()
@@ -54,76 +50,38 @@ def directory_selection():
         tv_dir_input = tk_gui_file_browser_window()
 
         separator_3()
+
         print('ALTERNATE DIRECTORIES? - Y/N: ')
+
         separator_3()
         alternate_directory_prompt = input('ENTER: Y or N: ').lower()
         separator_3()
+
         if alternate_directory_prompt == str('y'):
 
             movie_alt_directories_list = []
             tv_alt_directories_list = []
 
             print('ENTER PATH OF ALTERNATE MOVIE DIRECTORIES, WHEN COMPLETE, HIT CANCEL: ', '\n')
-            while movie_alt_directories_list.append(tk_gui_file_browser_window()) != str(''):
+            separator_3()
 
-                movie_alt_dir_input = list(movie_alt_directories_list)
-                tv_alt_dir_input = list(tv_alt_directories_list)
-                user_info_dict = {'user:': username, 'movie_dir:': movie_dir_input, 'tv_dir:': tv_dir_input,
-                                  'movie_alt_dir:': movie_alt_dir_input, 'tv_alt_dir:': tv_alt_dir_input}
+            movie_alt_dir_input = list(movie_alt_directories_list)
+            tv_alt_dir_input = list(tv_alt_directories_list)
+            user_info_dict = {'user:': username, 'movie_dir:': movie_dir_input, 'tv_dir:': tv_dir_input,
+                              'movie_alt_dir:': movie_alt_dir_input, 'tv_alt_dir:': tv_alt_dir_input}
 
-                with open(user_info_file, 'w', encoding='UTF-8', newline='') as f:
-                    csv_writer = csv.writer(f)
-                    for user_data in user_info_dict.items():
-                        csv_writer.writerow(user_data)
+            print(user_info_dict)
 
         elif alternate_directory_prompt != str('y'):
+            print('NO ALTERNATE DIRECTORIES')
             separator_3()
             user_info_dict = {'user:': username, 'movie_dir:': movie_dir_input, 'tv_dir:': tv_dir_input,
                               'movie_alt_dir:': '', 'tv_alt_dir:': ''}
 
-            with open(user_info_file, 'w', encoding='UTF-8', newline='') as f:
-                csv_writer = csv.writer(f)
-                for user_data in user_info_dict.items():
-                    csv_writer.writerow(user_data)
+            print(user_info_dict)
 
     except (TypeError, ValueError) as e:
         print('\n', 'INPUT ERROR: ', e, '\n')
 
 
-def launch_media_index():
-    print(pyfiglet.figlet_format('MEDIA_INDEX', font='cybermedium'))
-    separator_3()
-    try:
-        global username
-        username = input('ENTER YOUR USERNAME (CASE-SENSITIVE): ')
-        separator_3()
-        username_check_and_folder_creation()
-    except (TypeError, ValueError) as e:
-        print('\n', 'INPUT ERROR: ', e, '\n', '\n', 'INVALID INPUT, PLEASE RETRY')
-        launch_media_index()
-
-
-def username_check_and_folder_creation():
-
-    try:
-        user_info_file = os.path.expanduser((index_folder + '/{0}_USER_INFO.csv').format(username))
-
-        if os.path.isfile(user_info_file):
-            user_info_file_check = list(csv.reader(open(user_info_file)))
-            movie_dir_input = user_info_file_check[1][1]
-            tv_dir_input = user_info_file_check[2][1]
-            movie_alt_dir_input = user_info_file_check[3][1]
-            tv_alt_dir_input = user_info_file_check[4][1]
-        else:
-            os.makedirs(os.path.expanduser((index_folder + '/').format(username)), exist_ok=True)
-            os.makedirs(os.path.expanduser((index_folder + '/FILES').format(username)), exist_ok=True)
-            os.makedirs(os.path.expanduser((index_folder + '/GRAPHS').format(username)), exist_ok=True)
-            os.makedirs(os.path.expanduser((index_folder + '/SEARCH').format(username)), exist_ok=True)
-            directory_selection()
-
-    except (OSError, TypeError, ValueError) as e:
-        print('\n', 'INPUT ERROR: ', e, '\n', '\n', 'INVALID INPUT, PLEASE RETRY')
-        separator_3()
-
-
-launch_media_index()
+directory_selection()
