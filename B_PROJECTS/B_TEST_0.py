@@ -46,6 +46,9 @@ def directory_selection():
 
         print('ENTER PATH OF MOVIE DIRECTORY, IF NONE HIT CANCEL: ', '\n')
         movie_dir_input = tk_gui_file_browser_window()
+
+        separator_3()
+
         print('ENTER PATH OF TV DIRECTORY, IF NONE HIT CANCEL: ', '\n')
         tv_dir_input = tk_gui_file_browser_window()
 
@@ -66,6 +69,11 @@ def directory_selection():
             separator_3()
 
             movie_alt_directories_list.append(tk_gui_file_browser_window())
+
+            print('ENTER PATH OF ALTERNATE TV DIRECTORIES, WHEN COMPLETE, HIT CANCEL: ', '\n')
+            separator_3()
+
+            tv_alt_directories_list.append(tk_gui_file_browser_window())
 
             movie_alt_dir_input = list(movie_alt_directories_list)
             tv_alt_dir_input = list(tv_alt_directories_list)
