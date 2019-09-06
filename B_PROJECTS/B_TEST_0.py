@@ -8,15 +8,6 @@ from tkinter import filedialog, Tk
 username = 'TEST'
 
 
-def separator_1():
-    print('-' * 100)
-
-
-def separator_2():
-    for items in '\n', '-' * 100:
-        print(items)
-
-
 def separator_3():
     for items in '\n', '-' * 100, '\n':
         print(items)
@@ -29,15 +20,6 @@ def tk_gui_file_browser_window():
     selected_directory = filedialog.askdirectory()
     root.destroy()
     return selected_directory
-
-
-def tk_gui_file_selection_window():
-    root = Tk()
-    root.withdraw()
-    root.update()
-    selected_file = filedialog.askopenfilename()
-    root.destroy()
-    return selected_file
 
 
 def directory_selection():
@@ -84,6 +66,7 @@ def directory_selection():
             print(user_info_dict)
 
         elif alternate_directory_prompt != str('y'):
+
             print('NO ALTERNATE DIRECTORIES')
             separator_3()
 
