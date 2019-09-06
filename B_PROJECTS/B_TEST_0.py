@@ -65,8 +65,11 @@ def directory_selection():
             print('ENTER PATH OF ALTERNATE MOVIE DIRECTORIES, WHEN COMPLETE, HIT CANCEL: ', '\n')
             separator_3()
 
+            movie_alt_directories_list.append(tk_gui_file_browser_window())
+
             movie_alt_dir_input = list(movie_alt_directories_list)
             tv_alt_dir_input = list(tv_alt_directories_list)
+
             user_info_dict = {'user:': username, 'movie_dir:': movie_dir_input, 'tv_dir:': tv_dir_input,
                               'movie_alt_dir:': movie_alt_dir_input, 'tv_alt_dir:': tv_alt_dir_input}
 
@@ -75,6 +78,7 @@ def directory_selection():
         elif alternate_directory_prompt != str('y'):
             print('NO ALTERNATE DIRECTORIES')
             separator_3()
+
             user_info_dict = {'user:': username, 'movie_dir:': movie_dir_input, 'tv_dir:': tv_dir_input,
                               'movie_alt_dir:': '', 'tv_alt_dir:': ''}
 
