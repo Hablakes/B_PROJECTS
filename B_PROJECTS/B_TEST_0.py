@@ -1,18 +1,9 @@
 import csv
 import os
 import pathlib
-import textwrap
-import re
 
-import guessit
-import numpy
 import pyfiglet
-import pymediainfo
 
-import matplotlib.pylab as plt
-
-from ascii_graph import Pyasciigraph
-from datetime import datetime
 from tkinter import filedialog, Tk
 
 
@@ -62,26 +53,34 @@ def directory_selection():
         print('ENTER PATH OF TV DIRECTORY, IF NONE HIT CANCEL: ', '\n')
         tv_dir_input = tk_gui_file_browser_window()
 
-        alternate_directory_prompt = input('ALTERNATE DIRECTORIES? - Y/N').lower()
+        separator_3()
+        print('ALTERNATE DIRECTORIES? - Y/N: ')
+        separator_3()
+        alternate_directory_prompt = input('ENTER: Y or N: ').lower()
+        separator_3()
         if alternate_directory_prompt == str('y'):
 
-            print('ENTER PATH OF ALTERNATE MOVIE DIRECTORY, IF NONE HIT CANCEL: ', '\n')
-            movie_alt_dir_input = tk_gui_file_browser_window()
-            print('ENTER PATH OF ALTERNATE TV DIRECTORY, IF NONE HIT CANCEL: ', '\n')
-            tv_alt_dir_input = tk_gui_file_browser_window()
+            movie_alt_directories_list = []
+            tv_alt_directories_list = []
 
-            separator_3()
-            user_info_dict = {'user:': username, 'movie_dir:': movie_dir_input, 'tv_dir:': tv_dir_input,
-                              'movie_alt_dir:': movie_alt_dir_input, 'tv_alt_dir:': tv_alt_dir_input}
-            with open(user_info_file, 'w', encoding='UTF-8', newline='') as f:
-                csv_writer = csv.writer(f)
-                for user_data in user_info_dict.items():
-                    csv_writer.writerow(user_data)
+            print('ENTER PATH OF ALTERNATE MOVIE DIRECTORIES, WHEN COMPLETE, HIT CANCEL: ', '\n')
+            while movie_alt_directories_list.append(tk_gui_file_browser_window()) != str(''):
+
+                movie_alt_dir_input = list(movie_alt_directories_list)
+                tv_alt_dir_input = list(tv_alt_directories_list)
+                user_info_dict = {'user:': username, 'movie_dir:': movie_dir_input, 'tv_dir:': tv_dir_input,
+                                  'movie_alt_dir:': movie_alt_dir_input, 'tv_alt_dir:': tv_alt_dir_input}
+
+                with open(user_info_file, 'w', encoding='UTF-8', newline='') as f:
+                    csv_writer = csv.writer(f)
+                    for user_data in user_info_dict.items():
+                        csv_writer.writerow(user_data)
 
         elif alternate_directory_prompt != str('y'):
             separator_3()
             user_info_dict = {'user:': username, 'movie_dir:': movie_dir_input, 'tv_dir:': tv_dir_input,
                               'movie_alt_dir:': '', 'tv_alt_dir:': ''}
+
             with open(user_info_file, 'w', encoding='UTF-8', newline='') as f:
                 csv_writer = csv.writer(f)
                 for user_data in user_info_dict.items():
@@ -89,6 +88,19 @@ def directory_selection():
 
     except (TypeError, ValueError) as e:
         print('\n', 'INPUT ERROR: ', e, '\n')
+
+
+def launch_media_index():
+    print(pyfiglet.figlet_format('MEDIA_INDEX', font='cybermedium'))
+    separator_3()
+    try:
+        global username
+        username = input('ENTER YOUR USERNAME (CASE-SENSITIVE): ')
+        separator_3()
+        username_check_and_folder_creation()
+    except (TypeError, ValueError) as e:
+        print('\n', 'INPUT ERROR: ', e, '\n', '\n', 'INVALID INPUT, PLEASE RETRY')
+        launch_media_index()
 
 
 def username_check_and_folder_creation():
@@ -112,3 +124,6 @@ def username_check_and_folder_creation():
     except (OSError, TypeError, ValueError) as e:
         print('\n', 'INPUT ERROR: ', e, '\n', '\n', 'INVALID INPUT, PLEASE RETRY')
         separator_3()
+
+
+launch_media_index()
