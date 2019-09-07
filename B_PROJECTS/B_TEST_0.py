@@ -26,16 +26,15 @@ def directory_selection():
 
     try:
 
+        separator_3()
         print('ENTER PATH OF MOVIE DIRECTORY, IF NONE HIT CANCEL: ', '\n')
         movie_dir_input = tk_gui_file_browser_window()
 
         separator_3()
-
         print('ENTER PATH OF TV DIRECTORY, IF NONE HIT CANCEL: ', '\n')
         tv_dir_input = tk_gui_file_browser_window()
 
         separator_3()
-
         print('ALTERNATE DIRECTORIES? - Y/N: ')
 
         separator_3()
@@ -47,15 +46,21 @@ def directory_selection():
             movie_alt_directories_list = []
             tv_alt_directories_list = []
 
-            print('ENTER PATH OF ALTERNATE MOVIE DIRECTORIES, WHEN COMPLETE, HIT CANCEL: ', '\n')
+            print('ENTER ALTERNATE MOVIE DIRECTORY?: ')
+            separator_3()
+            multiple_alt_movie_directories_prompt = input('ENTER: Y or N: ').lower()
             separator_3()
 
-            movie_alt_directories_list.append(tk_gui_file_browser_window())
+            while str(multiple_alt_movie_directories_prompt) == str('y'):
+                movie_alt_directories_list.append(tk_gui_file_browser_window())
 
-            print('ENTER PATH OF ALTERNATE TV DIRECTORIES, WHEN COMPLETE, HIT CANCEL: ', '\n')
+            print('ENTER ALTERNATE TV DIRECTORY?: ')
+            separator_3()
+            multiple_alt_tv_directories_prompt = input('ENTER: Y or N: ').lower()
             separator_3()
 
-            tv_alt_directories_list.append(tk_gui_file_browser_window())
+            while str(multiple_alt_tv_directories_prompt) == str('y'):
+                tv_alt_directories_list.append(tk_gui_file_browser_window())
 
             movie_alt_dir_input = list(movie_alt_directories_list)
             tv_alt_dir_input = list(tv_alt_directories_list)
