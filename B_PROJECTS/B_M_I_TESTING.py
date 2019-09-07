@@ -646,7 +646,6 @@ def library_total_amount():
 
 
 def media_index_home():
-    username_check_and_folder_creation()
     print(pyfiglet.figlet_format('MEDIA_INDEX', font='cybermedium'))
     separator_3()
 
