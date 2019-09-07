@@ -257,7 +257,6 @@ def directory_selection():
 
         print('ENTER PATH OF MOVIE DIRECTORY, IF NONE HIT CANCEL: ')
         movie_dir_input = tk_gui_file_browser_window()
-
         print('\n', str(movie_dir_input))
 
         separator_3()
@@ -288,7 +287,6 @@ def directory_selection():
 
             tv_alt_directories_list = list()
             separator_3()
-
             print('ENTER ALTERNATE TV DIRECTORIES, WHEN COMPLETE, HIT CANCEL: ')
             separator_3()
 
@@ -1779,6 +1777,13 @@ def username_check_and_folder_creation():
 
 def walk_directories_and_create_indices():
     movie_video_files_results = []
+
+    ### TESTING SECTION
+
+    print(''.join([str(elem) for elem in movie_alt_dir_input.split("'")]))
+    separator_3()
+    print(movie_alt_dir_input)
+    separator_3()
 
     if movie_dir_input is not str(''):
         for root, dirs, files in os.walk(movie_dir_input):
