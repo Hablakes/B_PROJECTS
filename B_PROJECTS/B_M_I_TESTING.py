@@ -250,10 +250,9 @@ def create_tv_information_index():
 
 
 def directory_selection():
-    global movie_dir_input, tv_dir_input, movie_alt_dir_input, tv_alt_dir_input
-
     try:
 
+        global movie_dir_input, tv_dir_input, movie_alt_dir_input, tv_alt_dir_input
         user_info_file = os.path.expanduser((index_folder + '/{0}_USER_INFO.csv').format(username))
 
         print('ENTER PATH OF MOVIE DIRECTORY, IF NONE HIT CANCEL: ')
@@ -276,7 +275,7 @@ def directory_selection():
         if alternate_directory_prompt == str('y'):
 
             movie_alt_directories_list = list()
-            print('ENTER ALTERNATE MOVIE DIRECTORIES: ')
+            print('ENTER ALTERNATE MOVIE DIRECTORIES, WHEN COMPLETE, HIT CANCEL: ')
             separator_3()
 
             movie_alt_dir_input = tk_gui_file_browser_window()
@@ -285,13 +284,13 @@ def directory_selection():
                 movie_alt_directories_list.append(movie_alt_dir_input)
                 movie_alt_dir_input = tk_gui_file_browser_window()
 
-            movie_directories_input_alternate = list(movie_alt_directories_list)
-            print('DIRECTORIES ENTERED: ', '\n', '\n', movie_directories_input_alternate)
+            movie_alt_directories_input_list = list(movie_alt_directories_list)
+            print('DIRECTORIES ENTERED: ', '\n', '\n', movie_alt_directories_input_list)
 
             tv_alt_directories_list = list()
             separator_3()
 
-            print('ENTER ALTERNATE TV DIRECTORIES: ')
+            print('ENTER ALTERNATE TV DIRECTORIES, WHEN COMPLETE, HIT CANCEL: ')
             separator_3()
 
             tv_alt_dir_input = tk_gui_file_browser_window()
@@ -300,13 +299,13 @@ def directory_selection():
                 tv_alt_directories_list.append(tv_alt_dir_input)
                 tv_alt_dir_input = tk_gui_file_browser_window()
 
-            tv_directories_input_alternate = list(tv_alt_directories_list)
-            print('DIRECTORIES ENTERED: ', '\n', '\n', tv_directories_input_alternate)
+            tv_alt_directories_input_list = list(tv_alt_directories_list)
+            print('DIRECTORIES ENTERED: ', '\n', '\n', tv_alt_directories_input_list)
             separator_3()
 
             user_info_dict = {'user:': username, 'movie_dir:': movie_dir_input,
-                              'tv_dir:': tv_dir_input, 'movie_alt_dir:': movie_directories_input_alternate,
-                              'tv_alt_dir:': tv_directories_input_alternate}
+                              'tv_dir:': tv_dir_input, 'movie_alt_dir:': movie_alt_directories_list,
+                              'tv_alt_dir:': tv_alt_directories_list}
 
             with open(user_info_file, 'w', encoding='UTF-8', newline='') as f:
                 csv_writer = csv.writer(f)
@@ -328,6 +327,7 @@ def directory_selection():
 
     except (TypeError, ValueError) as e:
         print('\n', 'INPUT ERROR: ', e, '\n')
+        separator_3()
 
 
 def graph_options_advanced(user_name, picture_graph_options_int, terminal_graph_options_int):
@@ -1057,7 +1057,6 @@ def query_movie_information_index(movie_query):
                 separator_2()
 
                 if int(len(movie_file[7])) != 0:
-
                     print('RUN-TIME: ', '\n', movie_file[7])
                     separator_2()
 
@@ -1127,7 +1126,6 @@ def query_tv_information_index(tv_episode_query):
                 separator_2()
 
                 if int(len(tv_file[10])) != 0:
-
                     print('RUN-TIME: ', '\n', tv_file[10])
                     separator_2()
 
@@ -1755,10 +1753,10 @@ def tv_episodes_sort_function(sort_options_int):
 
 
 def username_check_and_folder_creation():
-    global movie_dir_input, tv_dir_input, movie_alt_dir_input, tv_alt_dir_input
 
     try:
 
+        global movie_dir_input, tv_dir_input, movie_alt_dir_input, tv_alt_dir_input
         user_info_file = os.path.expanduser((index_folder + '/{0}_USER_INFO.csv').format(username))
 
         if os.path.isfile(user_info_file):
