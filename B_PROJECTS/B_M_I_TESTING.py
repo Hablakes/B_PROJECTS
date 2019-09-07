@@ -284,8 +284,7 @@ def directory_selection():
                 movie_alt_directories_list.append(movie_alt_dir_input)
                 movie_alt_dir_input = tk_gui_file_browser_window()
 
-            movie_alt_directories_input_list = list(movie_alt_directories_list)
-            print('DIRECTORIES ENTERED: ', '\n', '\n', movie_alt_directories_input_list)
+            print('DIRECTORIES ENTERED: ', '\n', '\n', movie_alt_directories_list)
 
             tv_alt_directories_list = list()
             separator_3()
@@ -299,8 +298,7 @@ def directory_selection():
                 tv_alt_directories_list.append(tv_alt_dir_input)
                 tv_alt_dir_input = tk_gui_file_browser_window()
 
-            tv_alt_directories_input_list = list(tv_alt_directories_list)
-            print('DIRECTORIES ENTERED: ', '\n', '\n', tv_alt_directories_input_list)
+            print('DIRECTORIES ENTERED: ', '\n', '\n', tv_alt_directories_list)
             separator_3()
 
             user_info_dict = {'user:': username, 'movie_dir:': movie_dir_input,
