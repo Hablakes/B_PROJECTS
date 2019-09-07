@@ -251,7 +251,6 @@ def directory_selection():
 
         user_info_file = os.path.expanduser((index_folder + '/{0}_USER_INFO.csv').format(username))
 
-        separator_3()
         print('ENTER PATH OF MOVIE DIRECTORY, IF NONE HIT CANCEL: ')
         movie_directory_input_main = tk_gui_file_browser_window()
         print('\n', str(movie_directory_input_main))
@@ -285,6 +284,7 @@ def directory_selection():
 
             tv_alt_directories_list = list()
             separator_3()
+
             print('ENTER ALTERNATE TV DIRECTORIES: ')
             separator_3()
 
@@ -296,6 +296,7 @@ def directory_selection():
 
             tv_directories_input_alternate = list(tv_alt_directories_list)
             print('DIRECTORIES ENTERED: ', '\n', '\n', tv_directories_input_alternate)
+            separator_3()
 
             user_info_dict = {'user:': username, 'movie_dir:': movie_directory_input_main,
                               'tv_dir:': tv_directory_input_main, 'movie_alt_dir:': movie_directories_input_alternate,
