@@ -23,10 +23,12 @@ def directory_selection():
         separator_3()
         print('ENTER PATH OF MOVIE DIRECTORY, IF NONE HIT CANCEL: ')
         movie_dir_input = tk_gui_file_browser_window()
+        print('\n', str(movie_dir_input))
 
         separator_3()
         print('ENTER PATH OF TV DIRECTORY, IF NONE HIT CANCEL: ')
         tv_dir_input = tk_gui_file_browser_window()
+        print('\n', str(tv_dir_input))
 
         separator_3()
         print('ALTERNATE DIRECTORIES? - Y/N: ')
@@ -37,19 +39,38 @@ def directory_selection():
 
         if alternate_directory_prompt == str('y'):
 
-            movie_alt_directories_list = []
-            tv_alt_directories_list = []
-
-            print('ENTER ALTERNATE MOVIE DIRECTORY?: ')
+            movie_alt_directories_list = list()
+            print('ENTER ALTERNATE MOVIE DIRECTORIES: ')
             separator_3()
 
+            movie_directory_input_line = tk_gui_file_browser_window()
+
+            while movie_directory_input_line != '':
+                movie_alt_directories_list.append(movie_directory_input_line)
+                movie_directory_input_line = tk_gui_file_browser_window()
+
             movie_alt_dir_input = list(movie_alt_directories_list)
+            print('DIRECTORIES ENTERED: ', '\n', '\n', movie_alt_dir_input)
+
+            tv_alt_directories_list = list()
+            separator_3()
+            print('ENTER ALTERNATE TV DIRECTORIES: ')
+            separator_3()
+
+            tv_directory_input_line = tk_gui_file_browser_window()
+
+            while tv_directory_input_line != '':
+                tv_alt_directories_list.append(tv_directory_input_line)
+                tv_directory_input_line = tk_gui_file_browser_window()
+
             tv_alt_dir_input = list(tv_alt_directories_list)
+            print('DIRECTORIES ENTERED: ', '\n', '\n', tv_alt_dir_input)
 
             user_info_dict = {'user:': username, 'movie_dir:': movie_dir_input, 'tv_dir:': tv_dir_input,
                               'movie_alt_dir:': movie_alt_dir_input, 'tv_alt_dir:': tv_alt_dir_input}
 
-            print(user_info_dict)
+            separator_3()
+            print('RESULTS: ', user_info_dict)
 
         elif alternate_directory_prompt != str('y'):
 
@@ -59,7 +80,7 @@ def directory_selection():
             user_info_dict = {'user:': username, 'movie_dir:': movie_dir_input, 'tv_dir:': tv_dir_input,
                               'movie_alt_dir:': '', 'tv_alt_dir:': ''}
 
-            print(user_info_dict)
+            print('RESULTS: ', user_info_dict)
 
     except (TypeError, ValueError) as e:
         print('\n', 'INPUT ERROR: ', e, '\n')
