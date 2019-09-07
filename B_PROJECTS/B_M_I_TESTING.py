@@ -110,6 +110,7 @@ def create_movie_information_index():
                 try:
 
                     with open(str(movie_file[0])) as f:
+
                         for line_item in f.readlines():
                             if '<plot>' in line_item:
                                 movie_results_list[movie_title_key]['PLOT'] = line_item
@@ -158,6 +159,7 @@ def create_tv_information_index():
                 try:
 
                     with open(tv_file[0]) as f:
+
                         for line in f.readlines():
                             if '<plot>' in line:
                                 tv_show_plots_dictionary[tv_folder_title]['PLOT'] = line
@@ -166,6 +168,7 @@ def create_tv_information_index():
                     print('ERROR: ', e, '\n', 'FILE: ', tv_file[0])
                     print('-' * 100)
                     continue
+
             elif not tv_filename_key.lower().endswith('.nfo'):
 
                 if tv_title_key not in tv_results_list:
@@ -214,6 +217,7 @@ def create_tv_information_index():
                     try:
 
                         with open(tv_file[0]) as f:
+
                             for line in f.readlines():
                                 if '<plot>' in line:
                                     tv_results_list[tv_title_key]['PLOT'] = line
@@ -246,19 +250,21 @@ def create_tv_information_index():
 
 
 def directory_selection():
+    global movie_dir_input, tv_dir_input, movie_alt_dir_input, tv_alt_dir_input
 
     try:
 
         user_info_file = os.path.expanduser((index_folder + '/{0}_USER_INFO.csv').format(username))
 
         print('ENTER PATH OF MOVIE DIRECTORY, IF NONE HIT CANCEL: ')
-        movie_directory_input_main = tk_gui_file_browser_window()
-        print('\n', str(movie_directory_input_main))
+        movie_dir_input = tk_gui_file_browser_window()
+
+        print('\n', str(movie_dir_input))
 
         separator_3()
         print('ENTER PATH OF TV DIRECTORY, IF NONE HIT CANCEL: ')
-        tv_directory_input_main = tk_gui_file_browser_window()
-        print('\n', str(tv_directory_input_main))
+        tv_dir_input = tk_gui_file_browser_window()
+        print('\n', str(tv_dir_input))
 
         separator_3()
         print('ALTERNATE DIRECTORIES? - Y/N: ')
@@ -273,11 +279,11 @@ def directory_selection():
             print('ENTER ALTERNATE MOVIE DIRECTORIES: ')
             separator_3()
 
-            movie_directory_input_line = tk_gui_file_browser_window()
+            movie_alt_dir_input = tk_gui_file_browser_window()
 
-            while movie_directory_input_line != '':
-                movie_alt_directories_list.append(movie_directory_input_line)
-                movie_directory_input_line = tk_gui_file_browser_window()
+            while movie_alt_dir_input != '':
+                movie_alt_directories_list.append(movie_alt_dir_input)
+                movie_alt_dir_input = tk_gui_file_browser_window()
 
             movie_directories_input_alternate = list(movie_alt_directories_list)
             print('DIRECTORIES ENTERED: ', '\n', '\n', movie_directories_input_alternate)
@@ -288,18 +294,18 @@ def directory_selection():
             print('ENTER ALTERNATE TV DIRECTORIES: ')
             separator_3()
 
-            tv_directory_input_line = tk_gui_file_browser_window()
+            tv_alt_dir_input = tk_gui_file_browser_window()
 
-            while tv_directory_input_line != '':
-                tv_alt_directories_list.append(tv_directory_input_line)
-                tv_directory_input_line = tk_gui_file_browser_window()
+            while tv_alt_dir_input != '':
+                tv_alt_directories_list.append(tv_alt_dir_input)
+                tv_alt_dir_input = tk_gui_file_browser_window()
 
             tv_directories_input_alternate = list(tv_alt_directories_list)
             print('DIRECTORIES ENTERED: ', '\n', '\n', tv_directories_input_alternate)
             separator_3()
 
-            user_info_dict = {'user:': username, 'movie_dir:': movie_directory_input_main,
-                              'tv_dir:': tv_directory_input_main, 'movie_alt_dir:': movie_directories_input_alternate,
+            user_info_dict = {'user:': username, 'movie_dir:': movie_dir_input,
+                              'tv_dir:': tv_dir_input, 'movie_alt_dir:': movie_directories_input_alternate,
                               'tv_alt_dir:': tv_directories_input_alternate}
 
             with open(user_info_file, 'w', encoding='UTF-8', newline='') as f:
@@ -312,8 +318,8 @@ def directory_selection():
             print('NO ALTERNATE DIRECTORIES')
             separator_3()
 
-            user_info_dict = {'user:': username, 'movie_dir:': movie_directory_input_main,
-                              'tv_dir:': tv_directory_input_main, 'movie_alt_dir:': '', 'tv_alt_dir:': ''}
+            user_info_dict = {'user:': username, 'movie_dir:': movie_dir_input,
+                              'tv_dir:': tv_dir_input, 'movie_alt_dir:': '', 'tv_alt_dir:': ''}
 
             with open(user_info_file, 'w', encoding='UTF-8', newline='') as f:
                 csv_writer = csv.writer(f)
@@ -867,6 +873,7 @@ def media_queries_sub_menu():
                 separator_2()
                 print('0) MAIN MENU')
                 separator_3()
+
                 plot_search_int = int(input('ENTER #: '))
                 plot_search_list.append(plot_search_int)
                 separator_3()
@@ -905,6 +912,7 @@ def media_queries_sub_menu():
 def picture_graph_options_sub_menu():
     print(pyfiglet.figlet_format('PICTURE_GRAPHS', font='cybermedium'))
     separator_3()
+
     print('1) MOVIES (TITLES PER YEAR)                      2) TV SHOWS (TITLES PER YEAR)', '\n')
     print('3) MOVIES (TITLES PER DECADE)                    4) TV SHOWS (TITLES PER DECADE)')
     separator_2()
@@ -1036,16 +1044,21 @@ def query_movie_information_index(movie_query):
                 separator_2()
                 print('MOVIE FOLDER: ', '\n', movie_file[0])
                 separator_2()
+
                 print('MOVIE TITLE: ', '\n', movie_file[1])
                 separator_2()
+
                 print('MOVIE YEAR: ', '\n', movie_file[2])
                 separator_2()
+
                 print('MOVIE RESOLUTION: ', '\n', movie_file[3])
                 separator_2()
+
                 print('MOVIE FILE-TYPE: ', '\n', movie_file[4])
                 separator_2()
 
                 if int(len(movie_file[7])) != 0:
+
                     print('RUN-TIME: ', '\n', movie_file[7])
                     separator_2()
 
@@ -1092,18 +1105,25 @@ def query_tv_information_index(tv_episode_query):
                 separator_2()
                 print('TV SHOW FOLDER: ', '\n', tv_file[0])
                 separator_2()
+
                 print('TV SHOW TITLE: ', '\n', tv_file[1])
                 separator_2()
+
                 print('TV SHOW YEAR: ', '\n', tv_file[2])
                 separator_2()
+
                 print('TV SHOW EPISODE TITLE: ', '\n', tv_file[3])
                 separator_2()
+
                 print('SEASON NUMBER: ', '\n', tv_file[4])
                 separator_2()
+
                 print('EPISODE NUMBER: ', '\n', tv_file[5])
                 separator_2()
+
                 print('RESOLUTION: ', '\n', tv_file[6])
                 separator_2()
+
                 print('FILE-TYPE: ', '\n', tv_file[7])
                 separator_2()
 
@@ -1156,6 +1176,7 @@ def saved_searches():
     print('2) ADD A NEW SEARCH TERM')
     separator_2()
     print('0) MAIN MENU')
+
     separator_3()
     saved_search_type_input = int(input('ENTER #: '))
     saved_search_inputs_list.append(saved_search_type_input)
@@ -1183,16 +1204,20 @@ def saved_searches():
             saved_searches_file = os.path.expanduser((index_folder + '/SEARCH/{0}_SAVED_SEARCHES.csv').format(username))
             print('SELECT TITLE FOR GENRE, ADD KEYWORD(S) FOR SEARCH TERM(S))')
             separator_2()
+
             new_genre = str(input('ENTER TITLE FOR NEW GENRE: '))
             separator_2()
+
             new_search_term = str(input('ENTER KEYWORD(S): ')).lower()
             separator_3()
+
             saved_searches_list.append([new_genre, new_search_term])
 
             with open(saved_searches_file, 'a', encoding='UTF-8', newline='') as f:
                 csv_writer = csv.writer(f)
                 for user_data in saved_searches_list:
                     csv_writer.writerow(user_data)
+
             saved_searches()
 
     except (TypeError, ValueError) as e:
@@ -1204,6 +1229,7 @@ def saved_searches():
     separator_2()
     print('0) MAIN MENU')
     separator_3()
+
     saved_search_sub_query_type_input = int(input('ENTER #: '))
     saved_search_inputs_list.append(saved_search_sub_query_type_input)
     separator_3()
@@ -1437,6 +1463,7 @@ def search_titles(title_search_type, movie_title_query, tv_show_query):
 
             for search_results in episode_information_search_list:
                 print(''.join(search_results))
+
             separator_2()
             print('DETAILED EPISODE INFORMATION AVAILABLE: ')
             separator_1()
@@ -1451,10 +1478,12 @@ def search_titles(title_search_type, movie_title_query, tv_show_query):
                     media_index_home()
 
                 elif title_search_sub_query_input == 1:
+
                     episode_sub_query_input = int(input('ENTER EPISODE NUMBER (#): '))
                     episode_to_query = str(episode_information_search_list[episode_sub_query_input][2])
                     episode_to_query_lower = episode_to_query.lower()
                     separator_3()
+
                     print('QUERYING INFORMATION FOR EPISODE TITLED: ', episode_to_query)
                     separator_2()
                     query_tv_information_index(tv_episode_query=episode_to_query_lower)
@@ -1473,12 +1502,16 @@ def select_users_indices_to_compare():
 
         print('\n', 'SELECT THE MOVIE_INFORMATION_INDICES TO COMPARE: ')
         separator_3()
+
         print('SELECT USER MOVIE INFORMATION INDEX: ')
         m_0 = tk_gui_file_selection_window()
+
         print('SELECT COMPARISON MOVIE INFORMATION INDEX: ')
         m_1 = tk_gui_file_selection_window()
+
         print('SELECT USER TV INFORMATION INDEX: ')
         t_0 = tk_gui_file_selection_window()
+
         print('SELECT COMPARISON TV INFORMATION INDEX: ')
         t_1 = tk_gui_file_selection_window()
         separator_3()
