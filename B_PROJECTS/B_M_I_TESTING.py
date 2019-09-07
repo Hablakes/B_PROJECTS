@@ -1756,7 +1756,7 @@ def username_check_and_folder_creation():
         user_info_file = os.path.expanduser((index_folder + '/{0}_USER_INFO.csv').format(username))
 
         if os.path.isfile(user_info_file):
-            user_info_file_check = list(csv.reader(open(user_info_file)))
+            user_info_file_check = list(csv.reader(open(user_info_file, encoding='UTF-8', newline='')))
             movie_dir_input = user_info_file_check[1][1]
             tv_dir_input = user_info_file_check[2][1]
             movie_alt_dir_input = user_info_file_check[3][1]
@@ -1778,10 +1778,8 @@ def username_check_and_folder_creation():
 def walk_directories_and_create_indices():
     movie_video_files_results = []
 
-    ### TESTING SECTION
+    ## TESTING SECTION
 
-    print(''.join([str(elem) for elem in movie_alt_dir_input.split("'")]))
-    separator_3()
     print(movie_alt_dir_input)
     separator_3()
 
