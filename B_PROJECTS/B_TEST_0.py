@@ -1,9 +1,4 @@
-import csv
-import os
-import pathlib
-
 from tkinter import filedialog, Tk
-
 
 username = 'TEST'
 
@@ -25,13 +20,12 @@ def tk_gui_file_browser_window():
 def directory_selection():
 
     try:
-
         separator_3()
-        print('ENTER PATH OF MOVIE DIRECTORY, IF NONE HIT CANCEL: ', '\n')
+        print('ENTER PATH OF MOVIE DIRECTORY, IF NONE HIT CANCEL: ')
         movie_dir_input = tk_gui_file_browser_window()
 
         separator_3()
-        print('ENTER PATH OF TV DIRECTORY, IF NONE HIT CANCEL: ', '\n')
+        print('ENTER PATH OF TV DIRECTORY, IF NONE HIT CANCEL: ')
         tv_dir_input = tk_gui_file_browser_window()
 
         separator_3()
@@ -48,19 +42,6 @@ def directory_selection():
 
             print('ENTER ALTERNATE MOVIE DIRECTORY?: ')
             separator_3()
-            multiple_alt_movie_directories_prompt = input('ENTER: Y or N: ').lower()
-            separator_3()
-
-            while str(multiple_alt_movie_directories_prompt) == str('y'):
-                movie_alt_directories_list.append(tk_gui_file_browser_window())
-
-            print('ENTER ALTERNATE TV DIRECTORY?: ')
-            separator_3()
-            multiple_alt_tv_directories_prompt = input('ENTER: Y or N: ').lower()
-            separator_3()
-
-            while str(multiple_alt_tv_directories_prompt) == str('y'):
-                tv_alt_directories_list.append(tk_gui_file_browser_window())
 
             movie_alt_dir_input = list(movie_alt_directories_list)
             tv_alt_dir_input = list(tv_alt_directories_list)
