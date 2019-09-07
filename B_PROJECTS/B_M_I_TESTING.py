@@ -1789,9 +1789,9 @@ def walk_directories_and_create_indices():
     elif movie_alt_dir_input is not str(''):
         for listed_alternate_movie_directories in movie_alt_dir_input:
             for root, dirs, files in os.walk(listed_alternate_movie_directories):
-                for alt_file in sorted(files):
-                    if alt_file.lower().endswith(extensions):
-                        movie_video_files_results.append([(pathlib.Path(root) / alt_file).as_posix()])
+                for alt_movie_file in sorted(files):
+                    if alt_movie_file.lower().endswith(extensions):
+                        movie_video_files_results.append([(pathlib.Path(root) / alt_movie_file).as_posix()])
 
     with open(os.path.expanduser((index_folder + '/MOVIE_VIDEO_FILES_PATHS.csv').format(username)), 'w',
               encoding='UTF-8', newline='') as f:
@@ -1810,9 +1810,9 @@ def walk_directories_and_create_indices():
     elif tv_alt_dir_input is not str(''):
         for listed_alternate_tv_directories in tv_alt_dir_input:
             for root, dirs, files in os.walk(listed_alternate_tv_directories):
-                for alt_file in sorted(files):
-                    if alt_file.lower().endswith(extensions):
-                        tv_show_video_files_results.append([(pathlib.Path(root) / alt_file).as_posix()])
+                for alt_tv_file in sorted(files):
+                    if alt_tv_file.lower().endswith(extensions):
+                        tv_show_video_files_results.append([(pathlib.Path(root) / alt_tv_file).as_posix()])
 
     with open(os.path.expanduser((index_folder + '/TV_VIDEO_FILES_PATHS.csv').format(username)), 'w',
               encoding='UTF-8', newline='') as f:
