@@ -16,7 +16,6 @@ from ascii_graph import Pyasciigraph
 from datetime import datetime
 from tkinter import filedialog, Tk
 
-
 index_folder = '~/{0}_MEDIA_INDEX'
 
 username = None
@@ -71,18 +70,17 @@ def launch_media_index():
 
 
 def username_check_and_folder_creation():
-
     try:
 
         global movie_dir_input, tv_dir_input, movie_alt_dir_input, tv_alt_dir_input
         user_info_file = os.path.expanduser((index_folder + '/{0}_USER_INFO.json').format(username))
 
         if os.path.isfile(user_info_file):
-            user_info_file_check = list(csv.reader(open(user_info_file, encoding='UTF-8', newline='')))
-            movie_dir_input = user_info_file_check[1][1]
-            tv_dir_input = user_info_file_check[2][1]
-            movie_alt_dir_input = user_info_file_check[3][1]
-            tv_alt_dir_input = user_info_file_check[4][1]
+            user_info_file_check = _
+            movie_dir_input = _
+            tv_dir_input = _
+            movie_alt_dir_input = _
+            tv_alt_dir_input = _
 
         else:
             os.makedirs(os.path.expanduser((index_folder + '/').format(username)), exist_ok=True)
@@ -105,15 +103,12 @@ def directory_selection():
         print('ENTER PATH OF MOVIE DIRECTORY, IF NONE HIT CANCEL: ')
         movie_dir_input = tk_gui_file_browser_window()
         print('\n', str(movie_dir_input))
-
         separator_3()
         print('ENTER PATH OF TV DIRECTORY, IF NONE HIT CANCEL: ')
         tv_dir_input = tk_gui_file_browser_window()
         print('\n', str(tv_dir_input))
-
         separator_3()
         print('ALTERNATE DIRECTORIES? - Y/N: ')
-
         separator_3()
         alternate_directory_prompt = input('ENTER: Y or N: ').lower()
         separator_3()
@@ -123,7 +118,6 @@ def directory_selection():
             movie_alt_directories_list = list()
             print('ENTER ALTERNATE MOVIE DIRECTORIES, WHEN COMPLETE, HIT CANCEL: ')
             separator_3()
-
             movie_alt_dir_input = tk_gui_file_browser_window()
 
             while movie_alt_dir_input != '':
@@ -131,12 +125,10 @@ def directory_selection():
                 movie_alt_dir_input = tk_gui_file_browser_window()
 
             print('DIRECTORIES ENTERED: ', '\n', '\n', movie_alt_directories_list)
-
             tv_alt_directories_list = list()
             separator_3()
             print('ENTER ALTERNATE TV DIRECTORIES, WHEN COMPLETE, HIT CANCEL: ')
             separator_3()
-
             tv_alt_dir_input = tk_gui_file_browser_window()
 
             while tv_alt_dir_input != '':
@@ -145,26 +137,24 @@ def directory_selection():
 
             print('DIRECTORIES ENTERED: ', '\n', '\n', tv_alt_directories_list)
             separator_3()
-
             user_info_dict = {'user:': username, 'movie_dir:': movie_dir_input,
                               'tv_dir:': tv_dir_input, 'movie_alt_dir:': movie_alt_directories_list,
                               'tv_alt_dir:': tv_alt_directories_list}
 
             with open(user_info_file, 'w', encoding='UTF-8') as json_file:
                 for user_data in user_info_dict.items():
-                    json.dump(user_data, json_file, ensure_ascii=False, indent=4)
+                    json.dump(user_data, json_file, ensure_ascii=False, indent=4, sort_keys=True)
 
         elif alternate_directory_prompt != str('y'):
 
             print('NO ALTERNATE DIRECTORIES')
             separator_3()
-
             user_info_dict = {'user:': username, 'movie_dir:': movie_dir_input,
                               'tv_dir:': tv_dir_input, 'movie_alt_dir:': '', 'tv_alt_dir:': ''}
 
             with open(user_info_file, 'w', encoding='UTF-8') as json_file:
                 for user_data in user_info_dict.items():
-                    json.dump(user_data, json_file, ensure_ascii=False, indent=4)
+                    json.dump(user_data, json_file, ensure_ascii=False, indent=4, sort_keys=True)
 
     except (TypeError, ValueError) as e:
         print('\n', 'INPUT ERROR: ', e, '\n')
@@ -172,13 +162,13 @@ def directory_selection():
 
 
 def test():
-    tst_username = 'TST'
-    user_info_file = os.path.expanduser((index_folder + '/{0}_USER_INFO.json').format(tst_username))
+    test_username = 'TEST'
+    user_info_file = os.path.expanduser((index_folder + '/{0}_USER_INFO.json').format(test_username))
 
-    with open(user_info_file) as json_file:
+    with open(user_info_file, 'r', encoding='UTF-8') as json_file:
         user_info_data = json.load(json_file)
-        for info in user_info_data:
-            print(info)
+
+        print(user_info_data)
 
 
-launch_media_index()
+test()
