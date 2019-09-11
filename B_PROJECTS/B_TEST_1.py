@@ -3,10 +3,9 @@ import json
 data_test_0 = []
 data_test_1 = []
 
-with open(r'C:/Users/botoole/TEST_MEDIA_INDEX/TEST_USER_INFO.json') as f:
-    for json_lines in f:
-        data_test_0.append(json_lines)
-        print(json.dumps(json_lines))
+with open(r'C:/Users/botoole/NEWTEST_MEDIA_INDEX/NEWTEST_USER_INFO.json') as f:
+    a = json.load(f)
+    print(a)
 
 print('\n', '#' * 100, '\n')
 for list_lines in data_test_0:

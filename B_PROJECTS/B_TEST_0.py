@@ -140,8 +140,7 @@ def directory_selection():
                               'tv_alt_dir:': tv_alt_directories_list}
 
             with open(user_info_file, 'w', encoding='UTF-8') as json_file:
-                for user_data in user_info_dict.items():
-                    json.dump(user_data, json_file, ensure_ascii=False, indent=4, sort_keys=True)
+                json.dump(user_info_dict, json_file, ensure_ascii=False, indent=4, sort_keys=True)
 
         elif alternate_directory_prompt != str('y'):
 
@@ -168,4 +167,5 @@ def test():
         for info in user_info_data:
             print(info)
 
-test()
+
+launch_media_index()
