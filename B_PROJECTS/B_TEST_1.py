@@ -4,8 +4,10 @@ data_test_0 = []
 data_test_1 = []
 
 with open(r'C:/Users/botoole/TEST_MEDIA_INDEX/TEST_USER_INFO.json') as f:
-    for line in f:
-        data_test_0.append(line)
+    for json_lines in f:
+        data_test_0.append(json_lines)
+        print(json.dumps(json_lines))
 
-for items in data_test_0:
-    print(items)
+print('\n', '#' * 100, '\n')
+for list_lines in data_test_0:
+    print(list_lines)
