@@ -306,8 +306,7 @@ def directory_selection():
                               'tv_dir:': tv_dir_input, 'movie_alt_dir:': '', 'tv_alt_dir:': ''}
 
             with open(user_info_file, 'w', encoding='UTF-8') as json_file:
-                for user_data in user_info_dict.items():
-                    json.dump(user_data, json_file, ensure_ascii=False, indent=4, sort_keys=True)
+                json.dump(user_info_dict, json_file, ensure_ascii=False, indent=4, sort_keys=True)
 
     except (TypeError, ValueError) as e:
         print('\n', 'INPUT ERROR: ', e, '\n')
