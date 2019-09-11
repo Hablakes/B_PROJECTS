@@ -1766,23 +1766,14 @@ def username_check_and_folder_creation():
 def walk_directories_and_create_indices():
     movie_video_files_results = []
 
-#######################################################################################################
-
-    print(movie_dir_input)
-    print(movie_alt_dir_input)
-    print(tv_dir_input)
-    print(tv_alt_dir_input)
-
-    if movie_dir_input is not str(''):
+    if movie_dir_input != '':
         for root, dirs, files in os.walk(movie_dir_input):
             for movie_file in sorted(files):
                 if movie_file.lower().endswith(extensions):
                     movie_video_files_results.append([(pathlib.Path(root) / movie_file).as_posix()])
 
-    elif movie_alt_dir_input is not str(''):
-        print(movie_alt_dir_input)
+    if movie_alt_dir_input != '':
         for listed_alternate_movie_directories in movie_alt_dir_input:
-            print(listed_alternate_movie_directories)
             for root, dirs, files in os.walk(listed_alternate_movie_directories):
                 for alt_movie_file in sorted(files):
                     if alt_movie_file.lower().endswith(extensions):
@@ -1796,15 +1787,14 @@ def walk_directories_and_create_indices():
 
     tv_show_video_files_results = []
 
-    if tv_dir_input is not str(''):
+    if tv_dir_input != '':
         for root, dirs, files in os.walk(tv_dir_input):
             for tv_file in sorted(files):
                 if tv_file.lower().endswith(extensions):
                     tv_show_video_files_results.append([(pathlib.Path(root) / tv_file).as_posix()])
 
-    elif tv_alt_dir_input is not str(''):
+    if tv_alt_dir_input != '':
         for listed_alternate_tv_directories in tv_alt_dir_input:
-            print(listed_alternate_tv_directories)
             for root, dirs, files in os.walk(listed_alternate_tv_directories):
                 for alt_tv_file in sorted(files):
                     if alt_tv_file.lower().endswith(extensions):
