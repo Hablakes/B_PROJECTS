@@ -123,7 +123,6 @@ def directory_selection():
             while movie_alt_dir_input != '':
                 movie_alt_directories_list.append(movie_alt_dir_input)
                 movie_alt_dir_input = tk_gui_file_browser_window()
-
             print('DIRECTORIES ENTERED: ', '\n', '\n', movie_alt_directories_list)
             tv_alt_directories_list = list()
             separator_3()
@@ -134,7 +133,6 @@ def directory_selection():
             while tv_alt_dir_input != '':
                 tv_alt_directories_list.append(tv_alt_dir_input)
                 tv_alt_dir_input = tk_gui_file_browser_window()
-
             print('DIRECTORIES ENTERED: ', '\n', '\n', tv_alt_directories_list)
             separator_3()
             user_info_dict = {'user:': username, 'movie_dir:': movie_dir_input,
@@ -166,9 +164,8 @@ def test():
     user_info_file = os.path.expanduser((index_folder + '/{0}_USER_INFO.json').format(test_username))
 
     with open(user_info_file, 'r', encoding='UTF-8') as json_file:
-        user_info_data = json.load(json_file)
-
-        print(user_info_data)
-
+        user_info_data = json.load(json_file.read())
+        for info in user_info_data:
+            print(info)
 
 test()
