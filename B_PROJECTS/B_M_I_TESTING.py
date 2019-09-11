@@ -1778,11 +1778,6 @@ def username_check_and_folder_creation():
 def walk_directories_and_create_indices():
     movie_video_files_results = []
 
-    ## TESTING SECTION
-
-    print(movie_alt_dir_input)
-    separator_3()
-
     if movie_dir_input is not str(''):
         for root, dirs, files in os.walk(movie_dir_input):
             for movie_file in sorted(files):
