@@ -1,4 +1,5 @@
 import csv
+import json
 import os
 import pathlib
 import textwrap
@@ -253,20 +254,17 @@ def directory_selection():
     try:
 
         global movie_dir_input, tv_dir_input, movie_alt_dir_input, tv_alt_dir_input
-        user_info_file = os.path.expanduser((index_folder + '/{0}_USER_INFO.csv').format(username))
+        user_info_file = os.path.expanduser((index_folder + '/{0}_USER_INFO.json').format(username))
 
         print('ENTER PATH OF MOVIE DIRECTORY, IF NONE HIT CANCEL: ')
         movie_dir_input = tk_gui_file_browser_window()
         print('\n', str(movie_dir_input))
-
         separator_3()
         print('ENTER PATH OF TV DIRECTORY, IF NONE HIT CANCEL: ')
         tv_dir_input = tk_gui_file_browser_window()
         print('\n', str(tv_dir_input))
-
         separator_3()
         print('ALTERNATE DIRECTORIES? - Y/N: ')
-
         separator_3()
         alternate_directory_prompt = input('ENTER: Y or N: ').lower()
         separator_3()
@@ -276,50 +274,40 @@ def directory_selection():
             movie_alt_directories_list = list()
             print('ENTER ALTERNATE MOVIE DIRECTORIES, WHEN COMPLETE, HIT CANCEL: ')
             separator_3()
-
             movie_alt_dir_input = tk_gui_file_browser_window()
 
             while movie_alt_dir_input != '':
                 movie_alt_directories_list.append(movie_alt_dir_input)
                 movie_alt_dir_input = tk_gui_file_browser_window()
-
             print('DIRECTORIES ENTERED: ', '\n', '\n', movie_alt_directories_list)
-
             tv_alt_directories_list = list()
             separator_3()
             print('ENTER ALTERNATE TV DIRECTORIES, WHEN COMPLETE, HIT CANCEL: ')
             separator_3()
-
             tv_alt_dir_input = tk_gui_file_browser_window()
 
             while tv_alt_dir_input != '':
                 tv_alt_directories_list.append(tv_alt_dir_input)
                 tv_alt_dir_input = tk_gui_file_browser_window()
-
             print('DIRECTORIES ENTERED: ', '\n', '\n', tv_alt_directories_list)
             separator_3()
-
             user_info_dict = {'user:': username, 'movie_dir:': movie_dir_input,
                               'tv_dir:': tv_dir_input, 'movie_alt_dir:': movie_alt_directories_list,
                               'tv_alt_dir:': tv_alt_directories_list}
 
-            with open(user_info_file, 'w', encoding='UTF-8', newline='') as f:
-                csv_writer = csv.writer(f)
-                for user_data in user_info_dict.items():
-                    csv_writer.writerow(user_data)
+            with open(user_info_file, 'w', encoding='UTF-8') as json_file:
+                json.dump(user_info_dict, json_file, ensure_ascii=False, indent=4, sort_keys=True)
 
         elif alternate_directory_prompt != str('y'):
 
             print('NO ALTERNATE DIRECTORIES')
             separator_3()
-
             user_info_dict = {'user:': username, 'movie_dir:': movie_dir_input,
                               'tv_dir:': tv_dir_input, 'movie_alt_dir:': '', 'tv_alt_dir:': ''}
 
-            with open(user_info_file, 'w', encoding='UTF-8', newline='') as f:
-                csv_writer = csv.writer(f)
+            with open(user_info_file, 'w', encoding='UTF-8') as json_file:
                 for user_data in user_info_dict.items():
-                    csv_writer.writerow(user_data)
+                    json.dump(user_data, json_file, ensure_ascii=False, indent=4, sort_keys=True)
 
     except (TypeError, ValueError) as e:
         print('\n', 'INPUT ERROR: ', e, '\n')
@@ -1749,18 +1737,19 @@ def tv_episodes_sort_function(sort_options_int):
 
 
 def username_check_and_folder_creation():
-
     try:
 
         global movie_dir_input, tv_dir_input, movie_alt_dir_input, tv_alt_dir_input
-        user_info_file = os.path.expanduser((index_folder + '/{0}_USER_INFO.csv').format(username))
+        user_info_file = os.path.expanduser((index_folder + '/{0}_USER_INFO.json').format(username))
 
         if os.path.isfile(user_info_file):
-            user_info_file_check = list(csv.reader(open(user_info_file, encoding='UTF-8', newline='')))
-            movie_dir_input = user_info_file_check[1][1]
-            tv_dir_input = user_info_file_check[2][1]
-            movie_alt_dir_input = user_info_file_check[3][1]
-            tv_alt_dir_input = user_info_file_check[4][1]
+            with open(user_info_file) as f:
+                user_data = json.load(f)
+                _ = user_data['user:']
+                movie_dir_input = user_data['movie_dir:']
+                tv_dir_input = user_data['tv_dir:']
+                movie_alt_dir_input = user_data['movie_alt_dir:']
+                tv_alt_dir_input = user_data['tv_alt_dir:']
 
         else:
             os.makedirs(os.path.expanduser((index_folder + '/').format(username)), exist_ok=True)
@@ -1778,6 +1767,13 @@ def username_check_and_folder_creation():
 def walk_directories_and_create_indices():
     movie_video_files_results = []
 
+#######################################################################################################
+
+    print(movie_dir_input)
+    print(movie_alt_dir_input)
+    print(tv_dir_input)
+    print(tv_alt_dir_input)
+
     if movie_dir_input is not str(''):
         for root, dirs, files in os.walk(movie_dir_input):
             for movie_file in sorted(files):
@@ -1785,7 +1781,9 @@ def walk_directories_and_create_indices():
                     movie_video_files_results.append([(pathlib.Path(root) / movie_file).as_posix()])
 
     elif movie_alt_dir_input is not str(''):
+        print(movie_alt_dir_input)
         for listed_alternate_movie_directories in movie_alt_dir_input:
+            print(listed_alternate_movie_directories)
             for root, dirs, files in os.walk(listed_alternate_movie_directories):
                 for alt_movie_file in sorted(files):
                     if alt_movie_file.lower().endswith(extensions):
@@ -1807,6 +1805,7 @@ def walk_directories_and_create_indices():
 
     elif tv_alt_dir_input is not str(''):
         for listed_alternate_tv_directories in tv_alt_dir_input:
+            print(listed_alternate_tv_directories)
             for root, dirs, files in os.walk(listed_alternate_tv_directories):
                 for alt_tv_file in sorted(files):
                     if alt_tv_file.lower().endswith(extensions):
