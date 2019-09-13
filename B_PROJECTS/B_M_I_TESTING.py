@@ -1129,6 +1129,7 @@ def query_tv_information_index(tv_episode_query):
 
 def saved_searches():
     print(pyfiglet.figlet_format('SAVED_SEARCHES', font='cybermedium'))
+    separator_3()
 
     saved_searches_file = os.path.expanduser((index_folder + '/SEARCH/SAVED_SEARCHES.csv').format(username))
     saved_search_inputs_list = []
@@ -1217,22 +1218,33 @@ def saved_searches():
                 saved_searches()
 
         elif saved_search_inputs_list[0] == 2:
-            print('SELECT TITLE FOR GENRE, ADD KEYWORD(S) FOR SEARCH TERM(S))')
+            print('1) ADD SEARCH TERM: ')
             separator_2()
-
-            new_genre = str(input('ENTER TITLE FOR NEW GENRE: '))
-            separator_2()
-            new_search_term = str(input('ENTER KEYWORD(S) (SEPARATE KEYWORD(S) BY SPACES, NOT COMMAS): ')).lower()
+            print('0) MAIN MENU')
+            separator_3()
+            addition_confirmation_number = int(input('ENTER #: '))
             separator_3()
 
-            saved_searches_list.append([new_genre, new_search_term])
+            if addition_confirmation_number == 1:
+                print('SELECT TITLE FOR GENRE, ADD KEYWORD(S) FOR SEARCH TERM(S))')
+                separator_2()
 
-            with open(saved_searches_file, 'a', encoding='UTF-8', newline='') as f:
-                csv_writer = csv.writer(f)
-                for user_data in saved_searches_list:
-                    csv_writer.writerow(user_data)
+                new_genre = str(input('ENTER TITLE FOR NEW GENRE: '))
+                separator_2()
+                new_search_term = str(input('ENTER KEYWORD(S) (SEPARATE KEYWORD(S) BY SPACES, NOT COMMAS): ')).lower()
+                separator_3()
 
-            saved_searches()
+                saved_searches_list.append([new_genre, new_search_term])
+
+                with open(saved_searches_file, 'a', encoding='UTF-8', newline='') as f:
+                    csv_writer = csv.writer(f)
+                    for user_data in saved_searches_list:
+                        csv_writer.writerow(user_data)
+
+                saved_searches()
+
+            else:
+                saved_searches()
 
         elif saved_search_inputs_list[0] == 3:
             if os.path.isfile(saved_searches_file):
@@ -1251,6 +1263,30 @@ def saved_searches():
                     saved_searches_list.append([genres, keywords])
                     print(str(enumeration_number) + ') ', '\n', '\n',
                           'GENRE: ', genres, '\n', 'KEYWORD(S): ', keywords, '\n')
+                separator_3()
+
+                print('1) REMOVE SEARCH TERM: ')
+                separator_2()
+                print('0) MAIN MENU')
+                separator_3()
+                removal_confirmation_number = int(input('ENTER #: '))
+
+                if removal_confirmation_number == 1:
+                    separator_3()
+                    print('SELECT NUMBER OF SEARCH TERM TO REMOVE: ', '\n')
+                    search_term_to_remove_number = int(input('ENTER #: '))
+                    separator_3()
+                    print('SEARCH TERM REMOVED: ')
+                    separator_3()
+                    saved_searches_list.remove(saved_searches_list[search_term_to_remove_number])
+
+                    with open(saved_searches_file, 'w', encoding='UTF-8', newline='') as f:
+                        csv_writer = csv.writer(f)
+                        for user_data in saved_searches_list:
+                            csv_writer.writerow(user_data)
+
+                else:
+                    saved_searches()
 
             else:
                 with open(saved_searches_file, 'w', encoding='UTF-8', newline='') as _:
