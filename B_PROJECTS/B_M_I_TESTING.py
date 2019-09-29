@@ -55,6 +55,8 @@ def create_movie_information_index():
 
     movie_scan_start = time.time()
 
+    ia = IMDb()
+
     with open(os.path.expanduser((index_folder + '/MOVIE_VIDEO_FILES_PATHS.csv').format(username)),
               encoding='UTF-8') as m_f_p:
         movie_index = csv.reader(m_f_p)
@@ -110,6 +112,22 @@ def create_movie_information_index():
                 print('-' * 100)
                 continue
 
+            movie_imdb = ia.search_movie(movie_title.get('title'))
+
+            movie_id = movie_imdb[0].movieID
+
+            movie_infoset = ia.get_movie(movie_id)
+
+            print(movie_imdb[0]['title'], '- ID#:', movie_id)
+            separator_1()
+            print('AVAILABLE DATA: ', movie_infoset.default_info)
+            separator_1()
+            for movie_info in movie_infoset.items():
+                print(movie_info)
+            separator_3()
+
+
+"""
     with open(os.path.expanduser((index_folder + '/MOVIE_INFORMATION_INDEX.csv').format(username)), 'w',
               encoding='UTF-8', newline='') as m_i_i:
 
@@ -123,6 +141,7 @@ def create_movie_information_index():
     readable_movie_scan_time = round(movie_scan_end - movie_scan_start, 2)
     print('MOVIE INFORMATION SCAN COMPLETE - TIME ELAPSED: ', readable_movie_scan_time, 'Seconds')
     separator_3()
+"""
 
 
 def directory_selection():
