@@ -125,22 +125,22 @@ def scan_directory_folders():
             found_counts_list.append([found_dirs, 'FILES', found_files_count, 'VIDEOS',
                                       found_video_files_count, 'SUB-DIRECTORIES', found_sub_directories_count])
 
-            try:
-
-                for path, dirs, files in os.walk(directory_path):
-                    for f in files:
-                        fp = os.path.join(path, f)
-                        total_folder_size += os.path.getsize(fp)
-
-            except (FileExistsError, FileNotFoundError, OSError, TypeError, ValueError) as e:
-                print('\n', 'FILE ERROR: ', e)
-                separator_3()
-
         else:
             found_files_count = found_files_count + 1
             found_counts_list.append(
                 [found_dirs, 'FILES', found_files_count, 'VIDEOS', found_video_files_count, 'SUB-DIRECTORIES',
                  found_sub_directories_count])
+
+        try:
+
+            for path, dirs, files in os.walk(directory_path):
+                for f in files:
+                    fp = os.path.join(path, f)
+                    total_folder_size += os.path.getsize(fp)
+
+        except (FileExistsError, FileNotFoundError, OSError, TypeError, ValueError) as e:
+            print('\n', 'FILE ERROR: ', e)
+            separator_3()
 
         if int(found_files_count) > 0:
             total_folder_size_in_mb = (int(total_folder_size) / 1048576)
