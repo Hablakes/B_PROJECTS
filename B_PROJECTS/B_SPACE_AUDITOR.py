@@ -35,7 +35,7 @@ def interface():
     print(pyfiglet.figlet_format('BX_FILE_AUDITOR', font='cybermedium'))
     separator_1()
     print('\n', 'OPTIONS: ', '\n', '\n', '1) COMPARE TWO DIRECTORIES                         2) AUDIT A DIRECTORY',
-          '\n', '\n', '3) FIND SUB-DIRECTORIES IN A DIRECTORY             4) EXIT')
+          '\n', '\n', '3) FIND SUB-DIRECTORIES IN A DIRECTORY             0) EXIT')
 
     separator_3()
     user_input = input('ENTER OPTION #: ')
@@ -51,7 +51,7 @@ def interface():
         elif int(user_input) == 3:
             scan_for_sub_directories()
 
-        elif int(user_input) == 4:
+        elif int(user_input) == 0:
             exit()
 
     except (TypeError, ValueError, UnicodeDecodeError, ZeroDivisionError) as e:
@@ -125,16 +125,22 @@ def scan_directory_folders():
             found_counts_list.append([found_dirs, 'FILES', found_files_count, 'VIDEOS',
                                       found_video_files_count, 'SUB-DIRECTORIES', found_sub_directories_count])
 
+            try:
+
+                for path, dirs, files in os.walk(directory_path):
+                    for f in files:
+                        fp = os.path.join(path, f)
+                        total_folder_size += os.path.getsize(fp)
+
+            except (FileExistsError, FileNotFoundError, OSError, TypeError, ValueError) as e:
+                print('\n', 'FILE ERROR: ', e)
+                separator_3()
+
         else:
             found_files_count = found_files_count + 1
             found_counts_list.append(
                 [found_dirs, 'FILES', found_files_count, 'VIDEOS', found_video_files_count, 'SUB-DIRECTORIES',
                  found_sub_directories_count])
-
-        for path, dirs, files in os.walk(directory_path):
-            for f in files:
-                fp = os.path.join(path, f)
-                total_folder_size += os.path.getsize(fp)
 
         if int(found_files_count) > 0:
             total_folder_size_in_mb = (int(total_folder_size) / 1048576)
@@ -172,7 +178,7 @@ def scan_directory_folders():
                                                            '                             2) SORT BY AVERAGE FILE-SIZE',
                   '\n',
                   '\n', '3) SORT BY AVERAGE VIDEO FILE-SIZE'
-                        '                4) SCAN A DIFFERENT DIRECTORY', '\n', '\n', '5) MAIN MENU')
+                        '                4) SCAN A DIFFERENT DIRECTORY', '\n', '\n', '0) MAIN MENU')
             separator_3()
             bct_input = input('ENTER OPTION #: ')
             separator_3()
@@ -203,7 +209,7 @@ def scan_directory_folders():
                 elif int(bct_input) == 4:
                     scan_directory_folders()
 
-                elif int(bct_input) == 5:
+                elif int(bct_input) == 0:
                     return
 
             except (TypeError, ValueError, UnicodeDecodeError, ZeroDivisionError) as e:
