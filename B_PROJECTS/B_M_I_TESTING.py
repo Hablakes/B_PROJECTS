@@ -16,8 +16,8 @@ date_string = str(datetime.today().strftime('%Y_%m_%d'))
 
 extensions = ('.3gp', '.asf', '.asx', '.avc', '.avi', '.bdmv', '.bin', '.bivx', '.dat', '.disc', '.divx', '.dv',
               '.dvr-ms', '.evo', '.fli', '.flv', '.h264', '.img', '.iso', '.m2ts', '.m2v', '.m4v', '.mkv', '.mov',
-              '.mp4', '.mpeg', '.mpg', '.mt2s', '.mts', '.nrg', '.nsv', '.nuv', '.ogm', '.pva', '.qt', '.rm', '.rmvb',
-              '.strm', '.svq3', '.ts', '.ty', '.viv', '.vob', '.vp3', '.wmv', '.xvid', '.webm')
+              '.mp4', '.mpeg', '.mpg', '.mt2s', '.mts', '.nfo', '.nrg', '.nsv', '.nuv', '.ogm', '.pva', '.qt', '.rm',
+              '.rmvb', '.strm', '.svq3', '.ts', '.ty', '.viv', '.vob', '.vp3', '.wmv', '.xvid', '.webm')
 
 index_folder = '~/{0}_MEDIA_INDEX'
 
@@ -45,6 +45,8 @@ def create_media_information_indices():
 def create_movie_information_index():
     movie_results_list = {}
 
+    movie_scan_start = time.time()
+
     ia = IMDb()
 
     with open(os.path.expanduser((index_folder + '/MOVIE_VIDEO_FILES_PATHS.csv').format(username)),
@@ -56,76 +58,97 @@ def create_movie_information_index():
                 movie_filename_key = movie_file[0].rsplit('/', 1)[-1]
                 movie_title_key = movie_file[0].rsplit('/')[-2]
 
-                if movie_file[0] not in movie_results_list:
-                    movie_results_list[movie_file[0]] = {}
+                if not movie_filename_key.lower().endswith('.nfo'):
 
-                movie_results_list[movie_file[0]]['MEDIA-PATH'] = movie_file[0]
-                movie_results_list[movie_file[0]]['MEDIA-TYPE'] = str('MOVIE')
-                movie_results_list[movie_file[0]]['DIRECTORY'] = movie_title_key
-                movie_results_list[movie_file[0]]['FILE-NAME'] = movie_filename_key
+                    if movie_file[0] not in movie_results_list:
+                        movie_results_list[movie_file[0]] = {}
 
-                try:
-                    movie_file_size = os.path.getsize(movie_file[0])
-                    movie_file_size_in_mb = (int(movie_file_size) / 1048576)
-                    movie_file_size_in_mb_rounded = str(round(movie_file_size_in_mb, 2))
-                    movie_results_list[movie_file[0]]['FILE-SIZE'] = movie_file_size_in_mb_rounded
-                except OSError as e:
-                    print('OS ERROR / FILE-SIZE: ', e)
-                    continue
+                    movie_results_list[movie_file[0]]['MEDIA-PATH'] = movie_file[0]
+                    movie_results_list[movie_file[0]]['MEDIA-TYPE'] = str('MOVIE')
+                    movie_results_list[movie_file[0]]['FOLDER-NAME'] = movie_title_key
+                    movie_results_list[movie_file[0]]['FILE-NAME'] = movie_filename_key
 
-                movie_hash = str(str(movie_filename_key) + '_' + str(movie_file_size))
-                movie_results_list[movie_file[0]]['MOVIE-HASH'] = movie_hash
+                    try:
+                        movie_file_size = os.path.getsize(movie_file[0])
+                        movie_file_size_in_mb = (int(movie_file_size) / 1048576)
+                        movie_file_size_in_mb_rounded = str(round(movie_file_size_in_mb, 2))
+                        movie_results_list[movie_file[0]]['FILE-SIZE'] = movie_file_size_in_mb_rounded
+                    except OSError as e:
+                        print('OS ERROR / FILE-SIZE: ', e)
+                        continue
 
-                try:
-                    movie_title = guessit.guessit(movie_filename_key, options={'type': 'movie'})
-                    movie_title_to_query = movie_title.get('title')
-                    movie_results_list[movie_file[0]]['FILE-TYPE'] = movie_title.get('container')
-                except OSError as e:
-                    print('OS ERROR / GUESSIT: ', e)
-                    continue
+                    movie_hash = str(str(movie_filename_key) + '_' + str(movie_file_size))
+                    movie_results_list[movie_file[0]]['MOVIE-HASH'] = movie_hash
 
-                try:
-                    movie_media_info = pymediainfo.MediaInfo.parse(movie_file[0])
-                except OSError as e:
-                    print('OS ERROR / PY_MEDIA_INFO: ', e)
-                    continue
+                    try:
+                        movie_title = guessit.guessit(movie_filename_key, options={'type': 'movie'})
+                        movie_title_to_query = movie_title.get('title')
+                        movie_results_list[movie_file[0]]['FILE-TYPE'] = movie_title.get('container')
+                    except OSError as e:
+                        print('OS ERROR / GUESSIT: ', e)
+                        continue
 
-                for track in movie_media_info.tracks:
-                    if track.track_type == 'Video':
-                        movie_results_list[movie_file[0]]['RESOLUTION'] = str(track.width) + 'x' + str(track.height)
+                    try:
+                        movie_media_info = pymediainfo.MediaInfo.parse(movie_file[0])
+                    except OSError as e:
+                        print('OS ERROR / PY_MEDIA_INFO: ', e)
+                        continue
+
+                    for track in movie_media_info.tracks:
+                        if track.track_type == 'Video':
+                            movie_results_list[movie_file[0]]['RESOLUTION'] = str(track.width) + 'x' + str(track.height)
+
+                    movie_imdb = ia.search_movie(movie_title_to_query)
+
+                    movie_id = movie_imdb[0].movieID
+
+                    movie_infoset = ia.get_movie(movie_id)
+
+                    movie_results_list[movie_file[0]]['TITLE'] = movie_imdb[0]['title']
+                    movie_results_list[movie_file[0]]['MOVIE ID #'] = movie_id
+                    movie_results_list[movie_file[0]]['YEAR'] = movie_infoset['year']
+                    movie_results_list[movie_file[0]]['RUN-TIME'] = movie_infoset['runtime']
+                    movie_results_list[movie_file[0]]['DIRECTOR(S)'] = movie_infoset['directors']
+                    movie_results_list[movie_file[0]]['RATING'] = movie_infoset['rating']
+                    movie_results_list[movie_file[0]]['GENRES'] = movie_infoset['genres']
+                    movie_results_list[movie_file[0]]['PLOT'] = movie_infoset['plot']
+
+                elif movie_filename_key.lower().endswith('.nfo'):
+
+                    try:
+
+                        with open(str(movie_file[0])) as o_f:
+
+                            for line_item in o_f.readlines():
+                                if '<plot>' in line_item:
+                                    pass
+                                elif '<rating>' in line_item:
+                                    pass
+
+                    except Exception as e:
+                        print('NFO ERROR: ', e, '\n', 'FILE: ', movie_file[0])
+                        print('-' * 100)
+                        continue
+
             except (OSError, TypeError, ValueError) as e:
                 print('INPUT ERROR: ', e, '\n', 'MOVIE FILE(S): ', movie_file[0])
                 print('-' * 100)
                 continue
 
-            movie_imdb = ia.search_movie(movie_title_to_query)
+    with open(os.path.expanduser((index_folder + '/MOVIE_INFORMATION_INDEX.csv').format(username)), 'w',
+              encoding='UTF-8', newline='') as m_i_i:
 
-            movie_id = movie_imdb[0].movieID
+        csv_writer = csv.DictWriter(m_i_i, ['MEDIA-PATH', 'MEDIA-TYPE', 'MOVIE ID #', 'FOLDER-NAME', 'FILE-NAME',
+                                            'TITLE', 'YEAR', 'FILE-SIZE', 'RESOLUTION', 'FILE-TYPE', 'PLOT', 'RATING',
+                                            'RUN-TIME', 'GENRES', 'DIRECTOR(S)', 'MOVIE-HASH'])
 
-            movie_infoset = ia.get_movie(movie_id)
+        for movie_row in movie_results_list.values():
+            csv_writer.writerow(movie_row)
 
-            movie_title_info = movie_imdb[0]['title']
-            movie_imdb_id_info = movie_id
-            movie_year_info = movie_infoset['year']
-            movie_runtime_info = movie_infoset['runtime']
-            movie_director_info = movie_infoset['directors']
-            movie_rating_info = movie_infoset['rating']
-            movie_genres_info = movie_infoset['genres']
-            movie_plot_info = movie_infoset['plot']
-
-            movie_results_list[movie_file[0]]['TITLE'] = movie_title_info
-            movie_results_list[movie_file[0]]['MOVIE ID #'] = movie_imdb_id_info
-            movie_results_list[movie_file[0]]['YEAR'] = movie_year_info
-            movie_results_list[movie_file[0]]['RUN-TIME'] = movie_runtime_info
-            movie_results_list[movie_file[0]]['DIRECTOR(S)'] = movie_director_info
-            movie_results_list[movie_file[0]]['RATING'] = movie_rating_info
-            movie_results_list[movie_file[0]]['GENRES'] = movie_genres_info
-            movie_results_list[movie_file[0]]['PLOT'] = movie_plot_info
-
-        for found_movies in movie_results_list.items():
-            for found_movie_info in found_movies:
-                print(found_movie_info)
-            separator_1()
+    movie_scan_end = time.time()
+    readable_movie_scan_time = round(movie_scan_end - movie_scan_start, 2)
+    print('MOVIE INFORMATION SCAN COMPLETE - TIME ELAPSED: ', readable_movie_scan_time, 'Seconds')
+    separator_3()
 
 
 def directory_selection():
