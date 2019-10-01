@@ -2,7 +2,6 @@ import random
 import string
 import textwrap
 import time
-import timeit
 
 from tkinter import filedialog, Tk
 
@@ -68,10 +67,11 @@ def tk_gui_file_selection_window():
 
 
 separator()
-sequence = random_string_with_one_time_pad_characters(1000)
 start = time.time()
+sequence = random_string_with_one_time_pad_characters(10000000)
 print(textwrap.fill(sequence, 100))
 separator()
 end = time.time()
-print("TIME ELAPSED:", end - start)
+test_time = round(end - start, 2)
+print("TIME ELAPSED:", test_time, 'Seconds')
 separator()

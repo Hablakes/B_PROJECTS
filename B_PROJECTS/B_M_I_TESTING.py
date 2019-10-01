@@ -2,20 +2,12 @@ import csv
 import json
 import os
 import pathlib
-import re
-import textwrap
 import time
 
 import guessit
-import numpy
 import pyfiglet
 import pymediainfo
 
-import matplotlib.pylab as plt
-
-from ascii_graph import Pyasciigraph
-from ascii_graph.colors import *
-from ascii_graph.colordata import vcolor
 from datetime import datetime
 from imdb import IMDb
 from tkinter import filedialog, Tk
@@ -52,8 +44,6 @@ def create_media_information_indices():
 
 def create_movie_information_index():
     movie_results_list = {}
-
-    movie_scan_start = time.time()
 
     ia = IMDb()
 
@@ -118,30 +108,18 @@ def create_movie_information_index():
 
             movie_infoset = ia.get_movie(movie_id)
 
-            print(movie_imdb[0]['title'], '- ID#:', movie_id)
+            print('MOVIE TITLE:', movie_imdb[0]['title'])
             separator_1()
-            print('AVAILABLE DATA: ', movie_infoset.default_info)
+            print('MOVIE IMDB ID#:', movie_id)
             separator_1()
-            for movie_info in movie_infoset.items():
-                print(movie_info)
+            print('MOVIE YEAR:', movie_infoset['year'])
+            separator_1()
+            print('MOVIE RATING:', movie_infoset['rating'])
+            separator_1()
+            print('MOVIE GENRES:', movie_infoset['genres'])
+            separator_1()
+            print('MOVIE PLOT:', movie_infoset['plot'])
             separator_3()
-
-
-"""
-    with open(os.path.expanduser((index_folder + '/MOVIE_INFORMATION_INDEX.csv').format(username)), 'w',
-              encoding='UTF-8', newline='') as m_i_i:
-
-        csv_writer = csv.DictWriter(m_i_i, ['MEDIA-PATH', 'MEDIA-TYPE', 'DIRECTORY', 'TITLE', 'YEAR', 'RESOLUTION',
-                                            'DURATION', 'FILE-SIZE', 'FILE-TYPE', 'FILE-NAME', 'MOVIE-HASH'])
-
-        for movie_row in movie_results_list.values():
-            csv_writer.writerow(movie_row)
-
-    movie_scan_end = time.time()
-    readable_movie_scan_time = round(movie_scan_end - movie_scan_start, 2)
-    print('MOVIE INFORMATION SCAN COMPLETE - TIME ELAPSED: ', readable_movie_scan_time, 'Seconds')
-    separator_3()
-"""
 
 
 def directory_selection():
@@ -244,11 +222,7 @@ def media_index_home():
     separator_3()
 
     print('1) ADD / CHANGE DATABASE DIRECTORIES             2) CREATE PATH INDICES', '\n')
-    print('3) CREATE / UPDATE MEDIA INFORMATION INDICES     4) COMPARE TWO USERS INFORMATION INDICES', '\n')
-    print('5) DISPLAY LIBRARY TOTALS                        6) MEDIA INFORMATION QUERIES', '\n')
-    print('7) SORT OPTIONS                                  8) PICTURE GRAPH OPTIONS', '\n')
-    print('9) TERMINAL GRAPH OPTIONS                        10) TIME INFORMATION QUERIES', '\n')
-    print('11) SAVED SEARCHES')
+    print('3) CREATE / UPDATE MEDIA INFORMATION INDICES')
     separator_2()
     print('0) EXIT MEDIA-INDEX')
     separator_3()
