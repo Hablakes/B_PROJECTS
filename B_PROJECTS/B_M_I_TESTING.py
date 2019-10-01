@@ -78,8 +78,7 @@ def create_movie_information_index():
 
                 try:
                     movie_title = guessit.guessit(movie_filename_key, options={'type': 'movie'})
-                    movie_results_list[movie_file[0]]['TITLE'] = movie_title.get('title')
-                    movie_results_list[movie_file[0]]['YEAR'] = movie_title.get('year')
+                    movie_title_to_query = movie_title.get('title')
                     movie_results_list[movie_file[0]]['FILE-TYPE'] = movie_title.get('container')
                 except OSError as e:
                     print('OS ERROR / GUESSIT: ', e)
@@ -92,34 +91,41 @@ def create_movie_information_index():
                     continue
 
                 for track in movie_media_info.tracks:
-                    if track.track_type == 'General':
-                        duration_integer = track.duration
-                        movie_results_list[movie_file[0]]['DURATION'] = duration_integer
-                    elif track.track_type == 'Video':
+                    if track.track_type == 'Video':
                         movie_results_list[movie_file[0]]['RESOLUTION'] = str(track.width) + 'x' + str(track.height)
             except (OSError, TypeError, ValueError) as e:
                 print('INPUT ERROR: ', e, '\n', 'MOVIE FILE(S): ', movie_file[0])
                 print('-' * 100)
                 continue
 
-            movie_imdb = ia.search_movie(movie_title.get('title'))
+            movie_imdb = ia.search_movie(movie_title_to_query)
 
             movie_id = movie_imdb[0].movieID
 
             movie_infoset = ia.get_movie(movie_id)
 
-            print('MOVIE TITLE:', movie_imdb[0]['title'])
+            movie_title_info = movie_imdb[0]['title']
+            movie_imdb_id_info = movie_id
+            movie_year_info = movie_infoset['year']
+            movie_runtime_info = movie_infoset['runtime']
+            movie_director_info = movie_infoset['directors']
+            movie_rating_info = movie_infoset['rating']
+            movie_genres_info = movie_infoset['genres']
+            movie_plot_info = movie_infoset['plot']
+
+            movie_results_list[movie_file[0]]['TITLE'] = movie_title_info
+            movie_results_list[movie_file[0]]['MOVIE ID #'] = movie_imdb_id_info
+            movie_results_list[movie_file[0]]['YEAR'] = movie_year_info
+            movie_results_list[movie_file[0]]['RUN-TIME'] = movie_runtime_info
+            movie_results_list[movie_file[0]]['DIRECTOR(S)'] = movie_director_info
+            movie_results_list[movie_file[0]]['RATING'] = movie_rating_info
+            movie_results_list[movie_file[0]]['GENRES'] = movie_genres_info
+            movie_results_list[movie_file[0]]['PLOT'] = movie_plot_info
+
+        for found_movies in movie_results_list.items():
+            for found_movie_info in found_movies:
+                print(found_movie_info)
             separator_1()
-            print('MOVIE IMDB ID#:', movie_id)
-            separator_1()
-            print('MOVIE YEAR:', movie_infoset['year'])
-            separator_1()
-            print('MOVIE RATING:', movie_infoset['rating'])
-            separator_1()
-            print('MOVIE GENRES:', movie_infoset['genres'])
-            separator_1()
-            print('MOVIE PLOT:', movie_infoset['plot'])
-            separator_3()
 
 
 def directory_selection():
