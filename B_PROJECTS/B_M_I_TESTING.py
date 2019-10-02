@@ -104,31 +104,21 @@ def create_movie_information_index():
 
                     movie_infoset = ia.get_movie(movie_id)
 
+                    movie_results_list[movie_file[0]]['DIRECTOR(S)'] = []
+                    for director in movie_infoset['directors']:
+                        movie_results_list[movie_file[0]]['DIRECTOR(S)'].append(director['name'])
+
+                    movie_results_list[movie_file[0]]['GENRES'] = []
+                    for genre in movie_infoset['genres']:
+                        movie_results_list[movie_file[0]]['GENRES'].append(genre)
+
+                    movie_results_list[movie_file[0]]['PLOT'] = movie_infoset['plot'][0].split('.::')[0]
+
                     movie_results_list[movie_file[0]]['TITLE'] = movie_imdb[0]['title']
                     movie_results_list[movie_file[0]]['MOVIE ID #'] = movie_id
                     movie_results_list[movie_file[0]]['YEAR'] = movie_infoset['year']
-                    movie_results_list[movie_file[0]]['RUN-TIME'] = movie_infoset['runtime']
-                    movie_results_list[movie_file[0]]['DIRECTOR(S)'] = movie_infoset['directors']
+                    movie_results_list[movie_file[0]]['RUN-TIME'] = movie_infoset['runtime'][0]
                     movie_results_list[movie_file[0]]['RATING'] = movie_infoset['rating']
-                    movie_results_list[movie_file[0]]['GENRES'] = movie_infoset['genres']
-                    movie_results_list[movie_file[0]]['PLOT'] = movie_infoset['plot']
-
-                elif movie_filename_key.lower().endswith('.nfo'):
-
-                    try:
-
-                        with open(str(movie_file[0])) as o_f:
-
-                            for line_item in o_f.readlines():
-                                if '<plot>' in line_item:
-                                    pass
-                                elif '<rating>' in line_item:
-                                    pass
-
-                    except Exception as e:
-                        print('NFO ERROR: ', e, '\n', 'FILE: ', movie_file[0])
-                        print('-' * 100)
-                        continue
 
             except (OSError, TypeError, ValueError) as e:
                 print('INPUT ERROR: ', e, '\n', 'MOVIE FILE(S): ', movie_file[0])
