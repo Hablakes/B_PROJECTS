@@ -48,7 +48,6 @@ def create_movie_information_index():
     movie_results_list = {}
 
     movie_scan_start = time.time()
-
     ia = IMDb()
 
     with open(os.path.expanduser((index_folder + '/MOVIE_VIDEO_FILES_PATHS.csv').format(username)),
@@ -144,7 +143,7 @@ def create_movie_information_index():
                             movie_results_list[movie_file[0]]['MOVIE ID #'] = movie_id
                             movie_results_list[movie_file[0]]['TITLE'] = movie_imdb[0]['title']
                             movie_results_list[movie_file[0]]['YEAR'] = movie_info_set['year']
-                            movie_results_list[movie_file[0]]['PLOT'] = movie_info_set['plot'][0].split('.::')[0]
+                            movie_results_list[movie_file[0]]['PLOT'] = movie_info_set['plot'][0].split('::')[0]
                             movie_results_list[movie_file[0]]['RATING'] = movie_info_set['rating']
                         except (KeyError, TypeError, ValueError) as e:
                             print('IMDB GENERAL INFO ERROR: ', e, '\n', 'MOVIE FILE(S): ', movie_file[0])
@@ -206,11 +205,9 @@ def create_movie_information_index():
 
 def create_tv_information_index():
     tv_results_list = {}
-
     tv_overview_plots_dict = {}
 
     tv_scan_start = time.time()
-
     ia = IMDb()
 
     with open(os.path.expanduser((index_folder + '/TV_VIDEO_FILES_PATHS.csv').format(username)),
@@ -329,7 +326,7 @@ def create_tv_information_index():
                             if tv_show_title not in tv_overview_plots_dict:
                                 tv_overview_plots_dict[tv_show_title] = {}
                                 tv_overview_plots_dict[tv_show_title]['SHOW'] = tv_show_title
-                                tv_overview_plots_dict[tv_show_title]['PLOT'] = tv_show_plot[0].split('.::')[0]
+                                tv_overview_plots_dict[tv_show_title]['PLOT'] = tv_show_plot[0].split('::')[0]
                         except (KeyError, TypeError, ValueError) as e:
                             print('TV OVERVIEW PLOT(S) ERROR: ', e, '\n', 'TV SHOW FILE(S): ', tv_file[0])
                             print('-' * 100)
@@ -344,7 +341,7 @@ def create_tv_information_index():
                             tv_results_list[tv_file[0]]['EPISODE #'] = g_episode_number
                             tv_results_list[tv_file[0]]['EPISODE TITLE'] = episode_title
                             tv_results_list[tv_file[0]]['YEAR'] = episode_year
-                            tv_results_list[tv_file[0]]['PLOT'] = episode_plot
+                            tv_results_list[tv_file[0]]['PLOT'] = episode_plot.split('::')[0]
                             tv_results_list[tv_file[0]]['RATING'] = round(episode_rating, 2)
                             tv_results_list[tv_file[0]]['RUN-TIME'] = tv_info_set['runtime'][0]
                         except (KeyError, TypeError, ValueError) as e:
