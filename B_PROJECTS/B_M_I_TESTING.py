@@ -98,27 +98,73 @@ def create_movie_information_index():
                         if track.track_type == 'Video':
                             movie_results_list[movie_file[0]]['RESOLUTION'] = str(track.width) + 'x' + str(track.height)
 
-                    movie_imdb = ia.search_movie(movie_title_to_query)
+                    try:
 
-                    movie_id = movie_imdb[0].movieID
+                        movie_imdb = ia.search_movie(movie_title_to_query)
 
-                    movie_infoset = ia.get_movie(movie_id)
+                    except (KeyError, ValueError) as e:
+                        print('IMDB SEARCH ERROR: ', e, '\n', 'MOVIE FILE(S): ', movie_file[0])
+                        print('-' * 100)
+                        continue
 
-                    movie_results_list[movie_file[0]]['DIRECTOR(S)'] = []
-                    for director in movie_infoset['directors']:
-                        movie_results_list[movie_file[0]]['DIRECTOR(S)'].append(director['name'])
+                    try:
 
-                    movie_results_list[movie_file[0]]['GENRES'] = []
-                    for genre in movie_infoset['genres']:
-                        movie_results_list[movie_file[0]]['GENRES'].append(genre)
+                        movie_id = movie_imdb[0].movieID
 
-                    movie_results_list[movie_file[0]]['PLOT'] = movie_infoset['plot'][0].split('.::')[0]
+                    except (KeyError, ValueError) as e:
+                        print('IMDB ID# ERROR: ', e, '\n', 'MOVIE FILE(S): ', movie_file[0])
+                        print('-' * 100)
+                        continue
 
-                    movie_results_list[movie_file[0]]['TITLE'] = movie_imdb[0]['title']
-                    movie_results_list[movie_file[0]]['MOVIE ID #'] = movie_id
-                    movie_results_list[movie_file[0]]['YEAR'] = movie_infoset['year']
-                    movie_results_list[movie_file[0]]['RUN-TIME'] = movie_infoset['runtime'][0]
-                    movie_results_list[movie_file[0]]['RATING'] = movie_infoset['rating']
+                    try:
+
+                        movie_info_set = ia.get_movie(movie_id)
+
+                    except (KeyError, ValueError) as e:
+                        print('IMDB INFOSET ERROR: ', e, '\n', 'MOVIE FILE(S): ', movie_file[0])
+                        print('-' * 100)
+                        continue
+
+                    try:
+
+                        if movie_id != '':
+
+                            movie_results_list[movie_file[0]]['DIRECTOR(S)'] = []
+                            for director in movie_info_set['directors']:
+                                movie_results_list[movie_file[0]]['DIRECTOR(S)'].append(director['name'])
+
+                    except (KeyError, TypeError, ValueError) as e:
+                        print('IMDB DIRECTOR ERROR: ', e, '\n', 'MOVIE FILE(S): ', movie_file[0])
+                        print('-' * 100)
+                        continue
+
+                    try:
+
+                        if movie_id != '':
+
+                            movie_results_list[movie_file[0]]['GENRES'] = []
+                            for genre in movie_info_set['genres']:
+                                movie_results_list[movie_file[0]]['GENRES'].append(genre)
+
+                    except (KeyError, TypeError, ValueError) as e:
+                        print('IMDB GENRE ERROR: ', e, '\n', 'MOVIE FILE(S): ', movie_file[0])
+                        print('-' * 100)
+                        continue
+
+                    try:
+
+                        movie_results_list[movie_file[0]]['PLOT'] = movie_info_set['plot'][0].split('.::')[0]
+                        movie_results_list[movie_file[0]]['TITLE'] = movie_imdb[0]['title']
+                        movie_results_list[movie_file[0]]['MOVIE ID #'] = movie_id
+                        movie_results_list[movie_file[0]]['GUESSIT SEARCH TERM'] = movie_title_to_query
+                        movie_results_list[movie_file[0]]['YEAR'] = movie_info_set['year']
+                        movie_results_list[movie_file[0]]['RUN-TIME'] = movie_info_set['runtime'][0]
+                        movie_results_list[movie_file[0]]['RATING'] = movie_info_set['rating']
+
+                    except (KeyError, TypeError, ValueError) as e:
+                        print('IMDB GENERAL INFO ERROR: ', e, '\n', 'MOVIE FILE(S): ', movie_file[0])
+                        print('-' * 100)
+                        continue
 
             except (OSError, TypeError, ValueError) as e:
                 print('INPUT ERROR: ', e, '\n', 'MOVIE FILE(S): ', movie_file[0])
@@ -128,9 +174,10 @@ def create_movie_information_index():
     with open(os.path.expanduser((index_folder + '/MOVIE_INFORMATION_INDEX.csv').format(username)), 'w',
               encoding='UTF-8', newline='') as m_i_i:
 
-        csv_writer = csv.DictWriter(m_i_i, ['MEDIA-PATH', 'MEDIA-TYPE', 'MOVIE ID #', 'FOLDER-NAME', 'FILE-NAME',
-                                            'TITLE', 'YEAR', 'FILE-SIZE', 'RESOLUTION', 'FILE-TYPE', 'PLOT', 'RATING',
-                                            'RUN-TIME', 'GENRES', 'DIRECTOR(S)', 'MOVIE-HASH'])
+        csv_writer = csv.DictWriter(m_i_i, ['MEDIA-PATH', 'MEDIA-TYPE', 'GUESSIT SEARCH TERM', 'MOVIE ID #',
+                                            'FOLDER-NAME', 'FILE-NAME', 'TITLE', 'YEAR', 'FILE-SIZE', 'RESOLUTION',
+                                            'FILE-TYPE', 'PLOT', 'RATING', 'RUN-TIME', 'GENRES', 'DIRECTOR(S)',
+                                            'MOVIE-HASH'])
 
         for movie_row in movie_results_list.values():
             csv_writer.writerow(movie_row)
