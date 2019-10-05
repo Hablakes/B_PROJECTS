@@ -245,10 +245,9 @@ def create_tv_information_index():
 
                         tv_title = guessit.guessit(tv_filename_key, options={'type': 'episode'})
                         tv_title_to_query = tv_title.get('title')
-                        tv_results_list[tv_file[0]]['FILE-TYPE'] = tv_title.get('container')
-                        g_episode_title = tv_title.get('episode_title')
                         g_season_number = tv_title.get('season')
                         g_episode_number = tv_title.get('episode')
+                        tv_results_list[tv_file[0]]['FILE-TYPE'] = tv_title.get('container')
                     except OSError as e:
                         print('OS ERROR / GUESSIT: ', e)
                         continue
