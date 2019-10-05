@@ -306,7 +306,13 @@ def create_tv_information_index():
                             print('TV SHOW EPISODE INFORMATION')
                             separator_1()
                             for season_numbers in sorted(tv_info_set['episodes']):
-                                print(season_numbers, '-', tv_info_set['episodes'][int(season_numbers)])
+                                tv_show_seasons = tv_info_set['episodes'][int(season_numbers)]
+                                print('SEASON #:', season_numbers)
+                                for show_episodes in tv_show_seasons:
+                                    separator_1()
+                                    tv_show_episodes = tv_show_seasons[int(show_episodes)]
+                                    print(show_episodes, '-', tv_show_episodes)
+                                separator_2()
                             separator_3()
                         except (KeyError, TypeError, ValueError) as e:
                             print('IMDB EPISODE SEARCH ERROR: ', e, '\n', 'TV SHOW FILE(S): ', tv_file[0])
