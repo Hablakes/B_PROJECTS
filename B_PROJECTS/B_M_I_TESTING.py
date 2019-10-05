@@ -246,9 +246,9 @@ def create_tv_information_index():
                         tv_title = guessit.guessit(tv_filename_key, options={'type': 'episode'})
                         tv_title_to_query = tv_title.get('title')
                         tv_results_list[tv_file[0]]['FILE-TYPE'] = tv_title.get('container')
-                        guessit_episode_title = tv_title.get('episode_title')
-                        guessit_season_number = tv_title.get('season')
-                        guessit_episode_number = tv_title.get('episode')
+                        g_episode_title = tv_title.get('episode_title')
+                        g_season_number = tv_title.get('season')
+                        g_episode_number = tv_title.get('episode')
                     except OSError as e:
                         print('OS ERROR / GUESSIT: ', e)
                         continue
@@ -283,7 +283,6 @@ def create_tv_information_index():
                     try:
 
                         tv_info_set = ia.get_movie(tv_id)
-
                     except Exception as e:
                         print('IMDB INFOSET ERROR: ', e, '\n', 'TV SHOW FILE(S): ', tv_file[0])
                         print('-' * 100)
@@ -298,26 +297,28 @@ def create_tv_information_index():
                         try:
 
                             ia.update(tv_info_set, 'episodes')
-                            print('TV SHOW GENERAL INFORMATION')
-                            separator_1()
-                            for items in tv_info_set.items():
-                                print(items)
-                            separator_3()
-                            print('TV SHOW EPISODE INFORMATION')
-                            separator_1()
-                            for season_numbers in sorted(tv_info_set['episodes']):
-                                tv_show_seasons = tv_info_set['episodes'][int(season_numbers)]
-                                print('SEASON #:', season_numbers)
-                                for show_episodes in tv_show_seasons:
-                                    separator_1()
-                                    tv_show_episodes = tv_show_seasons[int(show_episodes)]
-                                    print(show_episodes, '-', tv_show_episodes)
-                                separator_2()
-                            separator_3()
                         except (KeyError, TypeError, ValueError) as e:
                             print('IMDB EPISODE SEARCH ERROR: ', e, '\n', 'TV SHOW FILE(S): ', tv_file[0])
                             print('-' * 100)
                             continue
+
+                        try:
+
+                            episode_title = tv_info_set['episodes'][g_season_number][g_episode_number]['title']
+                            episode_year = tv_info_set['episodes'][g_season_number][g_episode_number]['year']
+                            episode_plot = tv_info_set['episodes'][g_season_number][g_episode_number]['plot']
+                            episode_rating = tv_info_set['episodes'][g_season_number][g_episode_number]['rating']
+
+                        except (KeyError, TypeError, ValueError) as e:
+                            print('IMDB EPISODE SEARCH ERROR: ', e, '\n', 'TV SHOW FILE(S): ', tv_file[0])
+                            print('-' * 100)
+                            continue
+
+                        print(episode_title)
+                        print(episode_year)
+                        print(episode_plot)
+                        print(round(episode_rating, 2))
+                        separator_2()
 
                         try:
 
