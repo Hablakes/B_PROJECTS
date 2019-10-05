@@ -101,7 +101,11 @@ def create_movie_information_index():
                         continue
 
                     for track in movie_media_info.tracks:
-                        if track.track_type == 'Video':
+                        if track.track_type == 'General':
+                            duration_integer = track.duration
+                            movie_results_list[movie_file[0]]['RUN-TIME'] = duration_integer
+
+                        elif track.track_type == 'Video':
                             movie_results_list[movie_file[0]]['RESOLUTION'] = str(track.width) + 'x' + str(track.height)
 
                     try:
@@ -136,11 +140,14 @@ def create_movie_information_index():
 
                         try:
 
-                            movie_results_list[movie_file[0]]['DIRECTOR(S)'] = []
-                            for director in movie_info_set['directors']:
-                                movie_results_list[movie_file[0]]['DIRECTOR(S)'].append(director['name'])
+                            movie_results_list[movie_file[0]]['GUESSIT SEARCH TERM'] = movie_title_to_query
+                            movie_results_list[movie_file[0]]['MOVIE ID #'] = movie_id
+                            movie_results_list[movie_file[0]]['TITLE'] = movie_imdb[0]['title']
+                            movie_results_list[movie_file[0]]['YEAR'] = movie_info_set['year']
+                            movie_results_list[movie_file[0]]['PLOT'] = movie_info_set['plot'][0].split('.::')[0]
+                            movie_results_list[movie_file[0]]['RATING'] = movie_info_set['rating']
                         except (KeyError, TypeError, ValueError) as e:
-                            print('IMDB DIRECTOR ERROR: ', e, '\n', 'MOVIE FILE(S): ', movie_file[0])
+                            print('IMDB GENERAL INFO ERROR: ', e, '\n', 'MOVIE FILE(S): ', movie_file[0])
                             print('-' * 100)
                             continue
 
@@ -156,15 +163,11 @@ def create_movie_information_index():
 
                         try:
 
-                            movie_results_list[movie_file[0]]['GUESSIT SEARCH TERM'] = movie_title_to_query
-                            movie_results_list[movie_file[0]]['MOVIE ID #'] = movie_id
-                            movie_results_list[movie_file[0]]['TITLE'] = movie_imdb[0]['title']
-                            movie_results_list[movie_file[0]]['YEAR'] = movie_info_set['year']
-                            movie_results_list[movie_file[0]]['PLOT'] = movie_info_set['plot'][0].split('.::')[0]
-                            movie_results_list[movie_file[0]]['RATING'] = movie_info_set['rating']
-                            movie_results_list[movie_file[0]]['RUN-TIME'] = movie_info_set['runtime'][0]
+                            movie_results_list[movie_file[0]]['DIRECTOR(S)'] = []
+                            for director in movie_info_set['directors']:
+                                movie_results_list[movie_file[0]]['DIRECTOR(S)'].append(director['name'])
                         except (KeyError, TypeError, ValueError) as e:
-                            print('IMDB GENERAL INFO ERROR: ', e, '\n', 'MOVIE FILE(S): ', movie_file[0])
+                            print('IMDB DIRECTOR ERROR: ', e, '\n', 'MOVIE FILE(S): ', movie_file[0])
                             print('-' * 100)
                             continue
 
@@ -176,7 +179,7 @@ def create_movie_information_index():
                         movie_results_list[movie_file[0]]['YEAR'] = []
                         movie_results_list[movie_file[0]]['PLOT'] = []
                         movie_results_list[movie_file[0]]['RATING'] = []
-                        movie_results_list[movie_file[0]]['RUN-TIME'] = []
+                        movie_results_list[movie_file[0]]['RUN-TIME'] = duration_integer
                         movie_results_list[movie_file[0]]['GENRES'] = []
                         movie_results_list[movie_file[0]]['DIRECTOR(S)'] = []
             except (OSError, TypeError, ValueError) as e:
@@ -203,6 +206,8 @@ def create_movie_information_index():
 
 def create_tv_information_index():
     tv_results_list = {}
+
+    tv_overview_plots_dict = {}
 
     tv_scan_start = time.time()
 
@@ -260,7 +265,11 @@ def create_tv_information_index():
                         continue
 
                     for track in tv_media_info.tracks:
-                        if track.track_type == 'Video':
+                        if track.track_type == 'General':
+                            duration_integer = track.duration
+                            tv_results_list[tv_file[0]]['RUN-TIME'] = duration_integer
+
+                        elif track.track_type == 'Video':
                             tv_results_list[tv_file[0]]['RESOLUTION'] = str(track.width) + 'x' + str(track.height)
 
                     try:
@@ -304,10 +313,12 @@ def create_tv_information_index():
                         try:
 
                             tv_show_title = tv_info_set['title']
+                            tv_show_plot = tv_info_set['plot']
                             episode_title = tv_info_set['episodes'][g_season_number][g_episode_number]['title']
                             episode_year = tv_info_set['episodes'][g_season_number][g_episode_number]['year']
                             episode_plot = tv_info_set['episodes'][g_season_number][g_episode_number]['plot']
                             episode_rating = tv_info_set['episodes'][g_season_number][g_episode_number]['rating']
+
                         except (KeyError, TypeError, ValueError) as e:
                             print('IMDB EPISODE SEARCH ERROR: ', e, '\n', 'TV SHOW FILE(S): ', tv_file[0])
                             print('-' * 100)
@@ -315,11 +326,12 @@ def create_tv_information_index():
 
                         try:
 
-                            tv_results_list[tv_file[0]]['GENRES'] = []
-                            for genre in tv_info_set['genres']:
-                                tv_results_list[tv_file[0]]['GENRES'].append(genre)
+                            if tv_show_title not in tv_overview_plots_dict:
+                                tv_overview_plots_dict[tv_show_title] = {}
+                                tv_overview_plots_dict[tv_show_title]['SHOW'] = tv_show_title
+                                tv_overview_plots_dict[tv_show_title]['PLOT'] = tv_show_plot[0].split('.::')[0]
                         except (KeyError, TypeError, ValueError) as e:
-                            print('IMDB GENRE ERROR: ', e, '\n', 'TV SHOW FILE(S): ', tv_file[0])
+                            print('TV OVERVIEW PLOT(S) ERROR: ', e, '\n', 'TV SHOW FILE(S): ', tv_file[0])
                             print('-' * 100)
                             continue
 
@@ -340,6 +352,16 @@ def create_tv_information_index():
                             print('-' * 100)
                             continue
 
+                        try:
+
+                            tv_results_list[tv_file[0]]['GENRES'] = []
+                            for genre in tv_info_set['genres']:
+                                tv_results_list[tv_file[0]]['GENRES'].append(genre)
+                        except (KeyError, TypeError, ValueError) as e:
+                            print('IMDB GENRE ERROR: ', e, '\n', 'TV SHOW FILE(S): ', tv_file[0])
+                            print('-' * 100)
+                            continue
+
                     else:
 
                         print('TV SHOW - NO MATCH -', tv_file[0])
@@ -354,9 +376,8 @@ def create_tv_information_index():
                         tv_results_list[tv_file[0]]['YEAR'] = []
                         tv_results_list[tv_file[0]]['PLOT'] = []
                         tv_results_list[tv_file[0]]['RATING'] = []
-                        tv_results_list[tv_file[0]]['RUN-TIME'] = []
+                        tv_results_list[tv_file[0]]['RUN-TIME'] = duration_integer
                         tv_results_list[tv_file[0]]['GENRES'] = []
-                        tv_results_list[tv_file[0]]['DIRECTOR(S)'] = []
             except (OSError, TypeError, ValueError) as e:
                 print('INPUT ERROR: ', e, '\n', 'TV SHOW FILE(S): ', tv_file[0])
                 print('-' * 100)
@@ -368,10 +389,15 @@ def create_tv_information_index():
         csv_writer = csv.DictWriter(m_i_i, ['MEDIA-PATH', 'MEDIA-TYPE', 'FOLDER-NAME', 'FILE-NAME', 'FILE-SIZE',
                                             'FILE-TYPE', 'RESOLUTION', 'GUESSIT SEARCH TERM', 'TV SHOW ID #',
                                             'TV SHOW TITLE', 'SEASON #', 'EPISODE #', 'EPISODE TITLE', 'YEAR', 'PLOT',
-                                            'RATING', 'RUN-TIME', 'GENRES', 'DIRECTOR(S)',
-                                            'SEARCH CONFIDENCE PERCENTAGE', 'TV-HASH'])
+                                            'RATING', 'RUN-TIME', 'GENRES', 'SEARCH CONFIDENCE PERCENTAGE', 'TV-HASH'])
 
         for tv_row in tv_results_list.values():
+            csv_writer.writerow(tv_row)
+
+    with open(os.path.expanduser((index_folder + '/TV_PLOTS_INDEX.csv').format(username)), 'w',
+              encoding='UTF-8', newline='') as t_p_i:
+        csv_writer = csv.DictWriter(t_p_i, ['SHOW', 'PLOT'])
+        for tv_row in tv_overview_plots_dict.values():
             csv_writer.writerow(tv_row)
 
     tv_scan_end = time.time()
@@ -425,10 +451,8 @@ def directory_selection():
 
             print('DIRECTORIES ENTERED: ', '\n', '\n', tv_alt_directories_list)
             separator_3()
-
             movie_alt_dir_input = movie_alt_directories_list
             tv_alt_dir_input = tv_alt_directories_list
-
             user_info_dict = {'user:': username, 'movie_dir:': movie_dir_input,
                               'tv_dir:': tv_dir_input, 'movie_alt_dir:': movie_alt_dir_input,
                               'tv_alt_dir:': tv_alt_dir_input}
