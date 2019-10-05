@@ -57,6 +57,7 @@ def create_movie_information_index():
 
         for movie_file in sorted(movie_index):
             try:
+
                 movie_filename_key = movie_file[0].rsplit('/', 1)[-1]
                 movie_title_key = movie_file[0].rsplit('/')[-2]
 
@@ -71,6 +72,7 @@ def create_movie_information_index():
                     movie_results_list[movie_file[0]]['FILE-NAME'] = movie_filename_key
 
                     try:
+
                         movie_file_size = os.path.getsize(movie_file[0])
                         movie_file_size_in_mb = (int(movie_file_size) / 1048576)
                         movie_file_size_in_mb_rounded = str(round(movie_file_size_in_mb, 2))
@@ -83,6 +85,7 @@ def create_movie_information_index():
                     movie_results_list[movie_file[0]]['MOVIE-HASH'] = movie_hash
 
                     try:
+
                         movie_title = guessit.guessit(movie_filename_key, options={'type': 'movie'})
                         movie_title_to_query = movie_title.get('title')
                         movie_results_list[movie_file[0]]['FILE-TYPE'] = movie_title.get('container')
@@ -91,6 +94,7 @@ def create_movie_information_index():
                         continue
 
                     try:
+
                         movie_media_info = pymediainfo.MediaInfo.parse(movie_file[0])
                     except OSError as e:
                         print('OS ERROR / PY_MEDIA_INFO: ', e)
@@ -210,6 +214,7 @@ def create_tv_information_index():
 
         for tv_file in sorted(tv_index):
             try:
+
                 tv_filename_key = tv_file[0].rsplit('/', 1)[-1]
                 tv_title_key = tv_file[0].rsplit('/')[-2]
 
@@ -224,6 +229,7 @@ def create_tv_information_index():
                     tv_results_list[tv_file[0]]['FILE-NAME'] = tv_filename_key
 
                     try:
+
                         tv_file_size = os.path.getsize(tv_file[0])
                         tv_file_size_in_mb = (int(tv_file_size) / 1048576)
                         tv_file_size_in_mb_rounded = str(round(tv_file_size_in_mb, 2))
@@ -236,17 +242,19 @@ def create_tv_information_index():
                     tv_results_list[tv_file[0]]['TV-HASH'] = tv_hash
 
                     try:
+
                         tv_title = guessit.guessit(tv_filename_key, options={'type': 'episode'})
                         tv_title_to_query = tv_title.get('title')
                         tv_results_list[tv_file[0]]['FILE-TYPE'] = tv_title.get('container')
-                        episode_title = tv_title.get('episode_title')
-                        season_number = tv_title.get('season')
-                        episode_number = tv_title.get('episode')
+                        guessit_episode_title = tv_title.get('episode_title')
+                        guessit_season_number = tv_title.get('season')
+                        guessit_episode_number = tv_title.get('episode')
                     except OSError as e:
                         print('OS ERROR / GUESSIT: ', e)
                         continue
 
                     try:
+
                         tv_media_info = pymediainfo.MediaInfo.parse(tv_file[0])
                     except OSError as e:
                         print('OS ERROR / PY_MEDIA_INFO: ', e)
@@ -275,9 +283,6 @@ def create_tv_information_index():
                     try:
 
                         tv_info_set = ia.get_movie(tv_id)
-                        for items in tv_info_set.items():
-                            print(items)
-                        separator_2()
 
                     except Exception as e:
                         print('IMDB INFOSET ERROR: ', e, '\n', 'TV SHOW FILE(S): ', tv_file[0])
@@ -289,6 +294,24 @@ def create_tv_information_index():
                     tv_results_list[tv_file[0]]['SEARCH CONFIDENCE PERCENTAGE'] = search_confidence_percentage
 
                     if float(search_confidence_percentage) >= 0.75:
+
+                        try:
+
+                            ia.update(tv_info_set, 'episodes')
+                            print('TV SHOW GENERAL INFORMATION')
+                            separator_1()
+                            for items in tv_info_set.items():
+                                print(items)
+                            separator_3()
+                            print('TV SHOW EPISODE INFORMATION')
+                            separator_1()
+                            for season_numbers in sorted(tv_info_set['episodes']):
+                                print(season_numbers, '-', tv_info_set['episodes'][int(season_numbers)])
+                            separator_3()
+                        except (KeyError, TypeError, ValueError) as e:
+                            print('IMDB EPISODE SEARCH ERROR: ', e, '\n', 'TV SHOW FILE(S): ', tv_file[0])
+                            print('-' * 100)
+                            continue
 
                         try:
 
@@ -315,6 +338,9 @@ def create_tv_information_index():
                             continue
 
                     else:
+
+                        print('TV SHOW - NO MATCH -', tv_file[0])
+                        separator_3()
 
                         tv_results_list[tv_file[0]]['GENRES'] = []
                         tv_results_list[tv_file[0]]['DIRECTOR(S)'] = []
