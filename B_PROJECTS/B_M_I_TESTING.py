@@ -5,10 +5,12 @@ import pathlib
 import time
 
 import guessit
+import numpy
 import pyfiglet
 import pymediainfo
 
 from datetime import datetime
+from difflib import SequenceMatcher
 from imdb import IMDb
 from tkinter import filedialog, Tk
 
@@ -125,46 +127,63 @@ def create_movie_information_index():
                         print('-' * 100)
                         continue
 
-                    try:
+                    search_confidence_percentage = match_similar_strings(movie_title_to_query.lower(),
+                                                                         movie_imdb[0]['title'].lower())
 
-                        if movie_id != '':
+                    movie_results_list[movie_file[0]]['SEARCH CONFIDENCE PERCENTAGE'] = search_confidence_percentage
+
+                    print(search_confidence_percentage)
+
+                    if float(search_confidence_percentage) >= 0.75:
+
+                        try:
 
                             movie_results_list[movie_file[0]]['DIRECTOR(S)'] = []
                             for director in movie_info_set['directors']:
                                 movie_results_list[movie_file[0]]['DIRECTOR(S)'].append(director['name'])
 
-                    except (KeyError, TypeError, ValueError) as e:
-                        print('IMDB DIRECTOR ERROR: ', e, '\n', 'MOVIE FILE(S): ', movie_file[0])
-                        print('-' * 100)
-                        continue
+                        except (KeyError, TypeError, ValueError) as e:
+                            print('IMDB DIRECTOR ERROR: ', e, '\n', 'MOVIE FILE(S): ', movie_file[0])
+                            print('-' * 100)
+                            continue
 
-                    try:
-
-                        if movie_id != '':
+                        try:
 
                             movie_results_list[movie_file[0]]['GENRES'] = []
                             for genre in movie_info_set['genres']:
                                 movie_results_list[movie_file[0]]['GENRES'].append(genre)
 
-                    except (KeyError, TypeError, ValueError) as e:
-                        print('IMDB GENRE ERROR: ', e, '\n', 'MOVIE FILE(S): ', movie_file[0])
-                        print('-' * 100)
-                        continue
+                        except (KeyError, TypeError, ValueError) as e:
+                            print('IMDB GENRE ERROR: ', e, '\n', 'MOVIE FILE(S): ', movie_file[0])
+                            print('-' * 100)
+                            continue
 
-                    try:
+                        try:
 
-                        movie_results_list[movie_file[0]]['PLOT'] = movie_info_set['plot'][0].split('.::')[0]
-                        movie_results_list[movie_file[0]]['TITLE'] = movie_imdb[0]['title']
-                        movie_results_list[movie_file[0]]['MOVIE ID #'] = movie_id
+                            movie_results_list[movie_file[0]]['PLOT'] = movie_info_set['plot'][0].split('.::')[0]
+                            movie_results_list[movie_file[0]]['TITLE'] = movie_imdb[0]['title']
+                            movie_results_list[movie_file[0]]['MOVIE ID #'] = movie_id
+                            movie_results_list[movie_file[0]]['GUESSIT SEARCH TERM'] = movie_title_to_query
+                            movie_results_list[movie_file[0]]['YEAR'] = movie_info_set['year']
+                            movie_results_list[movie_file[0]]['RUN-TIME'] = movie_info_set['runtime'][0]
+                            movie_results_list[movie_file[0]]['RATING'] = movie_info_set['rating']
+
+                        except (KeyError, TypeError, ValueError) as e:
+                            print('IMDB GENERAL INFO ERROR: ', e, '\n', 'MOVIE FILE(S): ', movie_file[0])
+                            print('-' * 100)
+                            continue
+
+                    else:
+
+                        movie_results_list[movie_file[0]]['GENRES'] = []
+                        movie_results_list[movie_file[0]]['DIRECTOR(S)'] = []
+                        movie_results_list[movie_file[0]]['PLOT'] = []
+                        movie_results_list[movie_file[0]]['TITLE'] = []
+                        movie_results_list[movie_file[0]]['MOVIE ID #'] = []
                         movie_results_list[movie_file[0]]['GUESSIT SEARCH TERM'] = movie_title_to_query
-                        movie_results_list[movie_file[0]]['YEAR'] = movie_info_set['year']
-                        movie_results_list[movie_file[0]]['RUN-TIME'] = movie_info_set['runtime'][0]
-                        movie_results_list[movie_file[0]]['RATING'] = movie_info_set['rating']
-
-                    except (KeyError, TypeError, ValueError) as e:
-                        print('IMDB GENERAL INFO ERROR: ', e, '\n', 'MOVIE FILE(S): ', movie_file[0])
-                        print('-' * 100)
-                        continue
+                        movie_results_list[movie_file[0]]['YEAR'] = []
+                        movie_results_list[movie_file[0]]['RUN-TIME'] = []
+                        movie_results_list[movie_file[0]]['RATING'] = []
 
             except (OSError, TypeError, ValueError) as e:
                 print('INPUT ERROR: ', e, '\n', 'MOVIE FILE(S): ', movie_file[0])
@@ -177,7 +196,7 @@ def create_movie_information_index():
         csv_writer = csv.DictWriter(m_i_i, ['MEDIA-PATH', 'MEDIA-TYPE', 'GUESSIT SEARCH TERM', 'MOVIE ID #',
                                             'FOLDER-NAME', 'FILE-NAME', 'TITLE', 'YEAR', 'FILE-SIZE', 'RESOLUTION',
                                             'FILE-TYPE', 'PLOT', 'RATING', 'RUN-TIME', 'GENRES', 'DIRECTOR(S)',
-                                            'MOVIE-HASH'])
+                                            'SEARCH CONFIDENCE PERCENTAGE', 'MOVIE-HASH'])
 
         for movie_row in movie_results_list.values():
             csv_writer.writerow(movie_row)
@@ -281,6 +300,10 @@ def launch_media_index():
     except (TypeError, ValueError) as e:
         print('\n', 'INPUT ERROR: ', e, '\n', '\n', 'INVALID INPUT, PLEASE RETRY')
         launch_media_index()
+
+
+def match_similar_strings(a, b):
+    return SequenceMatcher(None, a, b).ratio()
 
 
 def media_index_home():
