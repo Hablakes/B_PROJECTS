@@ -40,7 +40,7 @@ def change_directory_selection():
 
 
 def create_media_information_indices():
-    # create_movie_information_index()
+    create_movie_information_index()
     create_tv_information_index()
 
 
@@ -156,13 +156,13 @@ def create_movie_information_index():
 
                         try:
 
-                            movie_results_list[movie_file[0]]['PLOT'] = movie_info_set['plot'][0].split('.::')[0]
-                            movie_results_list[movie_file[0]]['TITLE'] = movie_imdb[0]['title']
-                            movie_results_list[movie_file[0]]['MOVIE ID #'] = movie_id
                             movie_results_list[movie_file[0]]['GUESSIT SEARCH TERM'] = movie_title_to_query
+                            movie_results_list[movie_file[0]]['MOVIE ID #'] = movie_id
+                            movie_results_list[movie_file[0]]['TITLE'] = movie_imdb[0]['title']
                             movie_results_list[movie_file[0]]['YEAR'] = movie_info_set['year']
-                            movie_results_list[movie_file[0]]['RUN-TIME'] = movie_info_set['runtime'][0]
+                            movie_results_list[movie_file[0]]['PLOT'] = movie_info_set['plot'][0].split('.::')[0]
                             movie_results_list[movie_file[0]]['RATING'] = movie_info_set['rating']
+                            movie_results_list[movie_file[0]]['RUN-TIME'] = movie_info_set['runtime'][0]
                         except (KeyError, TypeError, ValueError) as e:
                             print('IMDB GENERAL INFO ERROR: ', e, '\n', 'MOVIE FILE(S): ', movie_file[0])
                             print('-' * 100)
@@ -170,15 +170,15 @@ def create_movie_information_index():
 
                     else:
 
+                        movie_results_list[movie_file[0]]['GUESSIT SEARCH TERM'] = movie_title_to_query
+                        movie_results_list[movie_file[0]]['MOVIE ID #'] = []
+                        movie_results_list[movie_file[0]]['TITLE'] = []
+                        movie_results_list[movie_file[0]]['YEAR'] = []
+                        movie_results_list[movie_file[0]]['PLOT'] = []
+                        movie_results_list[movie_file[0]]['RATING'] = []
+                        movie_results_list[movie_file[0]]['RUN-TIME'] = []
                         movie_results_list[movie_file[0]]['GENRES'] = []
                         movie_results_list[movie_file[0]]['DIRECTOR(S)'] = []
-                        movie_results_list[movie_file[0]]['PLOT'] = []
-                        movie_results_list[movie_file[0]]['TITLE'] = []
-                        movie_results_list[movie_file[0]]['MOVIE ID #'] = []
-                        movie_results_list[movie_file[0]]['GUESSIT SEARCH TERM'] = movie_title_to_query
-                        movie_results_list[movie_file[0]]['YEAR'] = []
-                        movie_results_list[movie_file[0]]['RUN-TIME'] = []
-                        movie_results_list[movie_file[0]]['RATING'] = []
             except (OSError, TypeError, ValueError) as e:
                 print('INPUT ERROR: ', e, '\n', 'MOVIE FILE(S): ', movie_file[0])
                 print('-' * 100)
@@ -187,9 +187,9 @@ def create_movie_information_index():
     with open(os.path.expanduser((index_folder + '/MOVIE_INFORMATION_INDEX.csv').format(username)), 'w',
               encoding='UTF-8', newline='') as m_i_i:
 
-        csv_writer = csv.DictWriter(m_i_i, ['MEDIA-PATH', 'MEDIA-TYPE', 'GUESSIT SEARCH TERM', 'MOVIE ID #',
-                                            'FOLDER-NAME', 'FILE-NAME', 'TITLE', 'YEAR', 'FILE-SIZE', 'RESOLUTION',
-                                            'FILE-TYPE', 'PLOT', 'RATING', 'RUN-TIME', 'GENRES', 'DIRECTOR(S)',
+        csv_writer = csv.DictWriter(m_i_i, ['MEDIA-PATH', 'MEDIA-TYPE', 'FOLDER-NAME', 'FILE-NAME', 'FILE-SIZE',
+                                            'FILE-TYPE', 'RESOLUTION', 'GUESSIT SEARCH TERM', 'MOVIE ID #', 'TITLE',
+                                            'YEAR', 'PLOT', 'RATING', 'RUN-TIME', 'GENRES', 'DIRECTOR(S)',
                                             'SEARCH CONFIDENCE PERCENTAGE', 'MOVIE-HASH'])
 
         for movie_row in movie_results_list.values():
@@ -304,21 +304,15 @@ def create_tv_information_index():
 
                         try:
 
+                            tv_show_title = tv_info_set['title']
                             episode_title = tv_info_set['episodes'][g_season_number][g_episode_number]['title']
                             episode_year = tv_info_set['episodes'][g_season_number][g_episode_number]['year']
                             episode_plot = tv_info_set['episodes'][g_season_number][g_episode_number]['plot']
                             episode_rating = tv_info_set['episodes'][g_season_number][g_episode_number]['rating']
-
                         except (KeyError, TypeError, ValueError) as e:
                             print('IMDB EPISODE SEARCH ERROR: ', e, '\n', 'TV SHOW FILE(S): ', tv_file[0])
                             print('-' * 100)
                             continue
-
-                        print(episode_title)
-                        print(episode_year)
-                        print(episode_plot)
-                        print(round(episode_rating, 2))
-                        separator_2()
 
                         try:
 
@@ -332,13 +326,16 @@ def create_tv_information_index():
 
                         try:
 
-                            tv_results_list[tv_file[0]]['PLOT'] = tv_info_set['plot'][0].split('.::')[0]
-                            tv_results_list[tv_file[0]]['TITLE'] = tv_imdb[0]['title']
-                            tv_results_list[tv_file[0]]['TV SHOW ID #'] = tv_id
                             tv_results_list[tv_file[0]]['GUESSIT SEARCH TERM'] = tv_title_to_query
-                            tv_results_list[tv_file[0]]['YEAR'] = tv_info_set['year']
+                            tv_results_list[tv_file[0]]['TV SHOW ID #'] = tv_id
+                            tv_results_list[tv_file[0]]['TV SHOW TITLE'] = tv_show_title
+                            tv_results_list[tv_file[0]]['SEASON #'] = g_season_number
+                            tv_results_list[tv_file[0]]['EPISODE #'] = g_episode_number
+                            tv_results_list[tv_file[0]]['EPISODE TITLE'] = episode_title
+                            tv_results_list[tv_file[0]]['YEAR'] = episode_year
+                            tv_results_list[tv_file[0]]['PLOT'] = episode_plot
+                            tv_results_list[tv_file[0]]['RATING'] = round(episode_rating, 2)
                             tv_results_list[tv_file[0]]['RUN-TIME'] = tv_info_set['runtime'][0]
-                            tv_results_list[tv_file[0]]['RATING'] = tv_info_set['rating']
                         except (KeyError, TypeError, ValueError) as e:
                             print('IMDB GENERAL INFO ERROR: ', e, '\n', 'TV SHOW FILE(S): ', tv_file[0])
                             print('-' * 100)
@@ -349,15 +346,18 @@ def create_tv_information_index():
                         print('TV SHOW - NO MATCH -', tv_file[0])
                         separator_3()
 
+                        tv_results_list[tv_file[0]]['GUESSIT SEARCH TERM'] = tv_title_to_query
+                        tv_results_list[tv_file[0]]['TV SHOW ID #'] = []
+                        tv_results_list[tv_file[0]]['TV SHOW TITLE'] = []
+                        tv_results_list[tv_file[0]]['SEASON #'] = g_season_number
+                        tv_results_list[tv_file[0]]['EPISODE #'] = g_episode_number
+                        tv_results_list[tv_file[0]]['EPISODE TITLE'] = []
+                        tv_results_list[tv_file[0]]['YEAR'] = []
+                        tv_results_list[tv_file[0]]['PLOT'] = []
+                        tv_results_list[tv_file[0]]['RATING'] = []
+                        tv_results_list[tv_file[0]]['RUN-TIME'] = []
                         tv_results_list[tv_file[0]]['GENRES'] = []
                         tv_results_list[tv_file[0]]['DIRECTOR(S)'] = []
-                        tv_results_list[tv_file[0]]['PLOT'] = []
-                        tv_results_list[tv_file[0]]['TITLE'] = []
-                        tv_results_list[tv_file[0]]['TV SHOW ID #'] = []
-                        tv_results_list[tv_file[0]]['GUESSIT SEARCH TERM'] = tv_title_to_query
-                        tv_results_list[tv_file[0]]['YEAR'] = []
-                        tv_results_list[tv_file[0]]['RUN-TIME'] = []
-                        tv_results_list[tv_file[0]]['RATING'] = []
             except (OSError, TypeError, ValueError) as e:
                 print('INPUT ERROR: ', e, '\n', 'TV SHOW FILE(S): ', tv_file[0])
                 print('-' * 100)
@@ -366,9 +366,10 @@ def create_tv_information_index():
     with open(os.path.expanduser((index_folder + '/TV_INFORMATION_INDEX.csv').format(username)), 'w',
               encoding='UTF-8', newline='') as m_i_i:
 
-        csv_writer = csv.DictWriter(m_i_i, ['MEDIA-PATH', 'MEDIA-TYPE', 'GUESSIT SEARCH TERM', 'TV SHOW ID #',
-                                            'FOLDER-NAME', 'FILE-NAME', 'TITLE', 'YEAR', 'FILE-SIZE', 'RESOLUTION',
-                                            'FILE-TYPE', 'PLOT', 'RATING', 'RUN-TIME', 'GENRES', 'DIRECTOR(S)',
+        csv_writer = csv.DictWriter(m_i_i, ['MEDIA-PATH', 'MEDIA-TYPE', 'FOLDER-NAME', 'FILE-NAME', 'FILE-SIZE',
+                                            'FILE-TYPE', 'RESOLUTION', 'GUESSIT SEARCH TERM', 'TV SHOW ID #',
+                                            'TV SHOW TITLE', 'SEASON #', 'EPISODE #', 'EPISODE TITLE', 'YEAR', 'PLOT',
+                                            'RATING', 'RUN-TIME', 'GENRES', 'DIRECTOR(S)',
                                             'SEARCH CONFIDENCE PERCENTAGE', 'TV-HASH'])
 
         for tv_row in tv_results_list.values():
