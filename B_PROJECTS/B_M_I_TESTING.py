@@ -1324,7 +1324,6 @@ def query_file_type_totals(picture_graph_options_int, terminal_graph_options_int
             separator_3()
 
 
-#######################################################################################################################
 def query_movie_information_index(movie_query):
     with open(os.path.expanduser((index_folder + '/MOVIE_INFORMATION_INDEX.csv').format(username)),
               encoding='UTF-8') as m_i_i:
@@ -1333,49 +1332,43 @@ def query_movie_information_index(movie_query):
         try:
 
             for movie_file in mv_files_results_list:
-                if str(movie_query.lower()) in str(movie_file[1].lower()):
+                if str(movie_query.lower()) in str(movie_file[9].lower()):
 
                     separator_2()
-                    print('MOVIE FOLDER: ', '\n', movie_file[0])
+                    print('MOVIE MEDIA-PATH: ', '\n', textwrap.fill(movie_file[0], 100))
                     separator_2()
-                    print('MOVIE TITLE: ', '\n', movie_file[1])
+                    print('MOVIE MEDIA-TYPE: ', '\n', movie_file[1])
                     separator_2()
-                    print('MOVIE YEAR: ', '\n', movie_file[2])
+                    print('MOVIE FOLDER NAME: ', '\n', movie_file[2])
                     separator_2()
-                    print('MOVIE RESOLUTION: ', '\n', movie_file[3])
+                    print('MOVIE FILE-NAME: ', '\n', movie_file[3])
                     separator_2()
-                    print('MOVIE FILE-TYPE: ', '\n', movie_file[4])
+                    print('MOVIE FILE-SIZE: ', '\n', movie_file[4], 'MB')
                     separator_2()
-
-                    if int(len(movie_file[9])) != 0:
-                        print('FILE-SIZE: ', '\n', movie_file[9], 'MB')
-                        separator_2()
-
-                    if int(len(movie_file[7])) != 0:
-                        print('RUN-TIME: ', '\n', movie_file[7])
-                        separator_2()
-
-                    if int(len(movie_file[6])) != 0:
-                        print('RATING: ', '\n')
-                        if '</rating>' not in movie_file[6]:
-                            mv_rating = re.findall('<rating>(.*?)', movie_file[6])
-                            print(mv_rating[0])
-                            separator_2()
-                        elif '</rating>' in movie_file[6]:
-                            mv_rating = re.findall('<rating>(.*?)</rating>', movie_file[6])
-                            print(mv_rating[0])
-                            separator_2()
-
-                    if int(len(movie_file[5])) != 0:
-                        print('PLOT: ', '\n')
-                        if '</plot>' not in movie_file[5]:
-                            mv_plot = re.findall('<plot>(.*?)', movie_file[5])
-                            print(textwrap.fill(mv_plot[0], 100))
-                            separator_2()
-                        elif '</plot>' in movie_file[5]:
-                            mv_plot = re.findall('<plot>(.*?)</plot>', movie_file[5])
-                            print(textwrap.fill(mv_plot[0], 100))
-                            separator_2()
+                    print('MOVIE FILE-TYPE: ', '\n', movie_file[5])
+                    separator_2()
+                    print('MOVIE RESOLUTION: ', '\n', movie_file[6])
+                    separator_2()
+                    print('MOVIE GUESSIT SEARCH TERM: ', '\n', movie_file[7])
+                    separator_2()
+                    print('MOVIE IMDB ID#: ', '\n', movie_file[8])
+                    separator_2()
+                    print('MOVIE TITLE: ', '\n', movie_file[9])
+                    separator_2()
+                    print('MOVIE YEAR: ', '\n', movie_file[10])
+                    separator_2()
+                    print('MOVIE PLOT: ', '\n', textwrap.fill(movie_file[11], 100))
+                    separator_2()
+                    print('MOVIE RATING: ', '\n', movie_file[12])
+                    separator_2()
+                    print('MOVIE RUN-TIME: ', '\n', round((int(movie_file[13]) / 60000), 2), 'Minutes')
+                    separator_2()
+                    print('MOVIE GENRE(S): ', '\n', movie_file[14])
+                    separator_2()
+                    print('MOVIE DIRECTOR(S): ', '\n', movie_file[15])
+                    separator_2()
+                    print('MOVIE SEARCH CONFIDENCE PERCENTAGE: ', '\n', round(float(movie_file[16]), 2), '%')
+                    separator_2()
 
         except (TypeError, ValueError) as e:
             print('\n', 'INPUT ERROR: ', e, '\n', '\n', 'INVALID QUERY, PLEASE RETRY')
@@ -1390,55 +1383,47 @@ def query_tv_information_index(tv_episode_query):
         try:
 
             for tv_file in tv_files_results_list:
-                if str(tv_episode_query.lower()) in str(tv_file[3].lower()):
+                if str(tv_episode_query.lower()) in str(tv_file[12].lower()):
 
                     separator_2()
-                    print('TV SHOW FOLDER: ', '\n', tv_file[0])
+                    print('TV SHOW MEDIA-PATH: ', '\n', textwrap.fill(tv_file[0], 100))
                     separator_2()
-                    print('TV SHOW TITLE: ', '\n', tv_file[1])
+                    print('TV SHOW MEDIA-TYPE: ', '\n', tv_file[1])
                     separator_2()
-                    print('TV SHOW YEAR: ', '\n', tv_file[2])
+                    print('TV SHOW FOLDER NAME: ', '\n', tv_file[2])
                     separator_2()
-                    print('TV SHOW EPISODE TITLE: ', '\n', tv_file[3])
+                    print('TV SHOW FILE-NAME: ', '\n', tv_file[3])
                     separator_2()
-                    print('SEASON NUMBER: ', '\n', tv_file[4])
+                    print('TV SHOW FILE-SIZE: ', '\n', tv_file[4], 'MB')
                     separator_2()
-                    print('EPISODE NUMBER: ', '\n', tv_file[5])
+                    print('TV SHOW FILE-TYPE: ', '\n', tv_file[5])
                     separator_2()
-                    print('RESOLUTION: ', '\n', tv_file[6])
+                    print('TV SHOW RESOLUTION: ', '\n', tv_file[6])
                     separator_2()
-                    print('FILE-TYPE: ', '\n', tv_file[7])
+                    print('TV SHOW GUESSIT SEARCH TERM: ', '\n', tv_file[7])
                     separator_2()
-
-                    if int(len(tv_file[12])) != 0:
-                        print('FILE-SIZE: ', '\n', tv_file[12], 'MB')
-                        separator_2()
-
-                    if int(len(tv_file[10])) != 0:
-                        print('RUN-TIME: ', '\n', tv_file[10])
-                        separator_2()
-
-                    if int(len(tv_file[9])) != 0:
-                        print('RATING: ', '\n')
-                        if '</rating>' not in tv_file[9]:
-                            tv_rating = re.findall('<rating>(.*?)', tv_file[9])
-                            print(tv_rating[0])
-                            separator_2()
-                        elif '</rating>' in tv_file[9]:
-                            tv_rating = re.findall('<rating>(.*?)</rating>', tv_file[9])
-                            print(tv_rating[0])
-                            separator_2()
-
-                    if int(len(tv_file[8])) != 0:
-                        print('PLOT: ', '\n')
-                        if '</plot>' not in tv_file[8]:
-                            tv_plot = re.findall('<plot>(.*?)', tv_file[8])
-                            print(textwrap.fill(tv_plot[0], 100))
-                            separator_2()
-                        elif '</plot>' in tv_file[8]:
-                            tv_plot = re.findall('<plot>(.*?)</plot>', tv_file[8])
-                            print(textwrap.fill(tv_plot[0], 100))
-                            separator_2()
+                    print('TV SHOW IMDB ID#: ', '\n', tv_file[8])
+                    separator_2()
+                    print('TV SHOW TITLE: ', '\n', tv_file[9])
+                    separator_2()
+                    print('TV SHOW SEASON #: ', '\n', tv_file[10])
+                    separator_2()
+                    print('TV SHOW EPISODE #: ', '\n', tv_file[11])
+                    separator_2()
+                    print('TV SHOW EPISODE TITLE: ', '\n', tv_file[12])
+                    separator_2()
+                    print('TV SHOW YEAR: ', '\n', tv_file[13])
+                    separator_2()
+                    print('TV SHOW PLOT: ', '\n', textwrap.fill(tv_file[14], 100))
+                    separator_2()
+                    print('TV SHOW RATING: ', '\n', tv_file[15])
+                    separator_2()
+                    print('TV SHOW RUN-TIME: ', '\n', round((int(tv_file[16]) / 60000), 2), 'Minutes')
+                    separator_2()
+                    print('TV SHOW GENRE(S): ', '\n', tv_file[17])
+                    separator_2()
+                    print('TV SHOW SEARCH CONFIDENCE PERCENTAGE: ', '\n', round(float(tv_file[18]), 2), '%')
+                    separator_2()
 
         except (TypeError, ValueError) as e:
             print('\n', 'INPUT ERROR: ', e, '\n', '\n', 'INVALID QUERY, PLEASE RETRY')
@@ -1635,7 +1620,7 @@ def search_plots(plot_search_type, plot_search_keywords):
 
         if int(plot_search_type) == 1:
             for plot in movie_files_results_list:
-                plots_list.append('MOVIE' + ' - ' + plot[0] + ' - ' + plot[5])
+                plots_list.append('MOVIE' + ' - ' + plot[9] + ' - ' + plot[11])
 
             for items in plots_list:
                 if plot_search_keywords.lower() in items.lower():
@@ -1644,7 +1629,7 @@ def search_plots(plot_search_type, plot_search_keywords):
 
         elif int(plot_search_type) == 2:
             for plot in tv_files_results_list:
-                plots_list.append('TV SHOW' + ' - ' + plot[0] + ' - ' + plot[8])
+                plots_list.append('TV SHOW' + ' - ' + plot[9] + ' - ' + plot[12] + ' - ' + plot[14])
 
             for items in plots_list:
                 if plot_search_keywords.lower() in items.lower():
@@ -1653,10 +1638,10 @@ def search_plots(plot_search_type, plot_search_keywords):
 
         elif int(plot_search_type) == 3:
             for plot in movie_files_results_list:
-                plots_list.append('MOVIE' + ' - ' + plot[0] + ' - ' + plot[5])
+                plots_list.append('MOVIE' + ' - ' + plot[9] + ' - ' + plot[11])
 
             for plot in tv_files_results_list:
-                plots_list.append('TV SHOW' + ' - ' + plot[0] + ' - ' + plot[8])
+                plots_list.append('TV SHOW' + ' - ' + plot[9] + ' - ' + plot[12] + ' - ' + plot[14])
 
             for items in plots_list:
                 if plot_search_keywords.lower() in items.lower():
@@ -1679,9 +1664,9 @@ def search_titles(title_search_type, movie_title_query, tv_show_query):
     episode_folder_titles_dictionary = {}
     episode_folder_titles_list = []
 
-    with open(os.path.expanduser((index_folder + '/MEDIA_TITLE_INDEX.csv').format(username)),
-              encoding='UTF-8') as m_t_i:
-        media_index_list = list(csv.reader(m_t_i))
+    with open(os.path.expanduser((index_folder + '/MOVIE_INFORMATION_INDEX.csv').format(username)),
+              encoding='UTF-8') as m_i_i:
+        movie_files_results_list = list(csv.reader(m_i_i))
     with open(os.path.expanduser((index_folder + '/TV_INFORMATION_INDEX.csv').format(username)),
               encoding='UTF-8') as t_i_i:
         tv_files_results_list = csv.reader(t_i_i)
@@ -1694,13 +1679,11 @@ def search_titles(title_search_type, movie_title_query, tv_show_query):
                 separator_1()
                 print('MOVIES: ', '\n')
 
-                for movie_search_result in media_index_list:
-                    if 'MOVIE' in movie_search_result[0]:
-                        search_info = re.split(r'(.+) \((\d{4})\) \((.+)x(.+)\)\.(.+)', str(movie_search_result),
-                                               flags=0)
+                for movie_search_result in movie_files_results_list:
+                    search_info = movie_search_result[9]
 
-                        if movie_title_query.lower() in search_info[0].lower():
-                            print(search_info[0])
+                    if movie_title_query.lower() in search_info.lower():
+                        print(search_info)
                 separator_3()
 
             except (TypeError, ValueError) as e:
@@ -1711,22 +1694,26 @@ def search_titles(title_search_type, movie_title_query, tv_show_query):
 
             try:
 
+                tv_search_dict = {}
                 print('SEARCH RESULTS: ')
                 separator_1()
                 print('TV SHOWS: ', '\n')
 
-                for tv_search_result in media_index_list:
-                    if 'TV' in tv_search_result[0]:
-                        search_info = re.split(r'(.+) \((\d{4})\) \((.+)x(.+)\)\.(.+)', str(tv_search_result), flags=0)
+                for tv_search_result in tv_files_results_list:
 
-                        if tv_show_query.lower() in search_info[0].lower():
-                            print(search_info[0])
+                    search_info = tv_search_result[9]
+                    if search_info not in tv_search_dict:
+                        tv_search_dict[search_info] = search_info
+
+                for found_tv_show_titles in tv_search_dict:
+                    if tv_show_query.lower() in found_tv_show_titles.lower():
+                        print(found_tv_show_titles)
                 separator_3()
 
             except (TypeError, ValueError) as e:
                 print('\n', 'INPUT ERROR: ', e, '\n', '\n', 'INVALID INPUT, PLEASE RETRY')
                 separator_3()
-
+#######################################################################################################################
         elif title_search_type == 3:
 
             try:
