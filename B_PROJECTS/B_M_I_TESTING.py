@@ -429,7 +429,7 @@ def create_tv_information_index():
                             tv_results_list[tv_file[0]]['YEAR'] = episode_year
                             tv_results_list[tv_file[0]]['PLOT'] = episode_plot.split('::')[0]
                             tv_results_list[tv_file[0]]['RATING'] = round(episode_rating, 2)
-                            tv_results_list[tv_file[0]]['RUN-TIME'] = tv_info_set['runtime'][0]
+                            tv_results_list[tv_file[0]]['RUN-TIME'] = duration_integer
 
                         except (IOError, KeyError, TypeError, ValueError) as e:
                             print('IMDB GENERAL INFO ERROR: ', e, '\n', 'TV SHOW FILE(S): ', tv_file[0])
@@ -1861,7 +1861,6 @@ def separator_3():
         print(items)
 
 
-#######################################################################################################################
 def sort_function_base(sort_options_int):
     movie_info_list = []
     tv_info_list = []
@@ -1875,38 +1874,36 @@ def sort_function_base(sort_options_int):
         tv_files_results_list = list(csv.reader(t_i_i))
 
         for movie_info in movie_files_results_list:
-            movie_title = movie_info[0]
-            movie_size = movie_info[9]
-            movie_time = movie_info[8].split('.')[-1]
+            movie_title = movie_info[9]
+            movie_size = movie_info[4]
+            movie_time = movie_info[13]
 
-            if movie_title == '':
+            if movie_title == '[]':
                 movie_title = 'MEDIA_INDEX - NO MOVIE TITLE'
-            if movie_size == '':
+            if movie_size == '[]':
                 movie_size = '0'
-            if movie_time == '':
+            if movie_time == '[]':
                 movie_time = '0'
 
-            movie_time_total_readable_seconds = int(movie_time) // 1000
-            movie_time_total_readable_minutes = int(movie_time_total_readable_seconds) // 60
+            movie_time_total_readable_minutes = round(int(movie_time) // 60000, 2)
             movie_info_list.append([movie_title, float(movie_size), float(movie_time_total_readable_minutes)])
 
         for tv_show_info in tv_files_results_list:
-            tv_show_title = tv_show_info[0]
-            episode_size = tv_show_info[12]
-            episode_title = tv_show_info[3]
-            episode_time = tv_show_info[11].split('.')[-1]
+            tv_show_title = tv_show_info[9]
+            episode_size = tv_show_info[4]
+            episode_title = tv_show_info[12]
+            episode_time = tv_show_info[16]
 
-            if tv_show_title == '':
+            if tv_show_title == '[]':
                 tv_show_title = 'MEDIA_INDEX - NO TV SHOW TITLE'
             if episode_size == '':
                 episode_size = '0'
-            if episode_title == '':
+            if episode_title == '[]':
                 episode_title = 'MEDIA_INDEX - NO TV EPISODE TITLE'
-            if episode_time == '':
+            if episode_time == '[]':
                 episode_time = '0'
 
-            tv_time_total_readable_seconds = int(episode_time) // 1000
-            tv_time_total_readable_minutes = int(tv_time_total_readable_seconds) // 60
+            tv_time_total_readable_minutes = round(int(episode_time) / 60000, 2)
             tv_info_list.append([tv_show_title, episode_title, float(episode_size),
                                  float(tv_time_total_readable_minutes)])
 
@@ -1959,36 +1956,8 @@ def sort_function_base(sort_options_int):
                 print('\n', episode_run_times[0], '-', episode_run_times[1], '-', episode_run_times[3], ': Minutes')
             separator_3()
 
-    with open(os.path.expanduser((index_folder + '/MEDIA_TITLE_INDEX.csv').format(username)),
-              encoding='UTF-8') as m_t_i:
-        media_index = list(csv.reader(m_t_i))
 
-        sorted_titles = sorted(media_index, key=lambda x: (x[0], x[1]))
-        sorted_titles_r = sorted(media_index, key=lambda x: (x[0], x[1]), reverse=True)
-        sorted_years = sorted(media_index, key=lambda x: (x[0], x[2]))
-        sorted_years_r = sorted(media_index, key=lambda x: (x[0], x[2]), reverse=True)
-
-        if sort_options_int == 17:
-            for title_item in sorted_titles:
-                print('\n', title_item[0], ': Title -', title_item[1], ': Year -', title_item[2])
-            separator_3()
-
-        elif sort_options_int == 18:
-            for title_item in sorted_titles_r:
-                print('\n', title_item[0], ': Title -', title_item[1], ': Year -', title_item[2])
-            separator_3()
-
-        elif sort_options_int == 19:
-            for title_item in sorted_years:
-                print('\n', title_item[0], ': Title -', title_item[1], ': Year -', title_item[2])
-            separator_3()
-
-        elif sort_options_int == 20:
-            for title_item in sorted_years_r:
-                print('\n', title_item[0], ': Title -', title_item[1], ': Year -', title_item[2])
-            separator_3()
-
-
+#######################################################################################################################
 def sort_function_for_tv_episodes(sort_options_int):
     tv_amounts_list = []
     tv_show_episodes_found_list = []
@@ -2099,9 +2068,6 @@ def sort_options_sub_menu():
     print('SORT NUMBER (#) OF TV EPISODES BY:   TITLES:     13) ASCENDING   14) DESCENDING', '\n')
     print('                                     AMOUNT:     15) ASCENDING   16) DESCENDING')
     separator_2()
-    print('SORT MOVIE & TV SHOWS TOTALS BY:     TITLES:     17) ASCENDING   18) DESCENDING', '\n')
-    print('                                     YEARS:      19) ASCENDING   20) DESCENDING')
-    separator_2()
 
     print('0) MAIN MENU')
     separator_3()
@@ -2120,9 +2086,6 @@ def sort_options_sub_menu():
 
         elif 9 <= sort_options_int <= 16:
             sort_function_for_tv_episodes(sort_options_int=sort_options_int)
-
-        elif 17 <= sort_options_int <= 20:
-            sort_function_base(sort_options_int=sort_options_int)
 
     except (TypeError, ValueError) as e:
         print('\n', 'INPUT ERROR: ', e, '\n', '\n', 'PLEASE RETRY YOUR SELECTION USING THE NUMBER KEYS')
