@@ -1089,7 +1089,7 @@ def media_queries_sub_menu():
     separator_3()
 
     print('SEARCH FOR TITLES OF:                            1) MOVIES       2) TV SHOWS', '\n')
-    print('SEARCH FOR TITLES OF:                            3) TV SHOW EPISODES')
+    print('SEARCH FOR TITLES OF:                            3) EPISODES IN A TV SHOW')
     separator_2()
     print('SEARCH FOR DETAILED INFORMATION OF:              4) MOVIES (BY MOVIE TITLE)', '\n')
     print('SEARCH FOR DETAILED INFORMATION OF:              5) TV SHOWS (BY EPISODE TITLE)')
@@ -1713,15 +1713,15 @@ def search_titles(title_search_type, movie_title_query, tv_show_query):
             except (TypeError, ValueError) as e:
                 print('\n', 'INPUT ERROR: ', e, '\n', '\n', 'INVALID INPUT, PLEASE RETRY')
                 separator_3()
-#######################################################################################################################
+
         elif title_search_type == 3:
 
             try:
 
                 for tv_file in tv_files_results_list:
-                    tv_folder_key = tv_file[0]
-                    tv_title_key = tv_folder_key[:-7]
-                    tv_episode_name_key = tv_file[3]
+                    tv_folder_key = tv_file[2]
+                    tv_title_key = tv_file[9]
+                    tv_episode_name_key = tv_file[12]
 
                     if tv_show_query.lower() in tv_title_key.lower():
 
@@ -1740,6 +1740,8 @@ def search_titles(title_search_type, movie_title_query, tv_show_query):
                     episode_information_search_list.append([(str(enumeration_number) + ') '),
                                                             (str(found_tv_folder_key) + ' - '),
                                                             found_tv_episode_name_key])
+
+                empty_results_list = []
                 print('TV SHOWS FOUND: ')
                 separator_1()
 
@@ -1747,6 +1749,7 @@ def search_titles(title_search_type, movie_title_query, tv_show_query):
                     episode_folder_titles_list.append(found_tv_shows)
 
                 for show_titles in episode_folder_titles_list:
+                    empty_results_list.append(show_titles)
                     print('-', show_titles)
 
                 separator_3()
@@ -1756,34 +1759,41 @@ def search_titles(title_search_type, movie_title_query, tv_show_query):
                 for search_results in episode_information_search_list:
                     print(''.join(search_results))
 
-                separator_2()
-                print('DETAILED EPISODE INFORMATION AVAILABLE: ')
-                separator_1()
-                print('0) MAIN MENU                                 1) QUERY AN EPISODES INFORMATION')
-                separator_3()
+                if len(empty_results_list) >= 1:
 
-                try:
-
-                    title_search_sub_query_input = int(input('ENTER #: '))
+                    separator_2()
+                    print('DETAILED EPISODE INFORMATION AVAILABLE: ')
+                    separator_1()
+                    print('0) MAIN MENU                                 1) QUERY AN EPISODES INFORMATION')
                     separator_3()
 
-                    if title_search_sub_query_input == 0:
-                        media_index_home()
+                    try:
 
-                    elif title_search_sub_query_input == 1:
-
-                        episode_sub_query_input = int(input('ENTER EPISODE NUMBER (#): '))
-                        episode_to_query = str(episode_information_search_list[episode_sub_query_input][2])
-                        episode_to_query_lower = episode_to_query.lower()
+                        title_search_sub_query_input = int(input('ENTER #: '))
                         separator_3()
 
-                        print('QUERYING INFORMATION FOR EPISODE TITLED: ', episode_to_query)
-                        separator_2()
-                        query_tv_information_index(tv_episode_query=episode_to_query_lower)
+                        if title_search_sub_query_input == 0:
+                            media_index_home()
 
-                except (TypeError, ValueError) as e:
-                    print('\n', 'INPUT ERROR: ', e, '\n', '\n', 'PLEASE RETRY YOUR SELECTION USING THE NUMBER KEYS')
+                        elif title_search_sub_query_input == 1:
+
+                            episode_sub_query_input = int(input('ENTER EPISODE NUMBER (#): '))
+                            episode_to_query = str(episode_information_search_list[episode_sub_query_input][2])
+                            episode_to_query_lower = episode_to_query.lower()
+                            separator_3()
+
+                            print('QUERYING INFORMATION FOR EPISODE TITLED: ', episode_to_query)
+                            separator_2()
+                            query_tv_information_index(tv_episode_query=episode_to_query_lower)
+
+                    except (TypeError, ValueError) as e:
+                        print('\n', 'INPUT ERROR: ', e, '\n', '\n',
+                              'PLEASE RETRY YOUR SELECTION USING THE NUMBER KEYS')
+                        separator_3()
+
+                else:
                     separator_3()
+                    media_index_home()
 
             except (TypeError, ValueError) as e:
                 print('\n', 'INPUT ERROR: ', e, '\n', '\n', 'INVALID INPUT, PLEASE RETRY')
@@ -1851,6 +1861,7 @@ def separator_3():
         print(items)
 
 
+#######################################################################################################################
 def sort_function_base(sort_options_int):
     movie_info_list = []
     tv_info_list = []
