@@ -41,11 +41,12 @@ def change_directory_selection():
 
 def create_media_information_indices():
     create_movie_information_index()
-    create_tv_information_index()
+    # create_tv_information_index()
 
 
 def create_movie_information_index():
     movie_results_list = {}
+    movie_confidence_dict = {}
 
     movie_scan_start = time.time()
     ia = IMDb()
@@ -114,6 +115,20 @@ def create_movie_information_index():
                         print('IMDB SEARCH ERROR: ', e, '\n', 'MOVIE FILE(S): ', movie_file[0])
                         print('-' * 100)
                         continue
+
+                    movie_confidence_dict[movie_file[0]] = {}
+
+                    for items in movie_imdb:
+                        if items['kind'] == 'movie':
+                            if match_similar_strings(movie_title_to_query.lower(), items['title']) >= 0.75:
+                                movie_confidence_dict[movie_file[0]]['TITLE SEARCHED'] = movie_title_to_query
+                                movie_confidence_dict[movie_file[0]]['TITLE (CONFIDENT)'] = items['title']
+                                continue
+
+                            else:
+                                movie_confidence_dict[movie_file[0]]['TITLE SEARCHED'] = movie_title_to_query
+                                movie_confidence_dict[movie_file[0]]['TITLE (NOT CONFIDENT)'] = items['title']
+                                continue
 
                     try:
 
@@ -186,6 +201,12 @@ def create_movie_information_index():
                 print('-' * 100)
                 continue
 
+    for items in movie_confidence_dict.items():
+        print(items)
+    separator_3()
+
+"""
+
     with open(os.path.expanduser((index_folder + '/MOVIE_INFORMATION_INDEX.csv').format(username)), 'w',
               encoding='UTF-8', newline='') as m_i_i:
 
@@ -201,6 +222,7 @@ def create_movie_information_index():
     readable_movie_scan_time = round(movie_scan_end - movie_scan_start, 2)
     print('MOVIE INFORMATION SCAN COMPLETE - TIME ELAPSED: ', readable_movie_scan_time, 'Seconds')
     separator_3()
+"""
 
 
 def create_tv_information_index():
@@ -482,7 +504,8 @@ def launch_media_index():
     try:
 
         global username
-        username = input('ENTER YOUR USERNAME (CASE-SENSITIVE): ')
+        # username = input('ENTER YOUR USERNAME (CASE-SENSITIVE): ')
+        username = 'TEST'  # TESTING
         if username == '':
             separator_3()
             print('USERNAME CANNOT BE LEFT BLANK: ')
