@@ -371,6 +371,7 @@ def create_tv_information_index():
                         try:
 
                             tv_show_title = tv_info_set['title']
+                            tv_show_year = tv_info_set['year']
                             tv_show_plot = tv_info_set['plot']
                             episode_title = tv_info_set['episodes'][g_season_number][g_episode_number]['title']
                             episode_year = tv_info_set['episodes'][g_season_number][g_episode_number]['year']
@@ -386,7 +387,8 @@ def create_tv_information_index():
 
                             if tv_show_title not in tv_overview_plots_dict:
                                 tv_overview_plots_dict[tv_show_title] = {}
-                                tv_overview_plots_dict[tv_show_title]['SHOW'] = tv_show_title
+                                tv_overview_plots_dict[tv_show_title]['SHOW'] = str(str(tv_show_title) + ' (' +
+                                                                                    str(tv_show_year) + ')')
                                 tv_overview_plots_dict[tv_show_title]['PLOT'] = tv_show_plot[0].split('::')[0]
 
                         except (IOError, KeyError, TypeError, ValueError) as e:
