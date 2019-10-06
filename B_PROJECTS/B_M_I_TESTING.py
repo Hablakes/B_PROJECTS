@@ -153,8 +153,14 @@ def create_movie_information_index():
 
     for movies_searched in movie_confidence_dict.items():
         for movie_titles in movies_searched:
-            print(movie_titles)
-        separator_1()
+            if 'TITLE (CONFIDENT)' in movie_titles:
+                print(movie_titles['TITLE (CONFIDENT)'])
+                separator_1()
+            elif 'TITLE (NOT CONFIDENT)' in movie_titles:
+                for possible_titles in movie_titles['TITLE (NOT CONFIDENT)']:
+                    print(possible_titles)
+                    separator_1()
+
     separator_3()
 
 
