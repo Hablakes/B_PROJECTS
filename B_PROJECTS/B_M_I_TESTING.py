@@ -123,12 +123,14 @@ def create_movie_information_index():
                         if items['kind'] == 'movie':
                             if match_similar_strings(movie_title_to_query.lower(), items['title']) >= 0.75:
                                 movie_confidence_dict[movie_file[0]]['TITLE SEARCHED'] = movie_title_to_query
-                                movie_confidence_dict[movie_file[0]]['TITLE (CONFIDENT)'] = items['title']
+                                movie_confidence_dict[movie_file[0]]['TITLE (CONFIDENT)'] = [items['title'],
+                                                                                             items.movieID]
                                 continue
 
                             else:
                                 movie_confidence_dict[movie_file[0]]['TITLE SEARCHED'] = movie_title_to_query
-                                movie_confidence_dict[movie_file[0]]['TITLE (NOT CONFIDENT)'].append(items['title'])
+                                movie_confidence_dict[movie_file[0]]['TITLE (NOT CONFIDENT)'].append([items['title'],
+                                                                                                     items.movieID])
                                 continue
 
                     try:
@@ -154,6 +156,7 @@ def create_movie_information_index():
 
     for items in movie_confidence_dict.items():
         print(items)
+        separator_1()
     separator_3()
 
 
