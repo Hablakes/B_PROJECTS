@@ -100,13 +100,19 @@ def create_movie_information_index():
                         print('OS ERROR / PY_MEDIA_INFO: ', e)
                         continue
 
-                    for track in movie_media_info.tracks:
-                        if track.track_type == 'General':
-                            duration_integer = track.duration
-                            movie_results_list[movie_file[0]]['RUN-TIME'] = duration_integer
+                    try:
 
-                        elif track.track_type == 'Video':
-                            movie_results_list[movie_file[0]]['RESOLUTION'] = str(track.width) + 'x' + str(track.height)
+                        for track in movie_media_info.tracks:
+                            if track.track_type == 'General':
+                                duration_integer = track.duration
+                                movie_results_list[movie_file[0]]['RUN-TIME'] = duration_integer
+
+                            elif track.track_type == 'Video':
+                                movie_results_list[movie_file[0]]['RESOLUTION'] = \
+                                    str(track.width) + 'x' + str(track.height)
+                    except (KeyError, OSError, TypeError, ValueError) as e:
+                        print('OS ERROR / GUESSIT: ', e)
+                        continue
 
                     try:
 
@@ -116,25 +122,43 @@ def create_movie_information_index():
                         print('-' * 100)
                         continue
 
-                    movie_confidence_dict[movie_file[0]] = {}
-                    movie_confidence_dict[movie_file[0]]['TITLE (NOT CONFIDENT)'] = []
+                    try:
 
-                    for items in movie_imdb:
-                        if items['kind'] == 'movie':
-                            movie_confidence_percentage = round(match_similar_strings(movie_title_to_query.lower(),
-                                                                                      items['title']), 2)
-                            if movie_confidence_percentage >= 0.75:
-                                movie_confidence_dict[movie_file[0]]['TITLE SEARCHED'] = movie_title_to_query
-                                movie_confidence_dict[movie_file[0]]['TITLE (CONFIDENT)'] = \
-                                    [items['title'], items.movieID, movie_confidence_percentage]
-                                continue
+                        movie_confidence_dict[movie_file[0]] = {}
+                        movie_confidence_dict[movie_file[0]]['TITLE (NOT CONFIDENT)'] = []
 
-                            else:
-                                movie_confidence_dict[movie_file[0]]['TITLE SEARCHED'] = movie_title_to_query
-                                movie_confidence_dict[movie_file[0]]['TITLE (NOT CONFIDENT)']\
-                                    .append([items['title'], items.movieID, movie_confidence_percentage])
-                                continue
+                        for items in movie_imdb:
+                            if items['kind'] == 'movie':
+                                movie_confidence_percentage = round(match_similar_strings(movie_title_to_query.lower(),
+                                                                                          items['title']), 2)
+                                if movie_confidence_percentage >= 0.75:
+                                    movie_confidence_dict[movie_file[0]]['TITLE SEARCHED'] = movie_title_to_query
+                                    movie_confidence_dict[movie_file[0]]['TITLE (CONFIDENT)'] = \
+                                        [items['title'], items.movieID, movie_confidence_percentage]
+                                    continue
 
+                                else:
+                                    movie_confidence_dict[movie_file[0]]['TITLE SEARCHED'] = movie_title_to_query
+                                    movie_confidence_dict[movie_file[0]]['TITLE (NOT CONFIDENT)']\
+                                        .append([items['title'], items.movieID, movie_confidence_percentage])
+                                    continue
+                    except (KeyError, ValueError) as e:
+                        print('IMDB ID# ERROR: ', e, '\n', 'MOVIE FILE(S): ', movie_file[0])
+                        print('-' * 100)
+                        continue
+            except (OSError, TypeError, ValueError) as e:
+                print('INPUT ERROR: ', e, '\n', 'MOVIE FILE(S): ', movie_file[0])
+                print('-' * 100)
+                continue
+
+    for movies_searched in movie_confidence_dict.items():
+        for movie_titles in movies_searched:
+            print(movie_titles)
+        separator_1()
+    separator_3()
+
+
+"""
                     try:
 
                         movie_id = movie_imdb[0].movieID
@@ -150,57 +174,41 @@ def create_movie_information_index():
                         print('IMDB INFOSET ERROR: ', e, '\n', 'MOVIE FILE(S): ', movie_file[0])
                         print('-' * 100)
                         continue
+                        
+                    try:
 
-            except (OSError, TypeError, ValueError) as e:
-                print('INPUT ERROR: ', e, '\n', 'MOVIE FILE(S): ', movie_file[0])
-                print('-' * 100)
-                continue
+                        movie_results_list[movie_file[0]]['GUESSIT SEARCH TERM'] = movie_title_to_query
+                        movie_results_list[movie_file[0]]['MOVIE ID #'] = movie_id
+                        movie_results_list[movie_file[0]]['TITLE'] = movie_imdb[0]['title']
+                        movie_results_list[movie_file[0]]['YEAR'] = movie_info_set['year']
+                        movie_results_list[movie_file[0]]['PLOT'] = movie_info_set['plot'][0].split('::')[0]
+                        movie_results_list[movie_file[0]]['RATING'] = movie_info_set['rating']
+                    except (KeyError, TypeError, ValueError) as e:
+                        print('IMDB GENERAL INFO ERROR: ', e, '\n', 'MOVIE FILE(S): ', movie_file[0])
+                        print('-' * 100)
+                        continue
 
-    for items in movie_confidence_dict.items():
-        print(items)
-        separator_1()
-    separator_3()
+                    try:
 
+                        movie_results_list[movie_file[0]]['GENRES'] = []
+                        for genre in movie_info_set['genres']:
+                            movie_results_list[movie_file[0]]['GENRES'].append(genre)
+                    except (KeyError, TypeError, ValueError) as e:
+                        print('IMDB GENRE ERROR: ', e, '\n', 'MOVIE FILE(S): ', movie_file[0])
+                        print('-' * 100)
+                        continue
 
-"""
-                    search_confidence_percentage = match_similar_strings(movie_title_to_query.lower(),
-                                                                         movie_imdb[0]['title'].lower())
-                    movie_results_list[movie_file[0]]['SEARCH CONFIDENCE PERCENTAGE'] = search_confidence_percentage
+                    try:
 
-                    if float(search_confidence_percentage) >= 0.75:
+                        movie_results_list[movie_file[0]]['DIRECTOR(S)'] = []
+                        for director in movie_info_set['directors']:
+                        movie_results_list[movie_file[0]]['DIRECTOR(S)'].append(director['name'])
+                    except (KeyError, TypeError, ValueError) as e:
+                        print('IMDB DIRECTOR ERROR: ', e, '\n', 'MOVIE FILE(S): ', movie_file[0])
+                        print('-' * 100)
+                        continue
 
-                        try:
-
-                            movie_results_list[movie_file[0]]['GUESSIT SEARCH TERM'] = movie_title_to_query
-                            movie_results_list[movie_file[0]]['MOVIE ID #'] = movie_id
-                            movie_results_list[movie_file[0]]['TITLE'] = movie_imdb[0]['title']
-                            movie_results_list[movie_file[0]]['YEAR'] = movie_info_set['year']
-                            movie_results_list[movie_file[0]]['PLOT'] = movie_info_set['plot'][0].split('::')[0]
-                            movie_results_list[movie_file[0]]['RATING'] = movie_info_set['rating']
-                        except (KeyError, TypeError, ValueError) as e:
-                            print('IMDB GENERAL INFO ERROR: ', e, '\n', 'MOVIE FILE(S): ', movie_file[0])
-                            print('-' * 100)
-                            continue
-
-                        try:
-
-                            movie_results_list[movie_file[0]]['GENRES'] = []
-                            for genre in movie_info_set['genres']:
-                                movie_results_list[movie_file[0]]['GENRES'].append(genre)
-                        except (KeyError, TypeError, ValueError) as e:
-                            print('IMDB GENRE ERROR: ', e, '\n', 'MOVIE FILE(S): ', movie_file[0])
-                            print('-' * 100)
-                            continue
-
-                        try:
-
-                            movie_results_list[movie_file[0]]['DIRECTOR(S)'] = []
-                            for director in movie_info_set['directors']:
-                                movie_results_list[movie_file[0]]['DIRECTOR(S)'].append(director['name'])
-                        except (KeyError, TypeError, ValueError) as e:
-                            print('IMDB DIRECTOR ERROR: ', e, '\n', 'MOVIE FILE(S): ', movie_file[0])
-                            print('-' * 100)
-                            continue
+                        
 
                     else:
 
