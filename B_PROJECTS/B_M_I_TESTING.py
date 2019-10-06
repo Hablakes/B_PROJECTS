@@ -117,6 +117,7 @@ def create_movie_information_index():
                         continue
 
                     movie_confidence_dict[movie_file[0]] = {}
+                    movie_confidence_dict[movie_file[0]]['TITLE (NOT CONFIDENT)'] = []
 
                     for items in movie_imdb:
                         if items['kind'] == 'movie':
@@ -127,7 +128,7 @@ def create_movie_information_index():
 
                             else:
                                 movie_confidence_dict[movie_file[0]]['TITLE SEARCHED'] = movie_title_to_query
-                                movie_confidence_dict[movie_file[0]]['TITLE (NOT CONFIDENT)'] = items['title']
+                                movie_confidence_dict[movie_file[0]]['TITLE (NOT CONFIDENT)'].append(items['title'])
                                 continue
 
                     try:
@@ -146,6 +147,17 @@ def create_movie_information_index():
                         print('-' * 100)
                         continue
 
+            except (OSError, TypeError, ValueError) as e:
+                print('INPUT ERROR: ', e, '\n', 'MOVIE FILE(S): ', movie_file[0])
+                print('-' * 100)
+                continue
+
+    for items in movie_confidence_dict.items():
+        print(items)
+    separator_3()
+
+
+"""
                     search_confidence_percentage = match_similar_strings(movie_title_to_query.lower(),
                                                                          movie_imdb[0]['title'].lower())
                     movie_results_list[movie_file[0]]['SEARCH CONFIDENCE PERCENTAGE'] = search_confidence_percentage
@@ -196,16 +208,6 @@ def create_movie_information_index():
                         movie_results_list[movie_file[0]]['RUN-TIME'] = duration_integer
                         movie_results_list[movie_file[0]]['GENRES'] = []
                         movie_results_list[movie_file[0]]['DIRECTOR(S)'] = []
-            except (OSError, TypeError, ValueError) as e:
-                print('INPUT ERROR: ', e, '\n', 'MOVIE FILE(S): ', movie_file[0])
-                print('-' * 100)
-                continue
-
-    for items in movie_confidence_dict.items():
-        print(items)
-    separator_3()
-
-"""
 
     with open(os.path.expanduser((index_folder + '/MOVIE_INFORMATION_INDEX.csv').format(username)), 'w',
               encoding='UTF-8', newline='') as m_i_i:
