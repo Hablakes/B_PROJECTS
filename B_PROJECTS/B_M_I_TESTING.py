@@ -121,16 +121,18 @@ def create_movie_information_index():
 
                     for items in movie_imdb:
                         if items['kind'] == 'movie':
-                            if match_similar_strings(movie_title_to_query.lower(), items['title']) >= 0.75:
+                            movie_confidence_percentage = round(match_similar_strings(movie_title_to_query.lower(),
+                                                                                      items['title']), 2)
+                            if movie_confidence_percentage >= 0.75:
                                 movie_confidence_dict[movie_file[0]]['TITLE SEARCHED'] = movie_title_to_query
-                                movie_confidence_dict[movie_file[0]]['TITLE (CONFIDENT)'] = [items['title'],
-                                                                                             items.movieID]
+                                movie_confidence_dict[movie_file[0]]['TITLE (CONFIDENT)'] = \
+                                    [items['title'], items.movieID, movie_confidence_percentage]
                                 continue
 
                             else:
                                 movie_confidence_dict[movie_file[0]]['TITLE SEARCHED'] = movie_title_to_query
-                                movie_confidence_dict[movie_file[0]]['TITLE (NOT CONFIDENT)'].append([items['title'],
-                                                                                                     items.movieID])
+                                movie_confidence_dict[movie_file[0]]['TITLE (NOT CONFIDENT)']\
+                                    .append([items['title'], items.movieID, movie_confidence_percentage])
                                 continue
 
                     try:
