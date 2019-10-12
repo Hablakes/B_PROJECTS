@@ -6,8 +6,9 @@ import time
 from tkinter import filedialog, Tk
 
 
-test_list = []
-test_list_inverse = []
+def main():
+    separator()
+    normal_bytes()
 
 
 def get_bytes_from_files(filename):
@@ -24,15 +25,18 @@ def get_bytes_from_files(filename):
 
 
 def inverse_bytes():
-    test_file = tk_gui_file_selection_window()
-    for enumeration_number, bytes_found in enumerate(get_bytes_from_files(test_file)):
+    inverse_bytes_list = []
+    for enumeration_number, bytes_found in enumerate(get_bytes_from_files(tk_gui_file_selection_window())):
         bytes_found = int(bytes_found)
         bytes_remainder = int(256 - bytes_found)
-        test_list.append([enumeration_number, bytes_found])
-        test_list_inverse.append([enumeration_number, bytes_remainder])
-    print(test_list)
-    separator()
-    print(test_list_inverse)
+        inverse_bytes_list.append([enumeration_number, bytes_remainder])
+
+
+def normal_bytes():
+    normal_bytes_list = []
+    for enumeration_number, bytes_found in enumerate(get_bytes_from_files(tk_gui_file_selection_window())):
+        bytes_found = int(bytes_found)
+        normal_bytes_list.append([enumeration_number, bytes_found])
 
 
 def random_number_for_multiplier_bit():
@@ -69,9 +73,11 @@ def tk_gui_file_selection_window():
     return selected_file
 
 
-separator()
 start = time.time()
-inverse_bytes()
+
+if __name__ == '__main__':
+    main()
+
 end = time.time()
 test_time = round(end - start, 2)
 separator()
