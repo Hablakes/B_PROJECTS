@@ -25,11 +25,11 @@ def get_bytes_from_files(filename):
 
 def inverse_bytes():
     test_file = tk_gui_file_selection_window()
-    for bytes_found in get_bytes_from_files(test_file):
+    for enumeration_number, bytes_found in enumerate(get_bytes_from_files(test_file)):
         bytes_found = int(bytes_found)
         bytes_remainder = int(256 - bytes_found)
-        test_list.append(bytes_found)
-        test_list_inverse.append(bytes_remainder)
+        test_list.append([enumeration_number, bytes_found])
+        test_list_inverse.append([enumeration_number, bytes_remainder])
     print(test_list)
     separator()
     print(test_list_inverse)
