@@ -30,6 +30,9 @@ def inverse_bytes():
         bytes_remainder = int(256 - bytes_found)
         test_list.append(bytes_found)
         test_list_inverse.append(bytes_remainder)
+    print(test_list)
+    separator()
+    print(test_list_inverse)
 
 
 def random_number_for_multiplier_bit():
@@ -68,10 +71,9 @@ def tk_gui_file_selection_window():
 
 separator()
 start = time.time()
-sequence = random_string_with_one_time_pad_characters(10000000)
-print(textwrap.fill(sequence, 100))
-separator()
+inverse_bytes()
 end = time.time()
 test_time = round(end - start, 2)
-print("TIME ELAPSED:", test_time, 'Seconds')
+separator()
+print('TIME ELAPSED:', test_time, 'Seconds')
 separator()
