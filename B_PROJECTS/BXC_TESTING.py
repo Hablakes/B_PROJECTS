@@ -5,10 +5,15 @@ import time
 
 from tkinter import filedialog, Tk
 
+inverse_bytes_list = []
+normal_bytes_list = []
+
 
 def main():
     separator()
-    normal_bytes()
+    inverse_bytes()
+    for items in inverse_bytes_list:
+        print(items)
 
 
 def get_bytes_from_files(filename):
@@ -25,7 +30,6 @@ def get_bytes_from_files(filename):
 
 
 def inverse_bytes():
-    inverse_bytes_list = []
     for enumeration_number, bytes_found in enumerate(get_bytes_from_files(tk_gui_file_selection_window())):
         bytes_found = int(bytes_found)
         bytes_remainder = int(256 - bytes_found)
@@ -33,7 +37,6 @@ def inverse_bytes():
 
 
 def normal_bytes():
-    normal_bytes_list = []
     for enumeration_number, bytes_found in enumerate(get_bytes_from_files(tk_gui_file_selection_window())):
         bytes_found = int(bytes_found)
         normal_bytes_list.append([enumeration_number, bytes_found])
