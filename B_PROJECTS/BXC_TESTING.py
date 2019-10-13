@@ -3,6 +3,7 @@ import string
 import textwrap
 import time
 
+from collections import Counter
 from tkinter import filedialog, Tk
 
 inverse_bytes_list = []
@@ -11,9 +12,12 @@ normal_bytes_list = []
 
 def main():
     separator()
-    inverse_bytes()
-    for items in inverse_bytes_list:
-        print(items)
+    normal_bytes()
+    print(normal_bytes_list)
+    separator()
+    print(Counter(normal_bytes_list))
+    separator()
+    print([[l, normal_bytes_list.count(l)] for l in set(normal_bytes_list)])
 
 
 def get_bytes_from_files(filename):
@@ -30,6 +34,13 @@ def get_bytes_from_files(filename):
 
 
 def inverse_bytes():
+    for bytes_found in get_bytes_from_files(tk_gui_file_selection_window()):
+        bytes_found = int(bytes_found)
+        bytes_remainder = int(256 - bytes_found)
+        inverse_bytes_list.append(bytes_remainder)
+
+
+def inverse_bytes_enumerated():
     for enumeration_number, bytes_found in enumerate(get_bytes_from_files(tk_gui_file_selection_window())):
         bytes_found = int(bytes_found)
         bytes_remainder = int(256 - bytes_found)
@@ -37,6 +48,12 @@ def inverse_bytes():
 
 
 def normal_bytes():
+    for bytes_found in get_bytes_from_files(tk_gui_file_selection_window()):
+        bytes_found = int(bytes_found)
+        normal_bytes_list.append(bytes_found)
+
+
+def normal_bytes_enumerated():
     for enumeration_number, bytes_found in enumerate(get_bytes_from_files(tk_gui_file_selection_window())):
         bytes_found = int(bytes_found)
         normal_bytes_list.append([enumeration_number, bytes_found])
