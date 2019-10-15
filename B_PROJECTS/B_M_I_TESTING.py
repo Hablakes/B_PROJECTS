@@ -158,6 +158,8 @@ def create_movie_information_index():
                         print('FILE-SIZE: ', movie_results_list[movie_file[0]]['FILE-SIZE'])
                     if movie_results_list[movie_file[0]]['RUN-TIME']:
                         print('RUN-TIME: ', movie_results_list[movie_file[0]]['RUN-TIME'])
+                    if movie_results_list[movie_file[0]]['MOVIE-HASH']:
+                        print('MOVIE-HASH: ', movie_results_list[movie_file[0]]['MOVIE-HASH'])
                     separator_2()
 
             except (IOError, KeyError, TypeError, ValueError) as e:
@@ -165,19 +167,22 @@ def create_movie_information_index():
                 print('-' * 100, '\n')
                 continue
 
-    with open(os.path.expanduser((index_folder + '/MOVIE_INFORMATION_INDEX.csv').format(username)), 'w',
-              encoding='UTF-8', newline='') as m_i_i:
-
-        csv_writer = csv.DictWriter(m_i_i, ['MEDIA-PATH', 'MEDIA-TYPE', 'FOLDER-NAME', 'FILE-NAME', 'FILE-TYPE',
-                                            'YEAR', 'RESOLUTION', 'FILE-SIZE', 'MOVIE-HASH'])
-
-        for movie_row in movie_results_list.values():
-            csv_writer.writerow(movie_row)
-
     movie_scan_end = time.time()
     readable_movie_scan_time = round(movie_scan_end - movie_scan_start, 2)
     print('MOVIE INFORMATION SCAN COMPLETE - TIME ELAPSED: ', readable_movie_scan_time, 'Seconds')
     separator_3()
+
+
+"""
+    with open(os.path.expanduser((index_folder + '/MOVIE_INFORMATION_INDEX.csv').format(username)), 'w',
+              encoding='UTF-8', newline='') as m_i_i:
+
+        csv_writer = csv.DictWriter(m_i_i, ['MEDIA-PATH', 'MEDIA-TYPE', 'FOLDER-NAME', 'FILE-NAME', 'FILE-TYPE',
+                                            'YEAR', 'RESOLUTION', 'FILE-SIZE', 'RUN-TIME', 'MOVIE-HASH'])
+
+        for movie_row in movie_results_list.values():
+            csv_writer.writerow(movie_row)
+"""
 
 
 def create_tv_information_index():
