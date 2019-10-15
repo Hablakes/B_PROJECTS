@@ -103,8 +103,10 @@ def create_movie_information_index():
                             movie_results_list[movie_file[0]]['YEAR'] = movie_year_key
 
                     if re.findall(r'\d{3}x', movie_filename_key):
-                        movie_resolution_key = movie_filename_key.rsplit('.')[-2].rsplit(' ')[-1]
-                        movie_results_list[movie_file[0]]['RESOLUTION'] = movie_resolution_key
+                        movie_resolution_key = \
+                            movie_filename_key.rsplit('.')[-2].rsplit(' ')[-1]
+                        movie_resolution_no_parenthesis_key = movie_resolution_key[1:-1]
+                        movie_results_list[movie_file[0]]['RESOLUTION'] = movie_resolution_no_parenthesis_key
 
                     print('PATH: ', movie_results_list[movie_file[0]]['MEDIA-PATH'])
                     print('TYPE: ', movie_results_list[movie_file[0]]['MEDIA-TYPE'])
