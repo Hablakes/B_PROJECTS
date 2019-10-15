@@ -88,24 +88,32 @@ def create_movie_information_index():
                     if movie_file[0] not in movie_results_list:
                         movie_results_list[movie_file[0]] = {}
 
+                    if re.findall(r'\(\d{4}\)', movie_folder_key):
+                        movie_title_key = movie_folder_key[:-7]
+                    else:
+                        movie_title_key = movie_folder_key
+
                     movie_results_list[movie_file[0]]['MEDIA-PATH'] = movie_file[0]
                     movie_results_list[movie_file[0]]['MEDIA-TYPE'] = str('MOVIE')
                     movie_results_list[movie_file[0]]['FOLDER-NAME'] = movie_folder_key
                     movie_results_list[movie_file[0]]['FILE-NAME'] = movie_filename_key
                     movie_results_list[movie_file[0]]['FILE-TYPE'] = movie_file_type_key
+                    movie_results_list[movie_file[0]]['MOVIE-TITLE'] = movie_title_key
 
-                    if re.findall(r'(\d{4})', movie_filename_key):
-                        movie_year_key = re.findall(r'(\d{4})', movie_filename_key)
+                    if re.findall(r'\(\d{4}\)', movie_filename_key):
+                        movie_year_key = re.findall(r'\(\d{4}\)', movie_filename_key)
+
                         if type(movie_year_key) is list:
-                            movie_results_list[movie_file[0]]['YEAR'] = movie_year_key[0]
+                            movie_results_list[movie_file[0]]['YEAR'] = movie_year_key[0][1:-1]
 
                         elif movie_year_key:
-                            movie_results_list[movie_file[0]]['YEAR'] = movie_year_key
+                            movie_results_list[movie_file[0]]['YEAR'] = movie_year_key[1:-1]
 
                     if re.findall(r'\d{3}x', movie_filename_key):
                         movie_resolution_key = \
                             movie_filename_key.rsplit('.')[-2].rsplit(' ')[-1]
                         movie_resolution_no_parenthesis_key = movie_resolution_key[1:-1]
+
                         movie_results_list[movie_file[0]]['RESOLUTION'] = movie_resolution_no_parenthesis_key
 
                     try:
@@ -113,9 +121,9 @@ def create_movie_information_index():
                         movie_file_size = os.path.getsize(movie_file[0])
                         movie_file_size_in_mb = (int(movie_file_size) / 1048576)
                         movie_file_size_in_mb_rounded = str(round(movie_file_size_in_mb, 2))
-                        movie_results_list[movie_file[0]]['FILE-SIZE'] = movie_file_size_in_mb_rounded
-
                         movie_hash = str(str(movie_filename_key) + '_' + str(movie_file_size))
+
+                        movie_results_list[movie_file[0]]['FILE-SIZE'] = movie_file_size_in_mb_rounded
                         movie_results_list[movie_file[0]]['MOVIE-HASH'] = movie_hash
 
                     except OSError as e:
@@ -150,6 +158,7 @@ def create_movie_information_index():
                     print('FOLDER: ', movie_results_list[movie_file[0]]['FOLDER-NAME'])
                     print('FILE-NAME: ', movie_results_list[movie_file[0]]['FILE-NAME'])
                     print('FILE-TYPE: ', movie_results_list[movie_file[0]]['FILE-TYPE'])
+                    print('MOVIE-TITLE: ', movie_title_key)
                     if movie_results_list[movie_file[0]]['YEAR']:
                         print('YEAR: ', movie_results_list[movie_file[0]]['YEAR'])
                     if movie_results_list[movie_file[0]]['RESOLUTION']:
@@ -178,7 +187,7 @@ def create_movie_information_index():
               encoding='UTF-8', newline='') as m_i_i:
 
         csv_writer = csv.DictWriter(m_i_i, ['MEDIA-PATH', 'MEDIA-TYPE', 'FOLDER-NAME', 'FILE-NAME', 'FILE-TYPE',
-                                            'YEAR', 'RESOLUTION', 'FILE-SIZE', 'RUN-TIME', 'MOVIE-HASH'])
+                                            'MOVIE-TITLE', 'YEAR', 'RESOLUTION', 'FILE-SIZE', 'RUN-TIME', 'MOVIE-HASH'])
 
         for movie_row in movie_results_list.values():
             csv_writer.writerow(movie_row)
