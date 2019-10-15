@@ -108,13 +108,56 @@ def create_movie_information_index():
                         movie_resolution_no_parenthesis_key = movie_resolution_key[1:-1]
                         movie_results_list[movie_file[0]]['RESOLUTION'] = movie_resolution_no_parenthesis_key
 
+                    try:
+
+                        movie_file_size = os.path.getsize(movie_file[0])
+                        movie_file_size_in_mb = (int(movie_file_size) / 1048576)
+                        movie_file_size_in_mb_rounded = str(round(movie_file_size_in_mb, 2))
+                        movie_results_list[movie_file[0]]['FILE-SIZE'] = movie_file_size_in_mb_rounded
+
+                        movie_hash = str(str(movie_filename_key) + '_' + str(movie_file_size))
+                        movie_results_list[movie_file[0]]['MOVIE-HASH'] = movie_hash
+
+                    except OSError as e:
+                        print('OS ERROR / FILE-SIZE: ', e)
+                        print('-' * 100, '\n')
+                        continue
+
+                    try:
+
+                        movie_media_info = pymediainfo.MediaInfo.parse(movie_file[0])
+
+                    except OSError as e:
+                        print('OS ERROR / PY_MEDIA_INFO: ', e)
+                        print('-' * 100, '\n')
+                        continue
+
+                    try:
+
+                        for track in movie_media_info.tracks:
+
+                            if track.track_type == 'General':
+                                duration_integer = track.duration
+                                movie_results_list[movie_file[0]]['RUN-TIME'] = duration_integer
+
+                    except (KeyError, OSError, TypeError, ValueError) as e:
+                        print('OS ERROR / PY_MEDIA_INFO (TRACKS): ', e)
+                        print('-' * 100, '\n')
+                        continue
+
                     print('PATH: ', movie_results_list[movie_file[0]]['MEDIA-PATH'])
                     print('TYPE: ', movie_results_list[movie_file[0]]['MEDIA-TYPE'])
                     print('FOLDER: ', movie_results_list[movie_file[0]]['FOLDER-NAME'])
                     print('FILE-NAME: ', movie_results_list[movie_file[0]]['FILE-NAME'])
                     print('FILE-TYPE: ', movie_results_list[movie_file[0]]['FILE-TYPE'])
-                    print('YEAR: ', movie_results_list[movie_file[0]]['YEAR'])
-                    print('RESOLUTION: ', movie_results_list[movie_file[0]]['RESOLUTION'])
+                    if movie_results_list[movie_file[0]]['YEAR']:
+                        print('YEAR: ', movie_results_list[movie_file[0]]['YEAR'])
+                    if movie_results_list[movie_file[0]]['RESOLUTION']:
+                        print('RESOLUTION: ', movie_results_list[movie_file[0]]['RESOLUTION'])
+                    if movie_results_list[movie_file[0]]['FILE-SIZE']:
+                        print('FILE-SIZE: ', movie_results_list[movie_file[0]]['FILE-SIZE'])
+                    if movie_results_list[movie_file[0]]['RUN-TIME']:
+                        print('RUN-TIME: ', movie_results_list[movie_file[0]]['RUN-TIME'])
                     separator_2()
 
             except (IOError, KeyError, TypeError, ValueError) as e:
@@ -122,12 +165,11 @@ def create_movie_information_index():
                 print('-' * 100, '\n')
                 continue
 
-"""
     with open(os.path.expanduser((index_folder + '/MOVIE_INFORMATION_INDEX.csv').format(username)), 'w',
               encoding='UTF-8', newline='') as m_i_i:
 
         csv_writer = csv.DictWriter(m_i_i, ['MEDIA-PATH', 'MEDIA-TYPE', 'FOLDER-NAME', 'FILE-NAME', 'FILE-TYPE',
-                                            'YEAR', 'RESOLUTION'])
+                                            'YEAR', 'RESOLUTION', 'FILE-SIZE', 'MOVIE-HASH'])
 
         for movie_row in movie_results_list.values():
             csv_writer.writerow(movie_row)
@@ -136,7 +178,7 @@ def create_movie_information_index():
     readable_movie_scan_time = round(movie_scan_end - movie_scan_start, 2)
     print('MOVIE INFORMATION SCAN COMPLETE - TIME ELAPSED: ', readable_movie_scan_time, 'Seconds')
     separator_3()
-"""
+
 
 def create_tv_information_index():
     tv_results_list = {}
