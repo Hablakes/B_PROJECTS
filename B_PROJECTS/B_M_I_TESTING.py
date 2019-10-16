@@ -153,9 +153,7 @@ def create_movie_information_index():
 
                     try:
 
-                        imdb_search_url = 'https://www.imdb.com/search/title/?title='
-
-                        movie_to_search = imdb_search_url + movie_title_key
+                        movie_to_search = r'https://www.imdb.com/search/title/?title=' + str(movie_title_key)
 
                         search_response = get(movie_to_search)
 
