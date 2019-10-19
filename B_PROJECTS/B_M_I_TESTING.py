@@ -6,6 +6,7 @@ import re
 import textwrap
 import time
 
+import guessit
 import numpy
 import pyfiglet
 import pymediainfo
@@ -86,10 +87,20 @@ def create_movie_information_index():
                     if movie_file[0] not in movie_results_list:
                         movie_results_list[movie_file[0]] = {}
 
-                    if re.findall(r'\(\d{4}\)', movie_folder_key):
-                        movie_title_key = movie_folder_key[:-7]
-                    else:
-                        movie_title_key = movie_folder_key
+                    try:
+
+                        if re.findall(r'\(\d{4}\)', movie_filename_key):
+                            movie_title_key = movie_filename_key.split('(')[0]
+                        elif re.findall(r'\(\d{4}\)', movie_filename_key):
+                            movie_title_key = movie_filename_key.split('(')[0]
+                        else:
+                            movie_title_key = guessit.guessit(movie_filename_key)
+                            movie_title_key = movie_title_key.get('title')
+
+                    except (KeyError, OSError, TypeError, ValueError) as e:
+                        print('ERROR / TITLE: ', e)
+                        print('-' * 100, '\n')
+                        continue
 
                     movie_results_list[movie_file[0]]['MEDIA-PATH'] = movie_file[0]
                     movie_results_list[movie_file[0]]['MEDIA-TYPE'] = str('MOVIE')
