@@ -13,6 +13,7 @@ import pymediainfo
 
 from datetime import datetime
 from difflib import SequenceMatcher
+from lxml import html
 from requests import get
 from tkinter import filedialog, Tk
 
@@ -215,8 +216,10 @@ def create_movie_information_index():
 
                     try:
 
-                        for items in plot_response.iter_lines():
-                            print(items)
+                        for items in plot_response:
+                            if b'plotsummary' in items.lower():
+                                print('PLOT LINE(S): ', items)
+                        separator_3()
 
                     except (KeyError, OSError, TypeError, ValueError) as e:
                         print('ERROR / PLOT: ', e)
@@ -239,8 +242,8 @@ def create_movie_information_index():
                         print('RUN-TIME: ', movie_results_list[movie_file[0]]['RUN-TIME'])
                     if movie_results_list[movie_file[0]]['RATING']:
                         print('RATING: ', movie_results_list[movie_file[0]]['RATING'])
-                    if movie_results_list[movie_file[0]]['PLOT']:
-                        print('PLOT: ', movie_results_list[movie_file[0]]['PLOT'])
+                    # if movie_results_list[movie_file[0]]['PLOT']:
+                        # print('PLOT: ', movie_results_list[movie_file[0]]['PLOT'])
                     if movie_results_list[movie_file[0]]['MOVIE-HASH']:
                         print('MOVIE-HASH: ', movie_results_list[movie_file[0]]['MOVIE-HASH'])
                     separator_2()
