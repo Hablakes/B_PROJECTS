@@ -11,11 +11,6 @@ import numpy
 import pyfiglet
 import pymediainfo
 
-import matplotlib.pylab as plt
-
-from ascii_graph import Pyasciigraph
-from ascii_graph.colors import *
-from ascii_graph.colordata import vcolor
 from datetime import datetime
 from difflib import SequenceMatcher
 from requests import get
@@ -63,7 +58,6 @@ def compare_results(results_one, results_two):
 
 def create_media_information_indices():
     create_movie_information_index()
-    # create_tv_information_index()
 
 
 def create_movie_information_index():
