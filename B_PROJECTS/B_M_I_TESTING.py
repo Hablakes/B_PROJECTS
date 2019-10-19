@@ -180,21 +180,46 @@ def create_movie_information_index():
 
                         movie_to_search = r'https://www.imdb.com/search/title/?title=' + str(movie_title_key)
 
+                        movie_plot_search = r'https://www.imdb.com/search/title-text/?plot=' + str(movie_title_key)
+
                         search_response = get(movie_to_search)
 
-                        search_response_list = []
+                        plot_response = get(movie_plot_search)
+
+                        search_response_list_ratings = []
+
+                        search_response_list_plots = []
+
+                    except (KeyError, OSError, TypeError, ValueError) as e:
+                        print('ERROR / IMDB SEARCH: ', e)
+                        print('-' * 100, '\n')
+                        continue
+
+                    try:
 
                         for items in search_response.iter_lines():
+
                             if b'users rated this' in items.lower():
-                                search_response_list.append(str(items))
-                            if search_response_list:
-                                movie_rating = search_response_list[0].split('/10')[0].split('Users rated this ')[1]
+                                search_response_list_ratings.append(str(items))
+                            if search_response_list_ratings:
+                                movie_rating = \
+                                    search_response_list_ratings[0].split('/10')[0].split('Users rated this ')[1]
                                 movie_results_list[movie_file[0]]['RATING'] = movie_rating
                             else:
                                 movie_results_list[movie_file[0]]['RATING'] = '0.0'
 
                     except (KeyError, OSError, TypeError, ValueError) as e:
-                        print('OS ERROR / IMDB SEARCH: ', e)
+                        print('ERROR / RATING: ', e)
+                        print('-' * 100, '\n')
+                        continue
+
+                    try:
+
+                        for items in plot_response.iter_lines():
+                            print(items)
+
+                    except (KeyError, OSError, TypeError, ValueError) as e:
+                        print('ERROR / PLOT: ', e)
                         print('-' * 100, '\n')
                         continue
 
@@ -214,6 +239,8 @@ def create_movie_information_index():
                         print('RUN-TIME: ', movie_results_list[movie_file[0]]['RUN-TIME'])
                     if movie_results_list[movie_file[0]]['RATING']:
                         print('RATING: ', movie_results_list[movie_file[0]]['RATING'])
+                    if movie_results_list[movie_file[0]]['PLOT']:
+                        print('PLOT: ', movie_results_list[movie_file[0]]['PLOT'])
                     if movie_results_list[movie_file[0]]['MOVIE-HASH']:
                         print('MOVIE-HASH: ', movie_results_list[movie_file[0]]['MOVIE-HASH'])
                     separator_2()
