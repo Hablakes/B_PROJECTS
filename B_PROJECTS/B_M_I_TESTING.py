@@ -10,11 +10,12 @@ import guessit
 import numpy
 import pyfiglet
 import pymediainfo
+import requests
 
+from bs4 import BeautifulSoup
 from datetime import datetime
 from difflib import SequenceMatcher
 from lxml import html
-from requests import get
 from tkinter import filedialog, Tk
 
 date_string = str(datetime.today().strftime('%Y_%m_%d'))
@@ -84,7 +85,7 @@ def create_movie_information_index():
 
                     try:
 
-                        if re.findall(r'\(\d{4}\)', movie_filename_key):
+                        if re.findall(r'\([1-2]\d{3}\)', movie_filename_key):
                             movie_title_key = movie_filename_key.split('(')[0]
                         elif re.findall(r'\(\d{4}\)', movie_filename_key):
                             movie_title_key = movie_filename_key.split('(')[0]
@@ -179,50 +180,24 @@ def create_movie_information_index():
 
                     try:
 
+                        movie_imbd_content_list = []
+
                         movie_to_search = r'https://www.imdb.com/search/title/?title=' + str(movie_title_key)
 
                         movie_plot_search = r'https://www.imdb.com/search/title-text/?plot=' + str(movie_title_key)
 
-                        search_response = get(movie_to_search)
+                        movie_response = requests.get(movie_to_search, timeout=5)
 
-                        plot_response = get(movie_plot_search)
+                        movie_imdb_page = BeautifulSoup(movie_response.text, 'html.parser')
 
-                        search_response_list_ratings = []
+                        movie_body_text = movie_imdb_page.find_all('div', class_='lister list detail sub-list')
 
-                        search_response_list_plots = []
+                        # movie_body_text_sections = movie_body_text.find_all('div', class_='lister-list')
+
+                        print(movie_body_text)
 
                     except (KeyError, OSError, TypeError, ValueError) as e:
                         print('ERROR / IMDB SEARCH: ', e)
-                        print('-' * 100, '\n')
-                        continue
-
-                    try:
-
-                        for items in search_response.iter_lines():
-
-                            if b'users rated this' in items.lower():
-                                search_response_list_ratings.append(str(items))
-                            if search_response_list_ratings:
-                                movie_rating = \
-                                    search_response_list_ratings[0].split('/10')[0].split('Users rated this ')[1]
-                                movie_results_list[movie_file[0]]['RATING'] = movie_rating
-                            else:
-                                movie_results_list[movie_file[0]]['RATING'] = '0.0'
-
-                    except (KeyError, OSError, TypeError, ValueError) as e:
-                        print('ERROR / RATING: ', e)
-                        print('-' * 100, '\n')
-                        continue
-
-                    try:
-
-                        for items in plot_response:
-                            if b'plotsummary' in items.lower():
-                                print('PLOT LINE(S): ', items)
-                        separator_3()
-
-                    except (KeyError, OSError, TypeError, ValueError) as e:
-                        print('ERROR / PLOT: ', e)
                         print('-' * 100, '\n')
                         continue
 
@@ -240,10 +215,6 @@ def create_movie_information_index():
                         print('FILE-SIZE: ', movie_results_list[movie_file[0]]['FILE-SIZE'])
                     if movie_results_list[movie_file[0]]['RUN-TIME']:
                         print('RUN-TIME: ', movie_results_list[movie_file[0]]['RUN-TIME'])
-                    if movie_results_list[movie_file[0]]['RATING']:
-                        print('RATING: ', movie_results_list[movie_file[0]]['RATING'])
-                    # if movie_results_list[movie_file[0]]['PLOT']:
-                        # print('PLOT: ', movie_results_list[movie_file[0]]['PLOT'])
                     if movie_results_list[movie_file[0]]['MOVIE-HASH']:
                         print('MOVIE-HASH: ', movie_results_list[movie_file[0]]['MOVIE-HASH'])
                     separator_2()
@@ -257,19 +228,6 @@ def create_movie_information_index():
     readable_movie_scan_time = round(movie_scan_end - movie_scan_start, 2)
     print('MOVIE INFORMATION SCAN COMPLETE - TIME ELAPSED: ', readable_movie_scan_time, 'Seconds')
     separator_3()
-
-
-"""
-    with open(os.path.expanduser((index_folder + '/MOVIE_INFORMATION_INDEX.csv').format(username)), 'w',
-              encoding='UTF-8', newline='') as m_i_i:
-
-        csv_writer = csv.DictWriter(m_i_i, ['MEDIA-PATH', 'MEDIA-TYPE', 'FOLDER-NAME', 'FILE-NAME', 'FILE-TYPE',
-                                            'MOVIE-TITLE', 'YEAR', 'RESOLUTION', 'FILE-SIZE', 'RUN-TIME', 'RATING', 
-                                            'MOVIE-HASH'])
-
-        for movie_row in movie_results_list.values():
-            csv_writer.writerow(movie_row)
-"""
 
 
 def directory_selection():
