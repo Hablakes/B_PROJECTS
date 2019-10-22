@@ -1,6 +1,14 @@
 import requests
-from bs4 import BeautifulSoup
 
+from bs4 import BeautifulSoup
+from difflib import SequenceMatcher
+
+
+def match_similar_strings(a, b):
+    return SequenceMatcher(None, a, b).ratio()
+
+
+test_list = []
 
 movie_to_search = r'https://www.imdb.com/search/title/?title=' + str("The matrix")
 
@@ -15,4 +23,15 @@ movie_body_text_sections = movie_body_text.find_all('div', class_='lister-item')
 
 for items in movie_body_text_sections:
     test = items.find('img')
-    print(test['alt'], test['data-tconst'])
+    title = test['alt']
+    imdb_id = test['data-tconst']
+
+    movie_confidence_percentage = round(match_similar_strings('The Matrix'.lower(),
+                                                              title.lower()), 2)
+
+    if float(movie_confidence_percentage) >= 0.75:
+        movie_title = title
+
+        test_list.append([movie_title, imdb_id])
+
+print(test_list[0])
