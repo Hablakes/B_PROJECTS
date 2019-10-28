@@ -31,6 +31,8 @@ movie_body_text = movie_imdb_page.find('div', class_='lister list detail sub-lis
 movie_title_and_id_sections = movie_body_text.find_all(class_='lister-item mode-advanced')
 movie_genres_plot_and_ratings_sections = movie_body_text.find_all(class_='lister-item-content')
 
+separator_1()
+
 for items in movie_title_and_id_sections:
     title = items.h3.a.text
 
@@ -46,15 +48,15 @@ for items in movie_title_and_id_sections:
         rating = items.strong
 
         if movie_title:
-            print('TITLE: ', movie_title)
+            print('TITLE: ', movie_title, '- SEARCH CONFIDENCE: ', movie_search_confidence, '\n')
         if certificate:
-            print('CERTIFICATE: ', certificate.text)
+            print('CERTIFICATE: ', certificate.text, '\n')
         if genre:
-            print('GENRE(S): ', genre.text)
+            print('GENRE(S): ', genre.text, '\n')
         if imdb_id:
-            print('IMDB ID#: ', imdb_id)
+            print('IMDB ID#: ', imdb_id, '\n')
         if plot:
-            print('PLOT: ', plot.text)
+            print('PLOT: ', plot.text, '\n')
         if rating:
-            print('RATING: ', rating.text)
+            print('RATING: ', rating.text, '\n')
         separator_1()
