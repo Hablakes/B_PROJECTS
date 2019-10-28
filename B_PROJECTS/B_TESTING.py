@@ -29,7 +29,6 @@ movie_response = requests.get(movie_to_search, timeout=5)
 movie_imdb_page = BeautifulSoup(movie_response.text, 'html.parser')
 movie_body_text = movie_imdb_page.find('div', class_='lister list detail sub-list')
 movie_title_and_id_sections = movie_body_text.find_all(class_='lister-item mode-advanced')
-movie_genres_plot_and_ratings_sections = movie_body_text.find_all(class_='lister-item-content')
 
 separator_1()
 
@@ -40,6 +39,7 @@ for items in movie_title_and_id_sections:
 
     if float(movie_search_confidence) >= 0.75:
         movie_title = title
+        year = items.find('span', class_='lister-item-year text-muted unbold')
         certificate = items.find('span', class_='certificate')
         genre = items.find('span', class_='genre')
         imdb_id = items.img['data-tconst']
@@ -59,4 +59,8 @@ for items in movie_title_and_id_sections:
             print('PLOT: ', plot.text, '\n')
         if rating:
             print('RATING: ', rating.text, '\n')
+        if year:
+            print('YEAR: ', year.text, '\n')
         separator_1()
+        if float(movie_search_confidence) == 1.0:
+            break

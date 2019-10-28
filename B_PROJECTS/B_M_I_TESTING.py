@@ -200,7 +200,10 @@ def create_movie_information_index():
                             movie_search_confidence = round(
                                 match_similar_strings(title.lower(), str(movie_title_key).lower()), 2)
 
-                            if float(movie_search_confidence) >= 0.75:
+                            if float(movie_search_confidence) >= 0.85:
+                                if movie_results_list[movie_file[0]]['YEAR'] == str('NO YEAR FOUND IN TITLE'):
+                                    year = search_results.find('span', class_='lister-item-year text-muted unbold')
+                                    movie_results_list[movie_file[0]]['YEAR'] = year.text
                                 movie_title = title
                                 certificate = search_results.find('span', class_='certificate')
                                 genre = search_results.find('span', class_='genre')
@@ -216,6 +219,7 @@ def create_movie_information_index():
                                 movie_results_list[movie_file[0]]['PLOT'] = plot.text
                                 movie_results_list[movie_file[0]]['RATING'] = rating.text
                                 movie_results_list[movie_file[0]]['SEARCH-CONFIDENCE'] = movie_search_confidence
+                                break
 
                     except (KeyError, OSError, TypeError, ValueError) as e:
                         print('ERROR / IMDB SEARCH: ', e)
