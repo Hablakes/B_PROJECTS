@@ -173,6 +173,14 @@ def create_movie_information_index():
                                 duration_integer = track.duration
                                 movie_results_list[movie_file[0]]['RUN-TIME'] = duration_integer
 
+                        if movie_results_list[movie_file[0]]['RESOLUTION'] == str('NO RESOLUTION FOUND IN TITLE'):
+
+                            for track in movie_media_info.tracks:
+
+                                if track.track_type == 'Video':
+                                    movie_results_list[movie_file[0]]['RESOLUTION'] = \
+                                        str(track.width) + 'x' + str(track.height)
+
                     except (KeyError, OSError, TypeError, ValueError) as e:
                         print('ERROR / PY_MEDIA_INFO (TRACKS): ', e)
                         print('-' * 100, '\n')
@@ -180,40 +188,34 @@ def create_movie_information_index():
 
                     try:
 
-                        movie_to_search = r'https://www.imdb.com/search/title/?title=' + str(movie_title_key.lower())
-
-                        movie_plot_search = r'https://www.imdb.com/search/title-text/?plot=' + \
-                                            str(movie_title_key.lower())
-
+                        movie_to_search = r'https://www.imdb.com/search/title/?title=' + str(movie_title_key).lower()
                         movie_response = requests.get(movie_to_search, timeout=5)
-
                         movie_imdb_page = BeautifulSoup(movie_response.text, 'html.parser')
                         movie_body_text = movie_imdb_page.find('div', class_='lister list detail sub-list')
+                        movie_title_and_id_sections = movie_body_text.find_all(class_='lister-item mode-advanced')
 
-                        movie_body_text_sections = movie_body_text.find_all('div', class_='lister-item')
+                        for search_results in movie_title_and_id_sections:
+                            title = search_results.h3.a.text
 
-                        for search_results in movie_body_text_sections:
-                            movies_found = search_results.find('img')
-                            movie_title = movies_found['alt']
-                            movie_imdb_id = movies_found['data-tconst']
+                            movie_search_confidence = round(
+                                match_similar_strings(title.lower(), str(movie_title_key).lower()), 2)
 
-                            movie_confidence_percentage = round(match_similar_strings(movie_title.lower(),
-                                                                                      movie_title_key.lower()), 2)
+                            if float(movie_search_confidence) >= 0.75:
+                                movie_title = title
+                                certificate = search_results.find('span', class_='certificate')
+                                genre = search_results.find('span', class_='genre')
+                                imdb_id = search_results.img['data-tconst']
+                                plot_section = search_results.find_all('p')
+                                plot = plot_section[1]
+                                rating = search_results.strong
 
-                            if type(movie_title) is list:
-                                movie_title = movie_title[0]
-
-                            try:
-
-                                if float(movie_confidence_percentage) >= 0.75:
-                                    movie_results_list[movie_file[0]]['TITLE'] = movie_title
-                                    movie_results_list[movie_file[0]]['IMDB-ID'] = movie_imdb_id
-                                    movie_results_list[movie_file[0]]['SEARCH-CONFIDENCE'] = movie_confidence_percentage
-
-                            except (KeyError, OSError, TypeError, ValueError) as e:
-                                print('ERROR / IMDB INFO: ', e)
-                                print('-' * 100, '\n')
-                                continue
+                                movie_results_list[movie_file[0]]['IMDB-ID'] = imdb_id
+                                movie_results_list[movie_file[0]]['TITLE'] = movie_title
+                                movie_results_list[movie_file[0]]['CERTIFICATE'] = certificate.text
+                                movie_results_list[movie_file[0]]['GENRE(S)'] = genre.text
+                                movie_results_list[movie_file[0]]['PLOT'] = plot.text
+                                movie_results_list[movie_file[0]]['RATING'] = rating.text
+                                movie_results_list[movie_file[0]]['SEARCH-CONFIDENCE'] = movie_search_confidence
 
                     except (KeyError, OSError, TypeError, ValueError) as e:
                         print('ERROR / IMDB SEARCH: ', e)
@@ -234,11 +236,19 @@ def create_movie_information_index():
                         print('FILE-SIZE: ', movie_results_list[movie_file[0]]['FILE-SIZE'])
                     if movie_results_list[movie_file[0]]['RUN-TIME']:
                         print('RUN-TIME: ', movie_results_list[movie_file[0]]['RUN-TIME'])
-                    if movie_results_list[movie_file[0]]['TITLE']:
-                        print('TITLE: ', movie_results_list[movie_file[0]]['TITLE'])
                     if movie_results_list[movie_file[0]]['IMDB-ID']:
                         print('IMDB-ID: ', movie_results_list[movie_file[0]]['IMDB-ID'])
-                    if movie_results_list[movie_file[0]]['SEARCH-CONFIDENCE']:
+                    if movie_results_list[movie_file[0]]['TITLE']:
+                        print('TITLE: ', movie_results_list[movie_file[0]]['TITLE'])
+                    if movie_results_list[movie_file[0]]['CERTIFICATE']:
+                        print('CERTIFICATE: ', movie_results_list[movie_file[0]]['CERTIFICATE'])
+                    if movie_results_list[movie_file[0]]['GENRE(S)']:
+                        print('GENRE(S): ', movie_results_list[movie_file[0]]['GENRE(S)'])
+                    if movie_results_list[movie_file[0]]['PLOT']:
+                        print('PLOT: ', movie_results_list[movie_file[0]]['PLOT'])
+                    if movie_results_list[movie_file[0]]['PLOT']:
+                        print('RATING: ', movie_results_list[movie_file[0]]['RATING'])
+                    if movie_results_list[movie_file[0]]['RATING']:
                         print('SEARCH-CONFIDENCE: ', movie_results_list[movie_file[0]]['SEARCH-CONFIDENCE'])
                     if movie_results_list[movie_file[0]]['MOVIE-HASH']:
                         print('MOVIE-HASH: ', movie_results_list[movie_file[0]]['MOVIE-HASH'])
