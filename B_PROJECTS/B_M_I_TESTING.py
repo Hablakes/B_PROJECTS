@@ -231,7 +231,7 @@ def create_movie_information_index():
                     print('FOLDER: ', movie_results_list[movie_file[0]]['FOLDER-NAME'])
                     print('FILE-NAME: ', movie_results_list[movie_file[0]]['FILE-NAME'])
                     print('FILE-TYPE: ', movie_results_list[movie_file[0]]['FILE-TYPE'])
-                    print('MOVIE-TITLE: ', movie_title_key)
+                    print('MOVIE-TITLE: ', movie_results_list[movie_file[0]]['MOVIE-TITLE'])
                     if movie_results_list[movie_file[0]]['YEAR']:
                         print('YEAR: ', movie_results_list[movie_file[0]]['YEAR'])
                     if movie_results_list[movie_file[0]]['RESOLUTION']:
@@ -262,6 +262,17 @@ def create_movie_information_index():
                 print('INPUT ERROR: ', e, '\n', 'MOVIE FILE(S): ', movie_file[0])
                 print('-' * 100, '\n')
                 continue
+
+    with open(os.path.expanduser((index_folder + '/MOVIE_INFORMATION_INDEX.csv').format(username)), 'w',
+              encoding='UTF-8', newline='') as m_i_i:
+
+        csv_writer = csv.DictWriter(m_i_i, ['MEDIA-PATH', 'MEDIA-TYPE', 'FOLDER-NAME', 'FILE-NAME', 'FILE-TYPE',
+                                            'MOVIE-TITLE', 'YEAR', 'RESOLUTION', 'RESOLUTION', 'FILE-SIZE', 'RUN-TIME',
+                                            'IMDB-ID', 'TITLE', 'CERTIFICATE', 'GENRE(S)', 'PLOT', 'RATING',
+                                            'SEARCH-CONFIDENCE', 'MOVIE-HASH'])
+
+        for movie_row in movie_results_list.values():
+            csv_writer.writerow(movie_row)
 
     movie_scan_end = time.time()
     readable_movie_scan_time = round(movie_scan_end - movie_scan_start, 2)
