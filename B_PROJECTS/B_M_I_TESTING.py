@@ -194,37 +194,37 @@ def create_movie_information_index():
                         movie_body_text = movie_imdb_page.find('div', class_='lister list detail sub-list')
                         movie_title_and_id_sections = movie_body_text.find_all(class_='lister-item mode-advanced')
 
-                        for search_results in movie_title_and_id_sections:
-                            title = search_results.h3.a.text
-
-                            movie_search_confidence = round(
-                                match_similar_strings(title.lower(), str(movie_title_key).lower()), 2)
-
-                            if float(movie_search_confidence) >= 0.85:
-                                if movie_results_list[movie_file[0]]['YEAR'] == str('NO YEAR FOUND IN TITLE'):
-                                    year = search_results.find('span', class_='lister-item-year text-muted unbold')
-                                    movie_results_list[movie_file[0]]['YEAR'] = year.text
-                                movie_title = title
-                                certificate = search_results.find('span', class_='certificate')
-                                genre = search_results.find('span', class_='genre')
-                                imdb_id = search_results.img['data-tconst']
-                                plot_section = search_results.find_all('p')
-                                plot = plot_section[1]
-                                rating = search_results.strong
-
-                                movie_results_list[movie_file[0]]['IMDB-ID'] = imdb_id
-                                movie_results_list[movie_file[0]]['TITLE'] = movie_title
-                                movie_results_list[movie_file[0]]['CERTIFICATE'] = certificate.text
-                                movie_results_list[movie_file[0]]['GENRE(S)'] = genre.text
-                                movie_results_list[movie_file[0]]['PLOT'] = plot.text
-                                movie_results_list[movie_file[0]]['RATING'] = rating.text
-                                movie_results_list[movie_file[0]]['SEARCH-CONFIDENCE'] = movie_search_confidence
-                                break
-
-                    except (KeyError, OSError, TypeError, ValueError) as e:
+                    except (Exception, KeyError, OSError, TypeError, ValueError) as e:
                         print('ERROR / IMDB SEARCH: ', e)
                         print('-' * 100, '\n')
                         continue
+
+                    for search_results in movie_title_and_id_sections:
+                        title = search_results.h3.a.text
+
+                        movie_search_confidence = round(
+                            match_similar_strings(title.lower(), str(movie_title_key).lower()), 2)
+
+                        if float(movie_search_confidence) >= 0.85:
+                            if movie_results_list[movie_file[0]]['YEAR'] == str('NO YEAR FOUND IN TITLE'):
+                                year = search_results.find('span', class_='lister-item-year text-muted unbold')
+                                movie_results_list[movie_file[0]]['YEAR'] = year.text
+                            movie_title = title
+                            certificate = search_results.find('span', class_='certificate')
+                            genre = search_results.find('span', class_='genre')
+                            imdb_id = search_results.img['data-tconst']
+                            plot_section = search_results.find_all('p')
+                            plot = plot_section[1]
+                            rating = search_results.strong
+
+                            movie_results_list[movie_file[0]]['IMDB-ID'] = imdb_id
+                            movie_results_list[movie_file[0]]['TITLE'] = movie_title
+                            movie_results_list[movie_file[0]]['CERTIFICATE'] = certificate.text
+                            movie_results_list[movie_file[0]]['GENRE(S)'] = genre.text
+                            movie_results_list[movie_file[0]]['PLOT'] = plot.text
+                            movie_results_list[movie_file[0]]['RATING'] = rating.text
+                            movie_results_list[movie_file[0]]['SEARCH-CONFIDENCE'] = movie_search_confidence
+                            break
 
                     print('PATH: ', movie_results_list[movie_file[0]]['MEDIA-PATH'])
                     print('TYPE: ', movie_results_list[movie_file[0]]['MEDIA-TYPE'])
