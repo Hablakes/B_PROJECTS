@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 import csv
 import json
 import os
@@ -10,6 +12,7 @@ import guessit
 import numpy
 import pyfiglet
 import pymediainfo
+import youtube_dl
 
 import matplotlib.pylab as plt
 
