@@ -113,8 +113,9 @@ def create_tv_information_index():
 
                     try:
 
-                        if str(r"\'s ") in str(tv_title_to_query):
-                            tv_title_to_query = tv_title_to_query.rsplit(r"\'s ", 1)[1]
+                        if r"'s " in tv_title_to_query:
+                            formatted_tv_title_to_query = tv_title_to_query.rsplit(r"'s ", 1)
+                            tv_title_to_query = ' '.join(formatted_tv_title_to_query)
 
                     except OSError as e:
                         print('OS ERROR / TITLE FORMATTING: ', e)
