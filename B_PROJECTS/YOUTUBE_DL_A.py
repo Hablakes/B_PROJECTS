@@ -99,13 +99,25 @@ def create_tv_information_index():
                     try:
 
                         tv_title = guessit.guessit(tv_filename_key, options={'type': 'episode'})
+
                         tv_title_to_query = tv_title.get('title')
+
                         g_season_number = tv_title.get('season')
                         g_episode_number = tv_title.get('episode')
                         tv_results_list[tv_file[0]]['FILE-TYPE'] = tv_title.get('container')
 
                     except OSError as e:
                         print('OS ERROR / GUESSIT: ', e)
+                        print('-' * 100, '\n')
+                        continue
+
+                    try:
+
+                        if str(r"\'s ") in str(tv_title_to_query):
+                            tv_title_to_query = tv_title_to_query.rsplit(r"\'s ", 1)[1]
+
+                    except OSError as e:
+                        print('OS ERROR / TITLE FORMATTING: ', e)
                         print('-' * 100, '\n')
                         continue
 
