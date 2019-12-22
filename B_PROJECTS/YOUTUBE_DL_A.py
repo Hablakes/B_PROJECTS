@@ -66,227 +66,117 @@ def create_tv_information_index():
         tv_index = csv.reader(m_f_p)
 
         for tv_file in sorted(tv_index):
-            try:
+            tv_filename_key = tv_file[0].rsplit('/', 1)[-1]
+            tv_title_key = tv_file[0].rsplit('/')[-2]
 
-                tv_filename_key = tv_file[0].rsplit('/', 1)[-1]
-                tv_title_key = tv_file[0].rsplit('/')[-2]
+            if not tv_filename_key.lower().endswith('.nfo'):
 
-                if not tv_filename_key.lower().endswith('.nfo'):
+                if tv_file[0] not in tv_results_list:
+                    tv_results_list[tv_file[0]] = {}
 
-                    if tv_file[0] not in tv_results_list:
-                        tv_results_list[tv_file[0]] = {}
+                tv_results_list[tv_file[0]]['MEDIA-PATH'] = tv_file[0]
+                tv_results_list[tv_file[0]]['MEDIA-TYPE'] = str('TV SHOW')
+                tv_results_list[tv_file[0]]['FOLDER-NAME'] = tv_title_key
+                tv_results_list[tv_file[0]]['FILE-NAME'] = tv_filename_key
 
-                    tv_results_list[tv_file[0]]['MEDIA-PATH'] = tv_file[0]
-                    tv_results_list[tv_file[0]]['MEDIA-TYPE'] = str('TV SHOW')
-                    tv_results_list[tv_file[0]]['FOLDER-NAME'] = tv_title_key
-                    tv_results_list[tv_file[0]]['FILE-NAME'] = tv_filename_key
+                tv_file_size = os.path.getsize(tv_file[0])
+                tv_file_size_in_mb = (int(tv_file_size) / 1048576)
+                tv_file_size_in_mb_rounded = str(round(tv_file_size_in_mb, 2))
+                tv_results_list[tv_file[0]]['FILE-SIZE'] = tv_file_size_in_mb_rounded
 
-                    try:
+                tv_hash = str(str(tv_filename_key) + '_' + str(tv_file_size))
+                tv_results_list[tv_file[0]]['TV-HASH'] = tv_hash
 
-                        tv_file_size = os.path.getsize(tv_file[0])
-                        tv_file_size_in_mb = (int(tv_file_size) / 1048576)
-                        tv_file_size_in_mb_rounded = str(round(tv_file_size_in_mb, 2))
-                        tv_results_list[tv_file[0]]['FILE-SIZE'] = tv_file_size_in_mb_rounded
+                tv_title = guessit.guessit(tv_filename_key, options={'type': 'episode'})
 
-                    except OSError as e:
-                        print('OS ERROR / FILE-SIZE: ', e)
-                        print('-' * 100, '\n')
-                        continue
+                tv_title_to_query = tv_title.get('title')
 
-                    tv_hash = str(str(tv_filename_key) + '_' + str(tv_file_size))
-                    tv_results_list[tv_file[0]]['TV-HASH'] = tv_hash
+                g_season_number = tv_title.get('season')
+                g_episode_number = tv_title.get('episode')
+                tv_results_list[tv_file[0]]['FILE-TYPE'] = tv_title.get('container')
 
-                    try:
+                if r"'s " in tv_title_to_query:
+                    formatted_tv_title_to_query = tv_title_to_query.rsplit(r"'s ", 1)
+                    tv_title_to_query = ' '.join(formatted_tv_title_to_query)
 
-                        tv_title = guessit.guessit(tv_filename_key, options={'type': 'episode'})
+                tv_media_info = pymediainfo.MediaInfo.parse(tv_file[0])
 
-                        tv_title_to_query = tv_title.get('title')
-
-                        g_season_number = tv_title.get('season')
-                        g_episode_number = tv_title.get('episode')
-                        tv_results_list[tv_file[0]]['FILE-TYPE'] = tv_title.get('container')
-
-                    except OSError as e:
-                        print('OS ERROR / GUESSIT: ', e)
-                        print('-' * 100, '\n')
-                        continue
-
-                    try:
-
-                        if r"'s " in tv_title_to_query:
-                            formatted_tv_title_to_query = tv_title_to_query.rsplit(r"'s ", 1)
-                            tv_title_to_query = ' '.join(formatted_tv_title_to_query)
-
-                    except OSError as e:
-                        print('OS ERROR / TITLE FORMATTING: ', e)
-                        print('-' * 100, '\n')
-                        continue
-
-                    try:
-
-                        tv_media_info = pymediainfo.MediaInfo.parse(tv_file[0])
-
-                    except OSError as e:
-                        print('OS ERROR / PY_MEDIA_INFO: ', e)
-                        print('-' * 100, '\n')
-                        continue
-
-                    try:
-
-                        for track in tv_media_info.tracks:
-                            if track.track_type == 'General':
-                                duration_integer = track.duration
-                                tv_results_list[tv_file[0]]['RUN-TIME'] = duration_integer
-
-                            elif track.track_type == 'Video':
-                                tv_results_list[tv_file[0]]['RESOLUTION'] = str(track.width) + 'x' + str(track.height)
-
-                    except (KeyError, OSError, TypeError, ValueError) as e:
-                        print('OS ERROR / PY_MEDIA_INFO (TRACKS): ', e)
-                        print('-' * 100, '\n')
-                        continue
-
-                    try:
-
-                        tv_imdb = ia.search_movie(tv_title_to_query)
-
-                    except (IOError, KeyError, TypeError, ValueError) as e:
-                        print('IMDB SEARCH ERROR: ', e, '\n', 'TV SHOW FILE(S): ', tv_file[0])
-                        print('-' * 100, '\n')
-                        continue
-
-                    try:
-
-                        tv_id = tv_imdb[0].movieID
-
-                    except (IOError, KeyError, TypeError, ValueError) as e:
-                        print('IMDB ID# ERROR: ', e, '\n', 'TV SHOW FILE(S): ', tv_file[0])
-                        print('-' * 100, '\n')
-                        continue
-
-                    try:
-
-                        tv_info_set = ia.get_movie(tv_id)
-
-                    except (IOError, KeyError, TypeError, ValueError) as e:
-                        print('IMDB INFOSET ERROR: ', e, '\n', 'TV SHOW FILE(S): ', tv_file[0])
-                        print('-' * 100, '\n')
-                        continue
-
-                    try:
-
-                        search_confidence_percentage = match_similar_strings(tv_title_to_query.lower(),
-                                                                             tv_imdb[0]['title'].lower())
-                        tv_results_list[tv_file[0]]['SEARCH CONFIDENCE PERCENTAGE'] = search_confidence_percentage
-
-                    except (IOError, KeyError, TypeError, ValueError) as e:
-                        print('CONFIDENCE PERCENTAGE ERROR: ', e, '\n', 'TV SHOW FILE(S): ', tv_file[0])
-                        print('-' * 100, '\n')
-                        continue
-
-                    if float(search_confidence_percentage) >= 0.65:
-
-                        try:
-
-                            ia.update(tv_info_set, 'episodes')
-
-                        except (IOError, KeyError, TypeError, ValueError) as e:
-                            print('IMDB TV SHOW SEARCH ERROR: ', e, '\n', 'TV SHOW FILE(S): ', tv_file[0])
-                            print('-' * 100, '\n')
-                            continue
-
-                        try:
-
-                            tv_show_title = tv_info_set['title']
-                            tv_show_year = tv_info_set['year']
-                            tv_show_plot = tv_info_set['plot']
-                            episode_title = tv_info_set['episodes'][g_season_number][g_episode_number]['title']
-                            episode_year = tv_info_set['episodes'][g_season_number][g_episode_number]['year']
-                            episode_plot = tv_info_set['episodes'][g_season_number][g_episode_number]['plot']
-                            episode_rating = tv_info_set['episodes'][g_season_number][g_episode_number]['rating']
-
-                        except (IOError, KeyError, TypeError, ValueError) as e:
-                            print('IMDB TV EPISODE SEARCH ERROR: ', e, '\n', 'TV SHOW FILE(S): ', tv_file[0])
-                            print('-' * 100, '\n')
-                            continue
-
-                        try:
-
-                            if tv_show_title not in tv_overview_plots_dict:
-                                tv_overview_plots_dict[tv_show_title] = {}
-                                tv_overview_plots_dict[tv_show_title]['SHOW'] = str(str(tv_show_title) + ' (' +
-                                                                                    str(tv_show_year) + ')')
-                                tv_overview_plots_dict[tv_show_title]['PLOT'] = tv_show_plot[0].split('::')[0]
-
-                        except (IOError, KeyError, TypeError, ValueError) as e:
-                            print('TV SHOW OVERVIEW PLOT(S) ERROR: ', e, '\n', 'TV SHOW FILE(S): ', tv_file[0])
-                            print('-' * 100, '\n')
-                            continue
-
-                        try:
-
-                            tv_results_list[tv_file[0]]['GUESSIT SEARCH TERM'] = tv_title_to_query
-                            tv_results_list[tv_file[0]]['TV SHOW ID #'] = tv_id
-                            tv_results_list[tv_file[0]]['TV SHOW TITLE'] = tv_show_title
-                            tv_results_list[tv_file[0]]['SEASON #'] = g_season_number
-                            tv_results_list[tv_file[0]]['EPISODE #'] = g_episode_number
-                            tv_results_list[tv_file[0]]['EPISODE TITLE'] = episode_title
-                            tv_results_list[tv_file[0]]['YEAR'] = episode_year
-                            tv_results_list[tv_file[0]]['PLOT'] = episode_plot.split('::')[0]
-                            tv_results_list[tv_file[0]]['RATING'] = round(episode_rating, 2)
-                            tv_results_list[tv_file[0]]['RUN-TIME'] = duration_integer
-
-                        except (IOError, KeyError, TypeError, ValueError) as e:
-                            print('IMDB GENERAL INFO ERROR: ', e, '\n', 'TV SHOW FILE(S): ', tv_file[0])
-                            print('-' * 100, '\n')
-                            continue
-
-                        try:
-
-                            tv_results_list[tv_file[0]]['GENRES'] = []
-                            for genre in tv_info_set['genres']:
-                                tv_results_list[tv_file[0]]['GENRES'].append(genre)
-
-                        except (IOError, KeyError, TypeError, ValueError) as e:
-                            print('IMDB GENRE ERROR: ', e, '\n', 'TV SHOW FILE(S): ', tv_file[0])
-                            print('-' * 100, '\n')
-                            continue
-
-                    else:
-
-                        print('TV SHOW - NO MATCH -', tv_file[0])
-                        separator_3()
-
-                        tv_results_list[tv_file[0]]['GUESSIT SEARCH TERM'] = tv_title_to_query
-                        tv_results_list[tv_file[0]]['TV SHOW ID #'] = []
-                        tv_results_list[tv_file[0]]['TV SHOW TITLE'] = []
-                        tv_results_list[tv_file[0]]['SEASON #'] = g_season_number
-                        tv_results_list[tv_file[0]]['EPISODE #'] = g_episode_number
-                        tv_results_list[tv_file[0]]['EPISODE TITLE'] = []
-                        tv_results_list[tv_file[0]]['YEAR'] = []
-                        tv_results_list[tv_file[0]]['PLOT'] = []
-                        tv_results_list[tv_file[0]]['RATING'] = []
+                for track in tv_media_info.tracks:
+                    if track.track_type == 'General':
+                        duration_integer = track.duration
                         tv_results_list[tv_file[0]]['RUN-TIME'] = duration_integer
-                        tv_results_list[tv_file[0]]['GENRES'] = []
 
-                        try:
+                    elif track.track_type == 'Video':
+                        tv_results_list[tv_file[0]]['RESOLUTION'] = str(track.width) + 'x' + str(track.height)
 
-                            tv_show_title = tv_title_to_query
+                tv_imdb = ia.search_movie(tv_title_to_query)
 
-                            if tv_show_title not in tv_overview_plots_dict:
-                                tv_overview_plots_dict[tv_show_title] = {}
-                                tv_overview_plots_dict[tv_show_title]['SHOW'] = tv_title_to_query
-                                tv_overview_plots_dict[tv_show_title]['PLOT'] = str('NO PLOT AVAILABLE')
+                for found_tv_shows in tv_imdb:
+                    if found_tv_shows.data['kind'] == 'tv series':
+                        tv_id = found_tv_shows.movieID
 
-                        except (IOError, KeyError, TypeError, ValueError) as e:
-                            print('TV SHOW OVERVIEW PLOT(S) ERROR: ', e, '\n', 'TV SHOW FILE(S): ', tv_file[0])
-                            print('-' * 100, '\n')
-                            continue
+                tv_info_set = ia.get_movie(tv_id)
 
-            except (IOError, KeyError, TypeError, ValueError) as e:
-                print('INPUT ERROR: ', e, '\n', 'TV SHOW FILE(S): ', tv_file[0])
-                print('-' * 100, '\n')
-                continue
+                search_confidence_percentage = match_similar_strings(tv_title_to_query.lower(),
+                                                                     tv_imdb[0]['title'].lower())
+                tv_results_list[tv_file[0]]['SEARCH CONFIDENCE PERCENTAGE'] = search_confidence_percentage
+
+                if float(search_confidence_percentage) >= 0.40:
+
+                    ia.update(tv_info_set, 'episodes')
+
+                    tv_show_title = tv_info_set['title']
+                    tv_show_year = tv_info_set['year']
+                    tv_show_plot = tv_info_set['plot']
+                    episode_title = tv_info_set['episodes'][g_season_number][g_episode_number]['title']
+                    episode_year = tv_info_set['episodes'][g_season_number][g_episode_number]['year']
+                    episode_plot = tv_info_set['episodes'][g_season_number][g_episode_number]['plot']
+                    episode_rating = tv_info_set['episodes'][g_season_number][g_episode_number]['rating']
+
+                    if tv_show_title not in tv_overview_plots_dict:
+                        tv_overview_plots_dict[tv_show_title] = {}
+                        tv_overview_plots_dict[tv_show_title]['SHOW'] = str(str(tv_show_title) + ' (' +
+                                                                            str(tv_show_year) + ')')
+                        tv_overview_plots_dict[tv_show_title]['PLOT'] = tv_show_plot[0].split('::')[0]
+
+                    tv_results_list[tv_file[0]]['GUESSIT SEARCH TERM'] = tv_title_to_query
+                    tv_results_list[tv_file[0]]['TV SHOW ID #'] = tv_id
+                    tv_results_list[tv_file[0]]['TV SHOW TITLE'] = tv_show_title
+                    tv_results_list[tv_file[0]]['SEASON #'] = g_season_number
+                    tv_results_list[tv_file[0]]['EPISODE #'] = g_episode_number
+                    tv_results_list[tv_file[0]]['EPISODE TITLE'] = episode_title
+                    tv_results_list[tv_file[0]]['YEAR'] = episode_year
+                    tv_results_list[tv_file[0]]['PLOT'] = episode_plot.split('::')[0]
+                    tv_results_list[tv_file[0]]['RATING'] = round(episode_rating, 2)
+                    tv_results_list[tv_file[0]]['RUN-TIME'] = duration_integer
+
+                    tv_results_list[tv_file[0]]['GENRES'] = []
+                    for genre in tv_info_set['genres']:
+                        tv_results_list[tv_file[0]]['GENRES'].append(genre)
+
+                else:
+
+                    print('TV SHOW - NO MATCH -', tv_file[0])
+                    separator_3()
+
+                    tv_results_list[tv_file[0]]['GUESSIT SEARCH TERM'] = tv_title_to_query
+                    tv_results_list[tv_file[0]]['TV SHOW ID #'] = []
+                    tv_results_list[tv_file[0]]['TV SHOW TITLE'] = []
+                    tv_results_list[tv_file[0]]['SEASON #'] = g_season_number
+                    tv_results_list[tv_file[0]]['EPISODE #'] = g_episode_number
+                    tv_results_list[tv_file[0]]['EPISODE TITLE'] = []
+                    tv_results_list[tv_file[0]]['YEAR'] = []
+                    tv_results_list[tv_file[0]]['PLOT'] = []
+                    tv_results_list[tv_file[0]]['RATING'] = []
+                    tv_results_list[tv_file[0]]['RUN-TIME'] = duration_integer
+                    tv_results_list[tv_file[0]]['GENRES'] = []
+
+                    tv_show_title = tv_title_to_query
+
+                    if tv_show_title not in tv_overview_plots_dict:
+                        tv_overview_plots_dict[tv_show_title] = {}
+                        tv_overview_plots_dict[tv_show_title]['SHOW'] = tv_title_to_query
+                        tv_overview_plots_dict[tv_show_title]['PLOT'] = str('NO PLOT AVAILABLE')
 
     with open(os.path.expanduser((index_folder + '/TV_INFORMATION_INDEX.csv').format(username)), 'w',
               encoding='UTF-8', newline='') as m_i_i:
@@ -390,7 +280,8 @@ def launch_media_index():
     try:
 
         global username
-        username = input('ENTER YOUR USERNAME (CASE-SENSITIVE): ')
+        username = 'TESTING'
+        # username = input('ENTER YOUR USERNAME (CASE-SENSITIVE): ')
         if username == '':
             separator_3()
             print('USERNAME CANNOT BE LEFT BLANK: ')
