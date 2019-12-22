@@ -117,10 +117,13 @@ def create_tv_information_index():
                     search_confidence_percentage = match_similar_strings(tv_title_to_query.lower(),
                                                                          found_tv_shows['title'].lower())
 
-                    possible_tv_show_matches = (found_tv_shows, search_confidence_percentage)
+                    possible_tv_show_matches = \
+                        (found_tv_shows['title'], found_tv_shows.movieID, search_confidence_percentage)
                     possible_tv_show_matches_list.append(possible_tv_show_matches)
 
-                possible_tv_show_matches_list.sort(key=lambda x: x[1], reverse=True)
+                possible_tv_show_matches_list.sort(key=lambda x: x[2], reverse=True)
+
+                print(possible_tv_show_matches_list)
 
                 tv_id = None
 
