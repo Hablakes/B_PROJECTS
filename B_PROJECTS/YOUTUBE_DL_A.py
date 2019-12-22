@@ -123,17 +123,15 @@ def create_tv_information_index():
 
                 possible_tv_show_matches_list.sort(key=lambda x: x[2], reverse=True)
 
-                print(possible_tv_show_matches_list)
-
-                tv_id = None
-
-                tv_results_list[tv_file[0]]['SEARCH CONFIDENCE PERCENTAGE'] = search_confidence_percentage
+                tv_id = possible_tv_show_matches_list[0][1]
 
                 tv_info_set = ia.get_movie(tv_id)
 
+                tv_results_list[tv_file[0]]['SEARCH CONFIDENCE PERCENTAGE'] = search_confidence_percentage
+
                 try:
 
-                    if float(search_confidence_percentage) >= 0.95:
+                    if tv_info_set:
 
                         ia.update(tv_info_set, 'episodes')
 
