@@ -34,6 +34,7 @@ extensions = ('.3gp', '.asf', '.asx', '.avc', '.avi', '.bdmv', '.bin', '.bivx', 
 index_folder = '~/{0}_MEDIA_INDEX'
 
 username = None
+movie_dir_input, tv_dir_input, movie_alt_dir_input, tv_alt_dir_input = None, None, None, None
 
 
 def main():
@@ -57,7 +58,6 @@ def create_media_information_indices():
 def create_tv_information_index():
     tv_results_list = {}
     tv_overview_plots_dict = {}
-    possible_tv_show_matches_list = []
 
     tv_scan_start = time.time()
     ia = IMDb()
@@ -110,11 +110,15 @@ def create_tv_information_index():
                     elif track.track_type == 'Video':
                         tv_results_list[tv_file[0]]['RESOLUTION'] = str(track.width) + 'x' + str(track.height)
 
-                tv_imdb = ia.search_movie(tv_title_to_query)
+                tv_imdb = ia.search_movie(tv_title_key)
+
+                possible_tv_show_matches_list = []
 
                 for found_tv_shows in tv_imdb:
+                    if found_tv_shows['kind'] != 'tv series':
+                        continue
 
-                    search_confidence_percentage = match_similar_strings(tv_title_to_query.lower(),
+                    search_confidence_percentage = match_similar_strings(tv_title_key.lower(),
                                                                          found_tv_shows['title'].lower())
 
                     possible_tv_show_matches = \
@@ -135,13 +139,15 @@ def create_tv_information_index():
 
                         ia.update(tv_info_set, 'episodes')
 
-                        tv_show_title = tv_info_set['title']
-                        tv_show_year = tv_info_set['year']
-                        tv_show_plot = tv_info_set['plot']
-                        episode_title = tv_info_set['episodes'][g_season_number][g_episode_number]['title']
-                        episode_year = tv_info_set['episodes'][g_season_number][g_episode_number]['year']
-                        episode_plot = tv_info_set['episodes'][g_season_number][g_episode_number]['plot']
-                        episode_rating = tv_info_set['episodes'][g_season_number][g_episode_number]['rating']
+                        tv_show_title = tv_info_set.get('title')
+                        tv_show_year = tv_info_set.get('year')
+                        if 'plot' in tv_info_set:
+                            tv_show_plot = tv_info_set['plot'][0]
+                        if 'episodes' in tv_info_set:
+                            episode_title = tv_info_set['episodes'][g_season_number][g_episode_number].get('title')
+                            episode_year = tv_info_set['episodes'][g_season_number][g_episode_number].get('year')
+                            episode_plot = tv_info_set['episodes'][g_season_number][g_episode_number].get('plot')
+                            episode_rating = tv_info_set['episodes'][g_season_number][g_episode_number].get('rating')
 
                         if tv_show_title not in tv_overview_plots_dict:
                             tv_overview_plots_dict[tv_show_title] = {}
