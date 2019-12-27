@@ -79,11 +79,6 @@ def create_tv_information_index():
                 tv_results_list[tv_file[0]]['FOLDER-NAME'] = tv_title_key
                 tv_results_list[tv_file[0]]['FILE-NAME'] = tv_filename_key
 
-    print(tv_folders_list)
-    separator_3()
-
-
-"""
                 tv_file_size = os.path.getsize(tv_file[0])
                 tv_file_size_in_mb = (int(tv_file_size) / 1048576)
                 tv_file_size_in_mb_rounded = str(round(tv_file_size_in_mb, 2))
@@ -155,7 +150,7 @@ def create_tv_information_index():
                         tv_show_title = tv_info_set.get('title')
                         tv_show_year = tv_info_set.get('year')
                         if 'plot' in tv_info_set:
-                            tv_show_plot = tv_info_set['plot'][0]
+                            tv_show_plot = tv_info_set['plot']
                         if 'episodes' in tv_info_set:
                             episode_title = tv_info_set['episodes'][g_season_number][g_episode_number].get('title')
                             episode_year = tv_info_set['episodes'][g_season_number][g_episode_number].get('year')
@@ -233,7 +228,7 @@ def create_tv_information_index():
     readable_tv_scan_time = round(tv_scan_end - tv_scan_start, 2)
     print('TV INFORMATION SCAN COMPLETE - TIME ELAPSED: ', readable_tv_scan_time, 'Seconds')
     separator_3()
-"""
+
 
 
 def directory_selection():
