@@ -66,6 +66,9 @@ def create_tv_information_index():
             tv_filename_key = tv_file[0].rsplit('/', 1)[-1]
             tv_title_key = tv_file[0].rsplit('/')[-2]
 
+            if tv_title_key not in tv_folders_list:
+                tv_folders_list.append(tv_title_key)
+
             if not tv_filename_key.lower().endswith('.nfo'):
 
                 if tv_file[0] not in tv_results_list:
@@ -75,10 +78,6 @@ def create_tv_information_index():
                 tv_results_list[tv_file[0]]['MEDIA-TYPE'] = str('TV SHOW')
                 tv_results_list[tv_file[0]]['FOLDER-NAME'] = tv_title_key
                 tv_results_list[tv_file[0]]['FILE-NAME'] = tv_filename_key
-
-    for items in tv_results_list.values():
-        if items['FOLDER-NAME'] not in tv_folders_list:
-            tv_folders_list.append(items['FOLDER-NAME'])
 
     print(tv_folders_list)
     separator_3()
