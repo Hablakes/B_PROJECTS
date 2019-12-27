@@ -143,6 +143,30 @@ def create_tv_information_index():
 
                 try:
 
+                    if not tv_info_set:
+
+                        print('TV SHOW EPISODE - NO MATCH -', tv_file[0])
+                        separator_3()
+
+                        tv_results_list[tv_file[0]]['GUESSIT SEARCH TERM'] = tv_title_to_query
+                        tv_results_list[tv_file[0]]['TV SHOW ID #'] = []
+                        tv_results_list[tv_file[0]]['TV SHOW TITLE'] = []
+                        tv_results_list[tv_file[0]]['SEASON #'] = g_season_number
+                        tv_results_list[tv_file[0]]['EPISODE #'] = g_episode_number
+                        tv_results_list[tv_file[0]]['EPISODE TITLE'] = []
+                        tv_results_list[tv_file[0]]['YEAR'] = []
+                        tv_results_list[tv_file[0]]['PLOT'] = []
+                        tv_results_list[tv_file[0]]['RATING'] = []
+                        tv_results_list[tv_file[0]]['RUN-TIME'] = duration_integer
+                        tv_results_list[tv_file[0]]['GENRES'] = []
+
+                        tv_show_title = tv_title_to_query
+
+                        if tv_show_title not in tv_overview_plots_dict:
+                            tv_overview_plots_dict[tv_show_title] = {}
+                            tv_overview_plots_dict[tv_show_title]['SHOW'] = tv_title_to_query
+                            tv_overview_plots_dict[tv_show_title]['PLOT'] = str('NO PLOT AVAILABLE')
+
                     if tv_info_set:
 
                         ia.update(tv_info_set, 'episodes')
@@ -178,32 +202,8 @@ def create_tv_information_index():
                         for genre in tv_info_set['genres']:
                             tv_results_list[tv_file[0]]['GENRES'].append(genre)
 
-                    else:
-
-                        print('TV SHOW EPISODE - NO MATCH -', tv_file[0])
-                        separator_3()
-
-                        tv_results_list[tv_file[0]]['GUESSIT SEARCH TERM'] = tv_title_to_query
-                        tv_results_list[tv_file[0]]['TV SHOW ID #'] = []
-                        tv_results_list[tv_file[0]]['TV SHOW TITLE'] = []
-                        tv_results_list[tv_file[0]]['SEASON #'] = g_season_number
-                        tv_results_list[tv_file[0]]['EPISODE #'] = g_episode_number
-                        tv_results_list[tv_file[0]]['EPISODE TITLE'] = []
-                        tv_results_list[tv_file[0]]['YEAR'] = []
-                        tv_results_list[tv_file[0]]['PLOT'] = []
-                        tv_results_list[tv_file[0]]['RATING'] = []
-                        tv_results_list[tv_file[0]]['RUN-TIME'] = duration_integer
-                        tv_results_list[tv_file[0]]['GENRES'] = []
-
-                        tv_show_title = tv_title_to_query
-
-                        if tv_show_title not in tv_overview_plots_dict:
-                            tv_overview_plots_dict[tv_show_title] = {}
-                            tv_overview_plots_dict[tv_show_title]['SHOW'] = tv_title_to_query
-                            tv_overview_plots_dict[tv_show_title]['PLOT'] = str('NO PLOT AVAILABLE')
-
                 except (IOError, KeyError, TypeError, ValueError) as e:
-                    print('GENERAL INFO ERROR: ', e, '\n', 'TV SHOW FILE(S): ', tv_file[0])
+                    print('TV SHOW INFO ERROR: ', e, '\n', 'TV SHOW FILE(S): ', tv_file[0])
                     print('-' * 100, '\n')
                     continue
 
@@ -228,7 +228,6 @@ def create_tv_information_index():
     readable_tv_scan_time = round(tv_scan_end - tv_scan_start, 2)
     print('TV INFORMATION SCAN COMPLETE - TIME ELAPSED: ', readable_tv_scan_time, 'Seconds')
     separator_3()
-
 
 
 def directory_selection():
