@@ -53,6 +53,8 @@ def create_tv_information_index():
     tv_results_list = {}
     tv_overview_plots_dict = {}
 
+    tv_folders_list = []
+
     tv_scan_start = time.time()
     ia = IMDb()
 
@@ -74,6 +76,15 @@ def create_tv_information_index():
                 tv_results_list[tv_file[0]]['FOLDER-NAME'] = tv_title_key
                 tv_results_list[tv_file[0]]['FILE-NAME'] = tv_filename_key
 
+    for items in tv_results_list.values():
+        if items['FOLDER-NAME'] not in tv_folders_list:
+            tv_folders_list.append(items['FOLDER-NAME'])
+
+    print(tv_folders_list)
+    separator_3()
+
+
+"""
                 tv_file_size = os.path.getsize(tv_file[0])
                 tv_file_size_in_mb = (int(tv_file_size) / 1048576)
                 tv_file_size_in_mb_rounded = str(round(tv_file_size_in_mb, 2))
@@ -223,6 +234,7 @@ def create_tv_information_index():
     readable_tv_scan_time = round(tv_scan_end - tv_scan_start, 2)
     print('TV INFORMATION SCAN COMPLETE - TIME ELAPSED: ', readable_tv_scan_time, 'Seconds')
     separator_3()
+"""
 
 
 def directory_selection():
