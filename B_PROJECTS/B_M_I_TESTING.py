@@ -231,6 +231,29 @@ def create_tv_show_information_index():
                     print('-' * 100, '\n')
                     continue
 
+            elif str(tv_filename_key.lower()) == str('tvshow.nfo'):
+
+                for found_tv_shows in tv_overview_plots_dict:
+                    if str(found_tv_shows[1]) == 'NO PLOT AVAILABLE':
+                        try:
+                            with open(os.path.expanduser((index_folder + '/TV_VIDEO_FILES_PATHS.csv').format(username)),
+                                      encoding='UTF-8') as m_f_p:
+                                tv_index = csv.reader(m_f_p)
+
+                                for checked_tv_file in sorted(tv_index):
+                                    tv_filename_key = checked_tv_file[0].rsplit('/', 1)[-1]
+                                    if str(tv_filename_key.lower()) == str('tvshow.nfo'):
+                                        with open(checked_tv_file[0]) as o_f:
+
+                                            for line in o_f.readlines():
+                                                if '<plot>' in line:
+                                                    tv_overview_plots_dict[found_tv_shows]['PLOT'] = line
+
+                        except (IOError, KeyError, TypeError, ValueError) as e:
+                            print('TV SHOW NFO SCRAPE ERROR: TV SHOW FILE(S): ', e)
+                            print('-' * 100, '\n')
+                            continue
+
     with open(os.path.expanduser((index_folder + '/TV_INFORMATION_INDEX.csv').format(username)), 'w',
               encoding='UTF-8', newline='') as m_i_i:
 
