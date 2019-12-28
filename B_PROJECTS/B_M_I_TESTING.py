@@ -62,8 +62,6 @@ def create_tv_information_index():
               encoding='UTF-8') as m_f_p:
         tv_index = csv.reader(m_f_p)
 
-        tv_info_set = None
-
         for tv_file in sorted(tv_index):
             tv_filename_key = tv_file[0].rsplit('/', 1)[-1]
             tv_title_key = tv_file[0].rsplit('/')[-2]
@@ -115,6 +113,8 @@ def create_tv_information_index():
                         tv_results_list[tv_file[0]]['RESOLUTION'] = str(track.width) + 'x' + str(track.height)
 
                 try:
+
+                    tv_info_set = None
 
                     tv_imdb = ia.search_movie(tv_title_key)
 
@@ -183,7 +183,7 @@ def create_tv_information_index():
                         for genre in tv_info_set['genres']:
                             tv_results_list[tv_file[0]]['GENRES'].append(genre)
 
-                    else:
+                    elif tv_info_set is None:
 
                         print('TV SHOW EPISODE - NO MATCH -', tv_file[0])
                         separator_3()
