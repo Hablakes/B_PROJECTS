@@ -165,7 +165,7 @@ def create_tv_information_index():
                             tv_overview_plots_dict[tv_show_title] = {}
                             tv_overview_plots_dict[tv_show_title]['SHOW'] = str(str(tv_show_title) + ' (' +
                                                                                 str(tv_show_year) + ')')
-                            tv_overview_plots_dict[tv_show_title]['PLOT'] = tv_show_plot[0].split('::')[0]
+                            tv_overview_plots_dict[tv_show_title]['PLOT'] = tv_show_plot[0].split('::')[0].strip()
 
                         tv_results_list[tv_file[0]]['GUESSIT SEARCH TERM'] = g_tv_title_to_query
                         tv_results_list[tv_file[0]]['TV SHOW ID #'] = tv_id
@@ -174,7 +174,7 @@ def create_tv_information_index():
                         tv_results_list[tv_file[0]]['EPISODE #'] = g_episode_number
                         tv_results_list[tv_file[0]]['EPISODE TITLE'] = episode_title
                         tv_results_list[tv_file[0]]['YEAR'] = episode_year
-                        tv_results_list[tv_file[0]]['PLOT'] = episode_plot.split('::')[0]
+                        tv_results_list[tv_file[0]]['PLOT'] = episode_plot.split('::')[0].strip()
                         tv_results_list[tv_file[0]]['RATING'] = round(episode_rating, 2)
                         tv_results_list[tv_file[0]]['RUN-TIME'] = duration_integer
 
