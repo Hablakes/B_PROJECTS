@@ -250,9 +250,19 @@ def create_tv_show_information_index():
 
                 if str(tv_title_key).lower() in str(review_items[0]).lower():
                     if str(tv_filename_key).lower() == str('tvshow.nfo').lower():
-                        print(checked_tv_file)
+                        try:
 
-    separator_3()
+                            with open(checked_tv_file[0]) as o_f:
+
+                                for line in o_f.readlines():
+                                    if '<plot>' in line:
+                                        formatted_plot = remove_html_tags(line)
+                                        tv_overview_plots_dict[tv_title_key]['PLOT'] = formatted_plot.strip()
+
+                        except (IOError, KeyError, TypeError, ValueError) as e:
+                            print('TV SHOW NFO SCRAPE ERROR: TV SHOW FILE(S): ', e)
+                            print('-' * 100, '\n')
+                            continue
 
     with open(os.path.expanduser((index_folder + '/TV_INFORMATION_INDEX.csv').format(username)), 'w',
               encoding='UTF-8', newline='') as m_i_i:
@@ -275,22 +285,6 @@ def create_tv_show_information_index():
     readable_tv_scan_time = round(tv_scan_end - tv_scan_start, 2)
     print('TV INFORMATION SCAN COMPLETE - TIME ELAPSED: ', readable_tv_scan_time, 'Seconds')
     separator_3()
-
-
-"""
-                        try:
-                            
-                            with open(checked_tv_file[0]) as o_f:
-
-                                for line in o_f.readlines():
-                                    if '<plot>' in line:
-                                        tv_overview_plots_dict[found_tv_shows]['PLOT'] = line
-
-                        except (IOError, KeyError, TypeError, ValueError) as e:
-                            print('TV SHOW NFO SCRAPE ERROR: TV SHOW FILE(S): ', e)
-                            print('-' * 100, '\n')
-                            continue
-"""
 
 
 def directory_selection():
@@ -480,6 +474,12 @@ def media_index_home():
     except (TypeError, ValueError) as e:
         print('\n', 'INPUT ERROR: ', e, '\n', '\n', 'PLEASE RETRY YOUR SELECTION USING THE NUMBER KEYS')
         separator_3()
+
+
+def remove_html_tags(text):
+    import re
+    clean = re.compile('<.*?>')
+    return re.sub(clean, '', text)
 
 
 def separator_1():
