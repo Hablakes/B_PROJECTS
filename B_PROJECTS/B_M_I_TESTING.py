@@ -233,26 +233,24 @@ def create_tv_show_information_index():
                     continue
 
     for found_tv_shows in tv_overview_plots_dict.items():
+
         if str(found_tv_shows[1]['SHOW']).lower() == str(tv_title_key).lower():
             if str(found_tv_shows[1]['PLOT']).lower() == str('NO PLOT AVAILABLE').lower():
                 tv_overview_plots_nfo_list.append(found_tv_shows)
-                print(tv_overview_plots_nfo_list)
 
-                for items in tv_overview_plots_nfo_list:
-                    print(items)
+    for review_items in tv_overview_plots_nfo_list:
 
-                try:
-                    with open(os.path.expanduser((index_folder + '/TV_VIDEO_FILES_PATHS.csv').format(username)),
-                              encoding='UTF-8') as m_f_p_2:
-                        tv_index = csv.reader(m_f_p_2)
-                        for checked_tv_file in sorted(tv_index):
-                            tv_filename_key = checked_tv_file[0].rsplit('/', 1)[-1]
-                            tv_title_key = checked_tv_file[0].rsplit('/')[-2]
+        with open(os.path.expanduser((index_folder + '/TV_VIDEO_FILES_PATHS.csv').format(username)),
+                  encoding='UTF-8') as m_f_p_2:
+            tv_index = csv.reader(m_f_p_2)
 
-                except (IOError, KeyError, TypeError, ValueError) as e:
-                    print('TV SHOW NFO SCRAPE ERROR: TV SHOW FILE(S): ', e)
-                    print('-' * 100, '\n')
-                    continue
+            for checked_tv_file in sorted(tv_index):
+                tv_filename_key = checked_tv_file[0].rsplit('/', 1)[-1]
+                tv_title_key = checked_tv_file[0].rsplit('/')[-2]
+
+                if str(tv_title_key).lower() in str(review_items[0]).lower():
+                    if str(tv_filename_key).lower() == str('tvshow.nfo').lower():
+                        print(checked_tv_file)
 
     separator_3()
 
@@ -278,27 +276,21 @@ def create_tv_show_information_index():
     print('TV INFORMATION SCAN COMPLETE - TIME ELAPSED: ', readable_tv_scan_time, 'Seconds')
     separator_3()
 
-    """                            
-                                try:
-                                    with open(os.path.expanduser((index_folder + 
-                                                                  '/TV_VIDEO_FILES_PATHS.csv').format(username)),
-                                              encoding='UTF-8') as m_f_p_2:
-                                        tv_index = csv.reader(m_f_p_2)
 
-                                        for checked_tv_file in sorted(tv_index):
-                                            tv_filename_key = checked_tv_file[0].rsplit('/', 1)[-1]
-                                            if str(tv_filename_key.lower()) == str('tvshow.nfo').lower():
-                                                with open(checked_tv_file[0]) as o_f:
+"""
+                        try:
+                            
+                            with open(checked_tv_file[0]) as o_f:
 
-                                                    for line in o_f.readlines():
-                                                        if '<plot>' in line:
-                                                            tv_overview_plots_dict[found_tv_shows]['PLOT'] = line
+                                for line in o_f.readlines():
+                                    if '<plot>' in line:
+                                        tv_overview_plots_dict[found_tv_shows]['PLOT'] = line
 
-                                except (IOError, KeyError, TypeError, ValueError) as e:
-                                    print('TV SHOW NFO SCRAPE ERROR: TV SHOW FILE(S): ', e)
-                                    print('-' * 100, '\n')
-                                    continue
-    """
+                        except (IOError, KeyError, TypeError, ValueError) as e:
+                            print('TV SHOW NFO SCRAPE ERROR: TV SHOW FILE(S): ', e)
+                            print('-' * 100, '\n')
+                            continue
+"""
 
 
 def directory_selection():
