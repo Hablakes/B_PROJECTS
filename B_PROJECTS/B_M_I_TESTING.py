@@ -233,8 +233,8 @@ def create_tv_show_information_index():
 
             elif str(tv_filename_key.lower()) == str('tvshow.nfo').lower():
 
-                for found_tv_shows in tv_overview_plots_dict:
-                    if str(found_tv_shows[1]).lower() == str('NO PLOT AVAILABLE').lower():
+                for found_tv_shows in tv_overview_plots_dict.items():
+                    if str(found_tv_shows[1]['PLOT']).lower() == str('NO PLOT AVAILABLE').lower():
                         try:
                             with open(os.path.expanduser((index_folder + '/TV_VIDEO_FILES_PATHS.csv').format(username)),
                                       encoding='UTF-8') as m_f_p_2:
