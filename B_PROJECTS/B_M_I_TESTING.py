@@ -55,6 +55,7 @@ def create_media_information_indices():
 def create_tv_show_information_index():
     tv_scan_start = time.time()
     ia = IMDb()
+    tv_overview_plots_nfo_list = []
 
     with open(os.path.expanduser((index_folder + '/TV_VIDEO_FILES_PATHS.csv').format(username)),
               encoding='UTF-8') as m_f_p:
@@ -231,28 +232,29 @@ def create_tv_show_information_index():
                     print('-' * 100, '\n')
                     continue
 
-            elif str(tv_filename_key.lower()) == str('tvshow.nfo').lower():
+    for found_tv_shows in tv_overview_plots_dict.items():
+        if str(found_tv_shows[1]['SHOW']).lower() == str(tv_title_key).lower():
+            if str(found_tv_shows[1]['PLOT']).lower() == str('NO PLOT AVAILABLE').lower():
+                tv_overview_plots_nfo_list.append(found_tv_shows)
+                print(tv_overview_plots_nfo_list)
 
-                for found_tv_shows in tv_overview_plots_dict.items():
-                    if str(found_tv_shows[1]['PLOT']).lower() == str('NO PLOT AVAILABLE').lower():
-                        try:
-                            with open(os.path.expanduser((index_folder + '/TV_VIDEO_FILES_PATHS.csv').format(username)),
-                                      encoding='UTF-8') as m_f_p_2:
-                                tv_index = csv.reader(m_f_p_2)
+                for items in tv_overview_plots_nfo_list:
+                    print(items)
 
-                                for checked_tv_file in sorted(tv_index):
-                                    tv_filename_key = checked_tv_file[0].rsplit('/', 1)[-1]
-                                    if str(tv_filename_key.lower()) == str('tvshow.nfo').lower():
-                                        with open(checked_tv_file[0]) as o_f:
+                try:
+                    with open(os.path.expanduser((index_folder + '/TV_VIDEO_FILES_PATHS.csv').format(username)),
+                              encoding='UTF-8') as m_f_p_2:
+                        tv_index = csv.reader(m_f_p_2)
+                        for checked_tv_file in sorted(tv_index):
+                            tv_filename_key = checked_tv_file[0].rsplit('/', 1)[-1]
+                            tv_title_key = checked_tv_file[0].rsplit('/')[-2]
 
-                                            for line in o_f.readlines():
-                                                if '<plot>' in line:
-                                                    tv_overview_plots_dict[found_tv_shows]['PLOT'] = line
+                except (IOError, KeyError, TypeError, ValueError) as e:
+                    print('TV SHOW NFO SCRAPE ERROR: TV SHOW FILE(S): ', e)
+                    print('-' * 100, '\n')
+                    continue
 
-                        except (IOError, KeyError, TypeError, ValueError) as e:
-                            print('TV SHOW NFO SCRAPE ERROR: TV SHOW FILE(S): ', e)
-                            print('-' * 100, '\n')
-                            continue
+    separator_3()
 
     with open(os.path.expanduser((index_folder + '/TV_INFORMATION_INDEX.csv').format(username)), 'w',
               encoding='UTF-8', newline='') as m_i_i:
@@ -275,6 +277,28 @@ def create_tv_show_information_index():
     readable_tv_scan_time = round(tv_scan_end - tv_scan_start, 2)
     print('TV INFORMATION SCAN COMPLETE - TIME ELAPSED: ', readable_tv_scan_time, 'Seconds')
     separator_3()
+
+    """                            
+                                try:
+                                    with open(os.path.expanduser((index_folder + 
+                                                                  '/TV_VIDEO_FILES_PATHS.csv').format(username)),
+                                              encoding='UTF-8') as m_f_p_2:
+                                        tv_index = csv.reader(m_f_p_2)
+
+                                        for checked_tv_file in sorted(tv_index):
+                                            tv_filename_key = checked_tv_file[0].rsplit('/', 1)[-1]
+                                            if str(tv_filename_key.lower()) == str('tvshow.nfo').lower():
+                                                with open(checked_tv_file[0]) as o_f:
+
+                                                    for line in o_f.readlines():
+                                                        if '<plot>' in line:
+                                                            tv_overview_plots_dict[found_tv_shows]['PLOT'] = line
+
+                                except (IOError, KeyError, TypeError, ValueError) as e:
+                                    print('TV SHOW NFO SCRAPE ERROR: TV SHOW FILE(S): ', e)
+                                    print('-' * 100, '\n')
+                                    continue
+    """
 
 
 def directory_selection():
