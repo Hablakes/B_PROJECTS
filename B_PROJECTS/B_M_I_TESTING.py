@@ -56,6 +56,7 @@ def create_tv_show_information_index():
     tv_scan_start = time.time()
     ia = IMDb()
     tv_overview_plots_nfo_list = []
+    tv_episodes_plots_nfo_list = []
 
     with open(os.path.expanduser((index_folder + '/TV_VIDEO_FILES_PATHS.csv').format(username)),
               encoding='UTF-8') as m_f_p:
@@ -111,15 +112,15 @@ def create_tv_show_information_index():
 
                     possible_tv_show_matches_list = []
 
-                    for found_tv_shows in tv_imdb:
-                        if found_tv_shows['kind'] != 'tv series':
+                    for found_tv_plots in tv_imdb:
+                        if found_tv_plots['kind'] != 'tv series':
                             continue
 
                         search_confidence_percentage = match_similar_strings(tv_title_key.lower(),
-                                                                             found_tv_shows['title'].lower())
+                                                                             found_tv_plots['title'].lower())
 
                         possible_tv_show_matches = \
-                            (found_tv_shows['title'], found_tv_shows.movieID, search_confidence_percentage)
+                            (found_tv_plots['title'], found_tv_plots.movieID, search_confidence_percentage)
                         possible_tv_show_matches_list.append(possible_tv_show_matches)
 
                     possible_tv_show_matches_list.sort(key=lambda x: x[2], reverse=True)
@@ -143,7 +144,7 @@ def create_tv_show_information_index():
 
                 try:
 
-                    for found_tv_shows in tv_folders_list:
+                    for found_tv_plots in tv_folders_list:
 
                         if tv_info_set:
 
@@ -155,19 +156,19 @@ def create_tv_show_information_index():
                                 item_plot = tv_info_set['plot']
 
                             if item_title not in tv_overview_plots_dict:
-                                tv_overview_plots_dict[found_tv_shows] = {}
-                                tv_overview_plots_dict[found_tv_shows]['SHOW'] = str(
+                                tv_overview_plots_dict[found_tv_plots] = {}
+                                tv_overview_plots_dict[found_tv_plots]['SHOW'] = str(
                                     str(item_title) + ' (' + str(item_year) + ')')
-                                tv_overview_plots_dict[found_tv_shows]['PLOT'] = item_plot[0].split('::')[0].strip()
+                                tv_overview_plots_dict[found_tv_plots]['PLOT'] = item_plot[0].split('::')[0].strip()
 
                 except (IOError, KeyError, TypeError, ValueError) as e:
                     print('TV SHOW OVERVIEW INFO ERROR: TV SHOW FILE(S): ', e)
                     print('-' * 100, '\n')
 
-                if found_tv_shows not in tv_overview_plots_dict:
-                    tv_overview_plots_dict[found_tv_shows] = {}
-                    tv_overview_plots_dict[found_tv_shows]['SHOW'] = found_tv_shows
-                    tv_overview_plots_dict[found_tv_shows]['PLOT'] = 'NO PLOT AVAILABLE'
+                if found_tv_plots not in tv_overview_plots_dict:
+                    tv_overview_plots_dict[found_tv_plots] = {}
+                    tv_overview_plots_dict[found_tv_plots]['SHOW'] = found_tv_plots
+                    tv_overview_plots_dict[found_tv_plots]['PLOT'] = 'NO PLOT AVAILABLE'
 
                 try:
 
@@ -232,13 +233,13 @@ def create_tv_show_information_index():
                     print('-' * 100, '\n')
                     continue
 
-    for found_tv_shows in tv_overview_plots_dict.items():
+    for found_tv_plots in tv_overview_plots_dict.items():
 
-        if str(found_tv_shows[1]['SHOW']).lower() == str(tv_title_key).lower():
-            if str(found_tv_shows[1]['PLOT']).lower() == str('NO PLOT AVAILABLE').lower():
-                tv_overview_plots_nfo_list.append(found_tv_shows)
+        if str(found_tv_plots[1]['SHOW']).lower() == str(tv_title_key).lower():
+            if str(found_tv_plots[1]['PLOT']).lower() == str('NO PLOT AVAILABLE').lower():
+                tv_overview_plots_nfo_list.append(found_tv_plots)
 
-    for review_items in tv_overview_plots_nfo_list:
+    for plot_review_items in tv_overview_plots_nfo_list:
 
         with open(os.path.expanduser((index_folder + '/TV_VIDEO_FILES_PATHS.csv').format(username)),
                   encoding='UTF-8') as m_f_p_2:
@@ -248,7 +249,7 @@ def create_tv_show_information_index():
                 tv_filename_key = checked_tv_file[0].rsplit('/', 1)[-1]
                 tv_title_key = checked_tv_file[0].rsplit('/')[-2]
 
-                if str(tv_title_key).lower() in str(review_items[0]).lower():
+                if str(tv_title_key).lower() in str(plot_review_items[0]).lower():
                     if str(tv_filename_key).lower() == str('tvshow.nfo').lower():
                         try:
 
@@ -264,6 +265,16 @@ def create_tv_show_information_index():
                             print('-' * 100, '\n')
                             continue
 
+    for found_tv_shows in tv_results_list.items():
+
+        if str(found_tv_shows[1]['FOLDER-NAME']).lower() == str(tv_title_key).lower():
+            if str(found_tv_shows[1]['PLOT']).lower() == str('NO MATCH').lower():
+                print(found_tv_shows)
+
+    separator_3()
+
+
+"""
     with open(os.path.expanduser((index_folder + '/TV_INFORMATION_INDEX.csv').format(username)), 'w',
               encoding='UTF-8', newline='') as m_i_i:
 
@@ -285,6 +296,7 @@ def create_tv_show_information_index():
     readable_tv_scan_time = round(tv_scan_end - tv_scan_start, 2)
     print('TV INFORMATION SCAN COMPLETE - TIME ELAPSED: ', readable_tv_scan_time, 'Seconds')
     separator_3()
+"""
 
 
 def directory_selection():
