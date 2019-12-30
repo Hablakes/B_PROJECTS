@@ -1,6 +1,34 @@
-from difflib import SequenceMatcher
+from __future__ import unicode_literals
 
-import imdb
+import csv
+import json
+import os
+import pathlib
+import re
+import textwrap
+import time
+
+import guessit
+import numpy
+import pyfiglet
+import pymediainfo
+import youtube_dl
+
+from datetime import datetime
+from difflib import SequenceMatcher
+from imdb import IMDb
+from tkinter import filedialog, Tk
+
+date_string = str(datetime.today().strftime('%Y_%m_%d'))
+
+extensions = ('.3gp', '.asf', '.asx', '.avc', '.avi', '.bdmv', '.bin', '.bivx', '.dat', '.disc', '.divx', '.dv',
+              '.dvr-ms', '.evo', '.fli', '.flv', '.h264', '.img', '.iso', '.m2ts', '.m2v', '.m4v', '.mkv', '.mov',
+              '.mp4', '.mpeg', '.mpg', '.mt2s', '.mts', '.nfo', '.nrg', '.nsv', '.nuv', '.ogm', '.pva', '.qt', '.rm',
+              '.rmvb', '.strm', '.svq3', '.ts', '.ty', '.viv', '.vob', '.vp3', '.wmv', '.xvid', '.webm')
+
+index_folder = '~/{0}_MEDIA_INDEX'
+
+username = 'BX'
 
 
 def match_similar_strings(a, b):
@@ -8,7 +36,7 @@ def match_similar_strings(a, b):
 
 
 def find_imdb_show(show_name):
-    ia = imdb.IMDb()
+    ia = IMDb()
     search_confidence_percentage = 0
 
     tv_imdb = ia.search_movie(show_name)
@@ -31,8 +59,31 @@ def find_imdb_show(show_name):
     if possible_tv_show_matches_list:
         tv_id = possible_tv_show_matches_list[0][1]
         tv_info_set = ia.get_movie(tv_id)
-        return search_confidence_percentage, tv_info_set
+        return tv_info_set
 
 
-print(find_imdb_show('jhfjkahsdjkldhsljkfhasd'))
-print(find_imdb_show('The Expanse'))
+def tv_show_imdb_check():
+    tv_results_list = {}
+    tv_overview_plots_dict = {}
+
+    tv_folders_list = []
+
+    with open(os.path.expanduser((index_folder + '/TV_VIDEO_FILES_PATHS.csv').format(username)),
+              encoding='UTF-8') as m_f_p:
+        tv_index = csv.reader(m_f_p)
+
+        for tv_file in sorted(tv_index):
+            tv_filename_key = tv_file[0].rsplit('/', 1)[-1]
+            tv_title_key = tv_file[0].rsplit('/')[-2].split('(')[0]
+            tv_title_and_year_key = tv_file[0].rsplit('/')[-2]
+            tv_year_key = tv_file[0].rsplit('/')[-2].rsplit('(')[-1][:-1]
+
+            if tv_title_key not in tv_folders_list:
+                tv_folders_list.append(tv_title_key)
+
+    for found_tv_shows in tv_folders_list:
+        print(repr(find_imdb_show(found_tv_shows)))
+
+
+tv_show_imdb_check()
+print(find_imdb_show('Africa'))
