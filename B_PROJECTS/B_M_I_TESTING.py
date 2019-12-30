@@ -275,6 +275,10 @@ def create_tv_show_information_index():
 
 
 """
+                    fname = pathlib.Path(tv_file[0])
+                    with open(fname.parent / 'tvshow.nfo', 'r') as f:
+                        print(f.read())
+                                   
     with open(os.path.expanduser((index_folder + '/TV_INFORMATION_INDEX.csv').format(username)), 'w',
               encoding='UTF-8', newline='') as m_i_i:
 
