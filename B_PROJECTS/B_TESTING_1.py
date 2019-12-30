@@ -82,7 +82,11 @@ def tv_show_imdb_check():
                 tv_folders_list.append(tv_title_key)
 
     for found_tv_shows in tv_folders_list:
-        print(repr(find_imdb_show(found_tv_shows)))
+        found_result = find_imdb_show(found_tv_shows)
+        if found_result:
+            print(found_result), print(repr(found_result))
+        else:
+            print(found_tv_shows)
 
 
 tv_show_imdb_check()
