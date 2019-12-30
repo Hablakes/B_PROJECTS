@@ -44,7 +44,7 @@ def find_imdb_show(show_name):
     possible_tv_show_matches_list = []
 
     for found_tv_plots in tv_imdb:
-        if found_tv_plots['kind'] != 'tv series':
+        if found_tv_plots['kind'] not in ('tv series', 'tv miniseries', 'tv movie'):
             continue
 
         search_confidence_percentage = match_similar_strings(show_name.lower(),
@@ -86,4 +86,4 @@ def tv_show_imdb_check():
 
 
 tv_show_imdb_check()
-print(find_imdb_show('Africa'))
+#print(find_imdb_show('After Hitler'))
