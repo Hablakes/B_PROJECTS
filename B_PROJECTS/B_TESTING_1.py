@@ -81,6 +81,9 @@ def tv_show_imdb_check():
             if tv_title_key not in tv_folders_list:
                 tv_folders_list.append(tv_title_key)
 
+            if tv_file[0] not in tv_results_list:
+                tv_results_list[tv_file[0]] = {}
+
     for found_tv_shows in tv_folders_list:
         found_result = find_imdb_show(found_tv_shows)
         if found_result:
