@@ -81,6 +81,16 @@ def tv_shows_index():
             if tv_file[0] not in tv_results_list:
                 tv_results_list[tv_file[0]] = {}
 
+    for found_tv_shows in tv_folders_list:
+        found_result = find_imdb_show(found_tv_shows)
+        if found_result:
+            for items in found_result.values():
+                print(items)
+            separator_3()
+
+
+
+"""
             tv_file_size = os.path.getsize(tv_file[0])
             tv_file_size_in_mb = (int(tv_file_size) / 1048576)
             tv_file_size_in_mb_rounded = str(round(tv_file_size_in_mb, 2))
@@ -93,12 +103,11 @@ def tv_shows_index():
             tv_results_list[tv_file[0]]['FILE-SIZE'] = tv_file_size_in_mb_rounded
             tv_results_list[tv_file[0]]['TV-HASH'] = tv_hash
             tv_results_list[tv_file[0]]['FILE-TYPE'] = tv_filetype_key
-
-    for found_tv_shows in tv_folders_list:
-        found_result = find_imdb_show(found_tv_shows)
-
+            
     for found_tv_episodes in tv_results_list.items():
         print(found_tv_episodes)
+        
+"""
 
 
 def match_similar_strings(a, b):
