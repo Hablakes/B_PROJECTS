@@ -58,7 +58,7 @@ def find_imdb_show(show_name):
         return tv_info_set
 
 
-def tv_show_imdb_check():
+def tv_shows_index():
     tv_results_list = {}
     tv_overview_plots_dict = {}
 
@@ -70,6 +70,7 @@ def tv_show_imdb_check():
 
         for tv_file in sorted(tv_index):
             tv_filename_key = tv_file[0].rsplit('/', 1)[-1]
+            tv_filetype_key = tv_file[0].rsplit('.', 1)[1]
             tv_title_key = tv_file[0].rsplit('/')[-2].split('(')[0]
             tv_title_and_year_key = tv_file[0].rsplit('/')[-2]
             tv_year_key = tv_file[0].rsplit('/')[-2].rsplit('(')[-1][:-1]
@@ -80,19 +81,21 @@ def tv_show_imdb_check():
             if tv_file[0] not in tv_results_list:
                 tv_results_list[tv_file[0]] = {}
 
+            tv_file_size = os.path.getsize(tv_file[0])
+            tv_file_size_in_mb = (int(tv_file_size) / 1048576)
+            tv_file_size_in_mb_rounded = str(round(tv_file_size_in_mb, 2))
+            tv_hash = str(str(tv_filename_key) + '_' + str(tv_file_size))
+
             tv_results_list[tv_file[0]]['MEDIA-PATH'] = tv_file[0]
             tv_results_list[tv_file[0]]['MEDIA-TYPE'] = str('TV SHOW')
             tv_results_list[tv_file[0]]['FOLDER-NAME'] = tv_title_key
             tv_results_list[tv_file[0]]['FILE-NAME'] = tv_filename_key
+            tv_results_list[tv_file[0]]['FILE-SIZE'] = tv_file_size_in_mb_rounded
+            tv_results_list[tv_file[0]]['TV-HASH'] = tv_hash
+            tv_results_list[tv_file[0]]['FILE-TYPE'] = tv_filetype_key
 
     for found_tv_shows in tv_folders_list:
         found_result = find_imdb_show(found_tv_shows)
-        if found_result:
-            print(found_result), print(repr(found_result))
-        else:
-            print(found_tv_shows)
-
-    separator_3()
 
     for found_tv_episodes in tv_results_list.items():
         print(found_tv_episodes)
@@ -107,5 +110,5 @@ def separator_3():
         print(items)
 
 
-tv_show_imdb_check()
+tv_shows_index()
 # print(find_imdb_show('TEST SHOW'))
