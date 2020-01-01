@@ -28,7 +28,7 @@ extensions = ('.3gp', '.asf', '.asx', '.avc', '.avi', '.bdmv', '.bin', '.bivx', 
 
 index_folder = '~/{0}_MEDIA_INDEX'
 
-username = 'TESTING'
+username = 'BX'
 
 
 def find_imdb_show(show_name):
@@ -63,21 +63,20 @@ def tv_shows_overview_plots_index():
     tv_folders_list = []
     tv_overview_plots_nfo_list = []
 
+    tv_scan_start = time.time()
+
     with open(os.path.expanduser((index_folder + '/TV_VIDEO_FILES_PATHS.csv').format(username)),
               encoding='UTF-8') as m_f_p:
         tv_index = csv.reader(m_f_p)
 
         for tv_file in sorted(tv_index):
-
             tv_filename_key = tv_file[0].rsplit('/', 1)[-1]
             tv_title_key = tv_file[0].rsplit('/')[-2].split('(')[0]
 
             if tv_title_key not in tv_folders_list:
-
                 tv_folders_list.append(tv_title_key)
 
     for found_tv_shows in tv_folders_list:
-
         found_result = find_imdb_show(found_tv_shows)
 
         if found_result:
@@ -86,18 +85,15 @@ def tv_shows_overview_plots_index():
             item_year = found_result.get('year')
 
             if item_title not in tv_overview_plots_dict:
-
                 tv_overview_plots_dict[found_tv_shows] = {}
                 tv_overview_plots_dict[found_tv_shows]['SHOW'] = str(
                     str(item_title) + ' (' + str(item_year) + ')')
 
                 if 'plot' in found_result:
-
                     item_plot = found_result['plot']
                     tv_overview_plots_dict[found_tv_shows]['PLOT'] = item_plot[0].split('::')[0].strip()
 
         if found_tv_shows not in tv_overview_plots_dict:
-
             tv_overview_plots_dict[found_tv_shows] = {}
             tv_overview_plots_dict[found_tv_shows]['SHOW'] = found_tv_shows
             tv_overview_plots_dict[found_tv_shows]['PLOT'] = 'NO PLOT AVAILABLE'
@@ -109,10 +105,17 @@ def tv_shows_overview_plots_index():
             if str(found_tv_plots[1]['PLOT']).lower() == str('NO PLOT AVAILABLE').lower():
                 tv_overview_plots_nfo_list.append(found_tv_plots)
 
+    separator_3()
     for tv_show_plots in tv_overview_plots_dict.items():
         print(tv_show_plots)
     separator_3()
     print(tv_overview_plots_nfo_list)
+    separator_3()
+
+    tv_scan_end = time.time()
+    readable_tv_scan_time = round(tv_scan_end - tv_scan_start, 2)
+    print('TV INFORMATION SCAN COMPLETE - TIME ELAPSED: ', readable_tv_scan_time, 'Seconds')
+    separator_3()
 
 
 def match_similar_strings(a, b):
