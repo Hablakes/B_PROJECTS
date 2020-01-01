@@ -84,12 +84,28 @@ def tv_shows_index():
 
     for found_tv_shows in tv_folders_list:
         found_result = find_imdb_show(found_tv_shows)
+
         if found_result:
-            for items in found_result.items():
-                print(items)
-            separator_3()
 
+            item_title = found_result.get('title')
+            item_year = found_result.get('year')
 
+            if item_title not in tv_overview_plots_dict:
+                tv_overview_plots_dict[found_tv_shows] = {}
+                tv_overview_plots_dict[found_tv_shows]['SHOW'] = str(
+                    str(item_title) + ' (' + str(item_year) + ')')
+
+                if 'plot' in found_result:
+                    item_plot = found_result['plot']
+                    tv_overview_plots_dict[found_tv_shows]['PLOT'] = item_plot[0].split('::')[0].strip()
+
+        if found_tv_shows not in tv_overview_plots_dict:
+            tv_overview_plots_dict[found_tv_shows] = {}
+            tv_overview_plots_dict[found_tv_shows]['SHOW'] = found_tv_shows
+            tv_overview_plots_dict[found_tv_shows]['PLOT'] = 'NO PLOT AVAILABLE'
+
+    for items in tv_overview_plots_dict.items():
+        print(items)
 
 """
             tv_file_size = os.path.getsize(tv_file[0])
@@ -107,6 +123,10 @@ def tv_shows_index():
             
     for found_tv_episodes in tv_results_list.items():
         print(found_tv_episodes)
+        
+    IMDb().update(found_result, 'episodes')
+        
+    for found_tv_show_overviews in found_result:
         
 """
 
