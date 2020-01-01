@@ -79,12 +79,13 @@ def tv_shows_index():
                 tv_folders_list.append(tv_title_key)
 
             if tv_file[0] not in tv_results_list:
-                tv_results_list[tv_file[0]] = {}
+                if not tv_filename_key.lower().endswith('.nfo'):
+                    tv_results_list[tv_file[0]] = {}
 
     for found_tv_shows in tv_folders_list:
         found_result = find_imdb_show(found_tv_shows)
         if found_result:
-            for items in found_result.values():
+            for items in found_result.items():
                 print(items)
             separator_3()
 
