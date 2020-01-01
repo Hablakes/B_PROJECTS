@@ -28,11 +28,7 @@ extensions = ('.3gp', '.asf', '.asx', '.avc', '.avi', '.bdmv', '.bin', '.bivx', 
 
 index_folder = '~/{0}_MEDIA_INDEX'
 
-username = 'BX'
-
-
-def match_similar_strings(a, b):
-    return SequenceMatcher(None, a, b).ratio()
+username = 'TESTING'
 
 
 def find_imdb_show(show_name):
@@ -84,12 +80,31 @@ def tv_show_imdb_check():
             if tv_file[0] not in tv_results_list:
                 tv_results_list[tv_file[0]] = {}
 
+            tv_results_list[tv_file[0]]['MEDIA-PATH'] = tv_file[0]
+            tv_results_list[tv_file[0]]['MEDIA-TYPE'] = str('TV SHOW')
+            tv_results_list[tv_file[0]]['FOLDER-NAME'] = tv_title_key
+            tv_results_list[tv_file[0]]['FILE-NAME'] = tv_filename_key
+
     for found_tv_shows in tv_folders_list:
         found_result = find_imdb_show(found_tv_shows)
         if found_result:
             print(found_result), print(repr(found_result))
         else:
             print(found_tv_shows)
+
+    separator_3()
+
+    for found_tv_episodes in tv_results_list.items():
+        print(found_tv_episodes)
+
+
+def match_similar_strings(a, b):
+    return SequenceMatcher(None, a, b).ratio()
+
+
+def separator_3():
+    for items in '\n', '-' * 100, '\n':
+        print(items)
 
 
 tv_show_imdb_check()
