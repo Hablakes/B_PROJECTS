@@ -28,7 +28,7 @@ extensions = ('.3gp', '.asf', '.asx', '.avc', '.avi', '.bdmv', '.bin', '.bivx', 
 
 index_folder = '~/{0}_MEDIA_INDEX'
 
-username = 'BX'
+username = 'TESTING'
 
 
 def find_imdb_show(show_name):
@@ -56,6 +56,75 @@ def find_imdb_show(show_name):
         tv_id = possible_tv_show_matches_list[0][1]
         tv_info_set = ia.get_movie(tv_id)
         return tv_info_set
+
+
+def tv_show_episode_information_index():
+    tv_results_list = {}
+    tv_folders_list = []
+
+    tv_scan_start = time.time()
+
+    with open(os.path.expanduser((index_folder + '/TV_VIDEO_FILES_PATHS.csv').format(username)),
+              encoding='UTF-8') as m_f_p:
+        tv_index = csv.reader(m_f_p)
+
+        for tv_file in sorted(tv_index):
+            tv_filename_key = tv_file[0].rsplit('/', 1)[-1]
+            tv_title_key = tv_file[0].rsplit('/')[-2]
+
+            if tv_title_key not in tv_folders_list:
+                tv_folders_list.append(tv_title_key)
+
+            if not tv_filename_key.lower().endswith('.nfo'):
+
+                if tv_file[0] not in tv_results_list:
+                    tv_results_list[tv_file[0]] = {}
+
+                tv_results_list[tv_file[0]]['MEDIA-PATH'] = tv_file[0]
+                tv_results_list[tv_file[0]]['MEDIA-TYPE'] = str('TV SHOW')
+                tv_results_list[tv_file[0]]['FOLDER-NAME'] = tv_title_key
+                tv_results_list[tv_file[0]]['FILE-NAME'] = tv_filename_key
+
+                tv_file_size = os.path.getsize(tv_file[0])
+                tv_file_size_in_mb = (int(tv_file_size) / 1048576)
+                tv_file_size_in_mb_rounded = str(round(tv_file_size_in_mb, 2))
+                tv_hash = str(str(tv_filename_key) + '_' + str(tv_file_size))
+                g_tv_title = guessit.guessit(tv_filename_key, options={'type': 'episode'})
+                g_tv_episode_title = g_tv_title.get('alternative_title')
+                g_tv_title_to_query = g_tv_title.get('title')
+                g_season_number = g_tv_title.get('season')
+                g_episode_number = g_tv_title.get('episode')
+                g_tv_episode_container = g_tv_title.get('container')
+
+                tv_results_list[tv_file[0]]['FILE-SIZE'] = tv_file_size_in_mb_rounded
+                tv_results_list[tv_file[0]]['TV-HASH'] = tv_hash
+                tv_results_list[tv_file[0]]['FILE-TYPE'] = g_tv_episode_container
+
+                if r"'" in g_tv_title_to_query:
+                    formatted_tv_title_to_query = g_tv_title_to_query.rsplit(r"'", 1)
+                    g_tv_title_to_query = ' '.join(formatted_tv_title_to_query)
+
+                tv_media_info = pymediainfo.MediaInfo.parse(tv_file[0])
+
+                for track in tv_media_info.tracks:
+                    if track.track_type == 'General':
+                        tv_results_list[tv_file[0]]['RUN-TIME'] = track.duration
+
+                    elif track.track_type == 'Video':
+                        tv_results_list[tv_file[0]]['RESOLUTION'] = str(track.width) + 'x' + str(track.height)
+
+    for found_tv_shows in tv_folders_list:
+        found_result = find_imdb_show(found_tv_shows)
+
+        if found_result:
+
+            IMDb().update(found_result, 'episodes')
+
+            item_title = found_result.get('title')
+            item_year = found_result.get('year')
+
+            if item_title not in tv_results_list:
+                pass
 
 
 def tv_shows_overview_plots_index():

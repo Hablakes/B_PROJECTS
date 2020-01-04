@@ -59,4 +59,32 @@ for plot_review_items in tv_overview_plots_nfo_list:
 
 for items in tv_overview_plots_dict.items():
     print(items)
+    
+    
+fname = pathlib.Path(tv_file[0])
+
+with open(fname.parent / 'tvshow.nfo', 'r') as f:
+    print(f.read())
+                               
+with open(os.path.expanduser((index_folder + '/TV_INFORMATION_INDEX.csv').format(username)), 'w',
+          encoding='UTF-8', newline='') as m_i_i:
+
+    csv_writer = csv.DictWriter(m_i_i, ['MEDIA-PATH', 'MEDIA-TYPE', 'FOLDER-NAME', 'FILE-NAME', 'FILE-SIZE',
+                                        'FILE-TYPE', 'RESOLUTION', 'GUESSIT SEARCH TERM', 'TV SHOW ID #',
+                                        'TV SHOW TITLE', 'SEASON #', 'EPISODE #', 'EPISODE TITLE', 'YEAR', 'PLOT',
+                                        'RATING', 'RUN-TIME', 'GENRES', 'SEARCH CONFIDENCE PERCENTAGE', 'TV-HASH'])
+
+    for tv_row in tv_results_list.values():
+        csv_writer.writerow(tv_row)
+
+with open(os.path.expanduser((index_folder + '/TV_PLOTS_INDEX.csv').format(username)), 'w',
+          encoding='UTF-8', newline='') as t_p_i:
+    csv_writer = csv.DictWriter(t_p_i, ['SHOW', 'PLOT'])
+    for tv_row in tv_overview_plots_dict.values():
+        csv_writer.writerow(tv_row)
+
+tv_scan_end = time.time()
+readable_tv_scan_time = round(tv_scan_end - tv_scan_start, 2)
+print('TV INFORMATION SCAN COMPLETE - TIME ELAPSED: ', readable_tv_scan_time, 'Seconds')
+separator_3()
 """
