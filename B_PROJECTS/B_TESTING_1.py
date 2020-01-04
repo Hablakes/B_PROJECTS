@@ -55,13 +55,15 @@ def find_imdb_show(show_name):
     if possible_tv_show_matches_list:
         tv_id = possible_tv_show_matches_list[0][1]
         tv_info_set = ia.get_movie(tv_id)
-        return tv_info_set
+        return [tv_info_set, search_confidence_percentage]
 
 
 def tv_show_episode_information_index():
     tv_results_list = {}
     tv_episodes_dict = {}
-    tv_folders_list = []
+    tv_overview_plots_dict = {}
+
+    tv_overview_plots_nfo_list = []
 
     tv_scan_start = time.time()
 
@@ -72,9 +74,6 @@ def tv_show_episode_information_index():
         for tv_file in sorted(tv_index):
             tv_filename_key = tv_file[0].rsplit('/', 1)[-1]
             tv_title_key = tv_file[0].rsplit('/')[-2]
-
-            if tv_title_key not in tv_folders_list:
-                tv_folders_list.append(tv_title_key)
 
             if not tv_filename_key.lower().endswith('.nfo'):
 
@@ -110,21 +109,31 @@ def tv_show_episode_information_index():
                     elif track.track_type == 'Video':
                         tv_results_list[tv_file[0]]['RESOLUTION'] = str(track.width) + 'x' + str(track.height)
 
+                if tv_title_key not in tv_overview_plots_dict:
+                    tv_overview_plots_dict[tv_title_key] = {}
+
                 found_result = find_imdb_show(g_tv_title_to_query)
 
                 if found_result is not None:
 
-                    IMDb().update(found_result, 'episodes')
-                    tv_show_title = found_result.get('title')
+                    IMDb().update(found_result[0], 'episodes')
+                    tv_show_title = found_result[0].get('title')
+                    item_year = found_result[0].get('year')
 
-                    if 'episodes' in found_result:
-                        episode_title = found_result['episodes'][g_season_number][g_episode_number].get('title')
-                        episode_year = found_result['episodes'][g_season_number][g_episode_number].get('year')
-                        episode_plot = found_result['episodes'][g_season_number][g_episode_number].get('plot')
-                        episode_rating = found_result['episodes'][g_season_number][g_episode_number].get('rating')
+                    if 'plot' in found_result[0]:
+                        tv_overview_plots_dict[tv_title_key]['SHOW'] = str(
+                            str(tv_show_title) + ' (' + str(item_year) + ')')
+                        item_plot = found_result[0]['plot']
+                        tv_overview_plots_dict[tv_title_key]['PLOT'] = item_plot[0].split('::')[0].strip()
 
-                        tv_results_list[tv_file[0]]['GUESSIT SEARCH TERM'] = g_tv_title_to_query
-                        tv_results_list[tv_file[0]]['TV SHOW ID #'] = found_result.movieID
+                    if 'episodes' in found_result[0]:
+                        episode_title = found_result[0]['episodes'][g_season_number][g_episode_number].get('title')
+                        episode_year = found_result[0]['episodes'][g_season_number][g_episode_number].get('year')
+                        episode_plot = found_result[0]['episodes'][g_season_number][g_episode_number].get('plot')
+                        episode_rating = found_result[0]['episodes'][g_season_number][g_episode_number].get('rating')
+
+                        tv_results_list[tv_file[0]]['GUESSIT TV SHOW SEARCH TERM'] = g_tv_title_to_query
+                        tv_results_list[tv_file[0]]['TV SHOW ID #'] = found_result[0].movieID
                         tv_results_list[tv_file[0]]['TV SHOW TITLE'] = tv_show_title
                         tv_results_list[tv_file[0]]['SEASON #'] = g_season_number
                         tv_results_list[tv_file[0]]['EPISODE #'] = g_episode_number
@@ -132,6 +141,37 @@ def tv_show_episode_information_index():
                         tv_results_list[tv_file[0]]['YEAR'] = episode_year
                         tv_results_list[tv_file[0]]['PLOT'] = episode_plot.split('::')[0].strip()
                         tv_results_list[tv_file[0]]['RATING'] = round(episode_rating, 2)
+                        tv_results_list[tv_file[0]]['SEARCH CONFIDENCE PERCENTAGE'] = found_result[1]
+
+                elif found_result is None:
+                    tv_overview_plots_dict[tv_title_key]['SHOW'] = tv_title_key
+                    tv_overview_plots_dict[tv_title_key]['PLOT'] = 'NO PLOT AVAILABLE'
+
+                    tv_results_list[tv_file[0]]['GUESSIT SEARCH TERM'] = g_tv_title_to_query
+                    tv_results_list[tv_file[0]]['TV SHOW ID #'] = 'NO ID # MATCHED'
+                    if g_tv_title_to_query:
+                        tv_results_list[tv_file[0]]['TV SHOW TITLE'] = g_tv_title_to_query
+                    else:
+                        tv_results_list[tv_file[0]]['TV SHOW TITLE'] = 'NO TITLE MATCHED'
+                    if g_season_number:
+                        tv_results_list[tv_file[0]]['SEASON #'] = g_season_number
+                    else:
+                        tv_results_list[tv_file[0]]['SEASON #'] = 'NO SEASON # MATCHED'
+                    if g_episode_number:
+                        tv_results_list[tv_file[0]]['EPISODE #'] = g_episode_number
+                    else:
+                        tv_results_list[tv_file[0]]['EPISODE #'] = 'NO EPISODE # MATCHED'
+                    if g_tv_episode_title:
+                        tv_results_list[tv_file[0]]['EPISODE TITLE'] = g_tv_episode_title
+                    else:
+                        tv_results_list[tv_file[0]]['EPISODE TITLE'] = 'NO EPISODE TITLE MATCHED'
+                    tv_results_list[tv_file[0]]['YEAR'] = 'NO YEAR MATCHED'
+                    tv_results_list[tv_file[0]]['PLOT'] = 'NO PLOT MATCHED'
+                    tv_results_list[tv_file[0]]['RATING'] = 'NO RATING MATCHED'
+                    if not tv_results_list[tv_file[0]]['RUN-TIME']:
+                        tv_results_list[tv_file[0]]['RUN-TIME'] = 'NO RUN-TIME MATCHED'
+                    tv_results_list[tv_file[0]]['GENRES'] = 'NO GENRE(S) MATCHED'
+                    tv_results_list[tv_file[0]]['SEARCH CONFIDENCE PERCENTAGE'] = 'NO CONFIDENCE PERCENTAGE AVAILABLE'
 
     tv_scan_end = time.time()
     readable_tv_scan_time = round(tv_scan_end - tv_scan_start, 2)
@@ -140,51 +180,9 @@ def tv_show_episode_information_index():
     separator_3()
     for items in tv_results_list.items():
         print(items)
-
-
-def tv_shows_overview_plots_index():
-    tv_overview_plots_dict = {}
-    tv_folders_list = []
-    tv_overview_plots_nfo_list = []
-
-    tv_scan_start = time.time()
-
-    with open(os.path.expanduser((index_folder + '/TV_VIDEO_FILES_PATHS.csv').format(username)),
-              encoding='UTF-8') as m_f_p:
-        tv_index = csv.reader(m_f_p)
-
-        for tv_file in sorted(tv_index):
-            tv_filename_key = tv_file[0].rsplit('/', 1)[-1]
-            tv_title_key = tv_file[0].rsplit('/')[-2].split('(')[0]
-
-            if tv_title_key not in tv_folders_list:
-                tv_folders_list.append(tv_title_key)
-
-    for found_tv_shows in tv_folders_list:
-        found_result = find_imdb_show(found_tv_shows)
-
-        if found_result:
-
-            item_title = found_result.get('title')
-            item_year = found_result.get('year')
-
-            if item_title not in tv_overview_plots_dict:
-                tv_overview_plots_dict[found_tv_shows] = {}
-                tv_overview_plots_dict[found_tv_shows]['SHOW'] = str(
-                    str(item_title) + ' (' + str(item_year) + ')')
-
-                if 'plot' in found_result:
-                    item_plot = found_result['plot']
-                    tv_overview_plots_dict[found_tv_shows]['PLOT'] = item_plot[0].split('::')[0].strip()
-
-        if found_tv_shows not in tv_overview_plots_dict:
-            tv_overview_plots_dict[found_tv_shows] = {}
-            tv_overview_plots_dict[found_tv_shows]['SHOW'] = found_tv_shows
-            tv_overview_plots_dict[found_tv_shows]['PLOT'] = 'NO PLOT AVAILABLE'
-
-    tv_scan_end = time.time()
-    readable_tv_scan_time = round(tv_scan_end - tv_scan_start, 2)
-    print('TV PLOT INFORMATION SCAN COMPLETE - TIME ELAPSED: ', readable_tv_scan_time, 'Seconds')
+    separator_3()
+    for items in tv_overview_plots_dict.items():
+        print(items)
     separator_3()
 
 
