@@ -60,6 +60,7 @@ def find_imdb_show(show_name):
 
 def tv_show_episode_information_index():
     tv_results_list = {}
+    tv_episodes_dict = {}
     tv_folders_list = []
 
     tv_scan_start = time.time()
@@ -80,29 +81,25 @@ def tv_show_episode_information_index():
                 if tv_file[0] not in tv_results_list:
                     tv_results_list[tv_file[0]] = {}
 
+                tv_file_size = os.path.getsize(tv_file[0])
+
                 tv_results_list[tv_file[0]]['MEDIA-PATH'] = tv_file[0]
                 tv_results_list[tv_file[0]]['MEDIA-TYPE'] = str('TV SHOW')
                 tv_results_list[tv_file[0]]['FOLDER-NAME'] = tv_title_key
                 tv_results_list[tv_file[0]]['FILE-NAME'] = tv_filename_key
+                tv_results_list[tv_file[0]]['FILE-SIZE'] = str(round((int(tv_file_size) / 1048576), 2))
+                tv_results_list[tv_file[0]]['TV-HASH'] = str(str(tv_filename_key) + '_' + str(tv_file_size))
 
-                tv_file_size = os.path.getsize(tv_file[0])
-                tv_file_size_in_mb = (int(tv_file_size) / 1048576)
-                tv_file_size_in_mb_rounded = str(round(tv_file_size_in_mb, 2))
-                tv_hash = str(str(tv_filename_key) + '_' + str(tv_file_size))
                 g_tv_title = guessit.guessit(tv_filename_key, options={'type': 'episode'})
-                g_tv_episode_title = g_tv_title.get('alternative_title')
                 g_tv_title_to_query = g_tv_title.get('title')
+                g_tv_episode_title = g_tv_title.get('alternative_title')
                 g_season_number = g_tv_title.get('season')
                 g_episode_number = g_tv_title.get('episode')
-                g_tv_episode_container = g_tv_title.get('container')
 
-                tv_results_list[tv_file[0]]['FILE-SIZE'] = tv_file_size_in_mb_rounded
-                tv_results_list[tv_file[0]]['TV-HASH'] = tv_hash
-                tv_results_list[tv_file[0]]['FILE-TYPE'] = g_tv_episode_container
+                tv_results_list[tv_file[0]]['FILE-TYPE'] = g_tv_title.get('container')
 
                 if r"'" in g_tv_title_to_query:
-                    formatted_tv_title_to_query = g_tv_title_to_query.rsplit(r"'", 1)
-                    g_tv_title_to_query = ' '.join(formatted_tv_title_to_query)
+                    g_tv_title_to_query = g_tv_title_to_query.replace("'", '')
 
                 tv_media_info = pymediainfo.MediaInfo.parse(tv_file[0])
 
@@ -113,18 +110,36 @@ def tv_show_episode_information_index():
                     elif track.track_type == 'Video':
                         tv_results_list[tv_file[0]]['RESOLUTION'] = str(track.width) + 'x' + str(track.height)
 
-    for found_tv_shows in tv_folders_list:
-        found_result = find_imdb_show(found_tv_shows)
+                found_result = find_imdb_show(g_tv_title_to_query)
 
-        if found_result:
+                if found_result is not None:
 
-            IMDb().update(found_result, 'episodes')
+                    IMDb().update(found_result, 'episodes')
+                    tv_show_title = found_result.get('title')
 
-            item_title = found_result.get('title')
-            item_year = found_result.get('year')
+                    if 'episodes' in found_result:
+                        episode_title = found_result['episodes'][g_season_number][g_episode_number].get('title')
+                        episode_year = found_result['episodes'][g_season_number][g_episode_number].get('year')
+                        episode_plot = found_result['episodes'][g_season_number][g_episode_number].get('plot')
+                        episode_rating = found_result['episodes'][g_season_number][g_episode_number].get('rating')
 
-            if item_title not in tv_results_list:
-                pass
+                        tv_results_list[tv_file[0]]['GUESSIT SEARCH TERM'] = g_tv_title_to_query
+                        tv_results_list[tv_file[0]]['TV SHOW ID #'] = found_result.movieID
+                        tv_results_list[tv_file[0]]['TV SHOW TITLE'] = tv_show_title
+                        tv_results_list[tv_file[0]]['SEASON #'] = g_season_number
+                        tv_results_list[tv_file[0]]['EPISODE #'] = g_episode_number
+                        tv_results_list[tv_file[0]]['EPISODE TITLE'] = episode_title
+                        tv_results_list[tv_file[0]]['YEAR'] = episode_year
+                        tv_results_list[tv_file[0]]['PLOT'] = episode_plot.split('::')[0].strip()
+                        tv_results_list[tv_file[0]]['RATING'] = round(episode_rating, 2)
+
+    tv_scan_end = time.time()
+    readable_tv_scan_time = round(tv_scan_end - tv_scan_start, 2)
+    separator_3()
+    print('TV INFORMATION SCAN COMPLETE - TIME ELAPSED: ', readable_tv_scan_time, 'Seconds')
+    separator_3()
+    for items in tv_results_list.items():
+        print(items)
 
 
 def tv_shows_overview_plots_index():
@@ -188,5 +203,4 @@ def separator_3():
         print(items)
 
 
-tv_shows_overview_plots_index()
-# print(find_imdb_show('TEST SHOW'))
+tv_show_episode_information_index()
