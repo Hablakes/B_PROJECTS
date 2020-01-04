@@ -60,7 +60,6 @@ def find_imdb_show(show_name):
 
 def tv_show_episode_information_index():
     tv_results_list = {}
-    tv_episodes_dict = {}
     tv_overview_plots_dict = {}
 
     tv_overview_plots_nfo_list = []
@@ -141,22 +140,25 @@ def tv_show_episode_information_index():
                         tv_results_list[tv_file[0]]['YEAR'] = episode_year
                         tv_results_list[tv_file[0]]['PLOT'] = episode_plot.split('::')[0].strip()
                         tv_results_list[tv_file[0]]['RATING'] = round(episode_rating, 2)
+                        tv_results_list[tv_file[0]]['GENRES'] = []
+                        for genre in found_result[0]['genres']:
+                            tv_results_list[tv_file[0]]['GENRES'].append(genre)
                         tv_results_list[tv_file[0]]['SEARCH CONFIDENCE PERCENTAGE'] = found_result[1]
 
                 elif found_result is None:
                     tv_overview_plots_dict[tv_title_key]['SHOW'] = tv_title_key
                     tv_overview_plots_dict[tv_title_key]['PLOT'] = 'NO PLOT AVAILABLE'
 
-                    tv_results_list[tv_file[0]]['GUESSIT SEARCH TERM'] = g_tv_title_to_query
-                    tv_results_list[tv_file[0]]['TV SHOW ID #'] = 'NO ID # MATCHED'
+                    tv_results_list[tv_file[0]]['GUESSIT TV SHOW SEARCH TERM'] = g_tv_title_to_query
+                    tv_results_list[tv_file[0]]['TV SHOW ID #'] = 'NO ID # FOUND'
                     if g_tv_title_to_query:
-                        tv_results_list[tv_file[0]]['TV SHOW TITLE'] = g_tv_title_to_query
+                        tv_results_list[tv_file[0]]['TV SHOW TITLE'] = tv_title_key
                     else:
-                        tv_results_list[tv_file[0]]['TV SHOW TITLE'] = 'NO TITLE MATCHED'
+                        tv_results_list[tv_file[0]]['TV SHOW TITLE'] = 'NO TV SHOW TITLE FOUND'
                     if g_season_number:
                         tv_results_list[tv_file[0]]['SEASON #'] = g_season_number
                     else:
-                        tv_results_list[tv_file[0]]['SEASON #'] = 'NO SEASON # MATCHED'
+                        tv_results_list[tv_file[0]]['SEASON #'] = 'NO SEASON # FOUND'
                     if g_episode_number:
                         tv_results_list[tv_file[0]]['EPISODE #'] = g_episode_number
                     else:
@@ -164,25 +166,35 @@ def tv_show_episode_information_index():
                     if g_tv_episode_title:
                         tv_results_list[tv_file[0]]['EPISODE TITLE'] = g_tv_episode_title
                     else:
-                        tv_results_list[tv_file[0]]['EPISODE TITLE'] = 'NO EPISODE TITLE MATCHED'
-                    tv_results_list[tv_file[0]]['YEAR'] = 'NO YEAR MATCHED'
-                    tv_results_list[tv_file[0]]['PLOT'] = 'NO PLOT MATCHED'
-                    tv_results_list[tv_file[0]]['RATING'] = 'NO RATING MATCHED'
-                    if not tv_results_list[tv_file[0]]['RUN-TIME']:
-                        tv_results_list[tv_file[0]]['RUN-TIME'] = 'NO RUN-TIME MATCHED'
-                    tv_results_list[tv_file[0]]['GENRES'] = 'NO GENRE(S) MATCHED'
-                    tv_results_list[tv_file[0]]['SEARCH CONFIDENCE PERCENTAGE'] = 'NO CONFIDENCE PERCENTAGE AVAILABLE'
+                        tv_results_list[tv_file[0]]['EPISODE TITLE'] = 'NO EPISODE TITLE FOUND'
+                    tv_results_list[tv_file[0]]['YEAR'] = 'NO YEAR FOUND'
+                    tv_results_list[tv_file[0]]['PLOT'] = 'NO PLOT FOUND'
+                    tv_results_list[tv_file[0]]['RATING'] = 'NO RATING FOUND'
+                    tv_results_list[tv_file[0]]['GENRES'] = 'NO GENRE(S) FOUND'
+                    tv_results_list[tv_file[0]]['SEARCH CONFIDENCE PERCENTAGE'] = 'NO CONFIDENCE PERCENTAGE'
+
+    with open(os.path.expanduser((index_folder + '/TV_INFORMATION_INDEX.csv').format(username)), 'w',
+              encoding='UTF-8', newline='') as m_i_i:
+
+        csv_writer = csv.DictWriter(m_i_i, ['MEDIA-PATH', 'MEDIA-TYPE', 'FOLDER-NAME', 'FILE-NAME', 'FILE-SIZE',
+                                            'TV-HASH', 'FILE-TYPE', 'RUN-TIME', 'RESOLUTION',
+                                            'GUESSIT TV SHOW SEARCH TERM', 'TV SHOW ID #', 'TV SHOW TITLE', 'SEASON #',
+                                            'EPISODE #', 'EPISODE TITLE', 'YEAR', 'PLOT', 'RATING', 'GENRES',
+                                            'SEARCH CONFIDENCE PERCENTAGE'])
+
+        for tv_row in tv_results_list.values():
+            csv_writer.writerow(tv_row)
+
+    with open(os.path.expanduser((index_folder + '/TV_PLOTS_INDEX.csv').format(username)), 'w',
+              encoding='UTF-8', newline='') as t_p_i:
+        csv_writer = csv.DictWriter(t_p_i, ['SHOW', 'PLOT'])
+        for tv_row in tv_overview_plots_dict.values():
+            csv_writer.writerow(tv_row)
 
     tv_scan_end = time.time()
     readable_tv_scan_time = round(tv_scan_end - tv_scan_start, 2)
     separator_3()
     print('TV INFORMATION SCAN COMPLETE - TIME ELAPSED: ', readable_tv_scan_time, 'Seconds')
-    separator_3()
-    for items in tv_results_list.items():
-        print(items)
-    separator_3()
-    for items in tv_overview_plots_dict.items():
-        print(items)
     separator_3()
 
 
