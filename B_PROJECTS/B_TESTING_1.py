@@ -98,23 +98,9 @@ def tv_shows_overview_plots_index():
             tv_overview_plots_dict[found_tv_shows]['SHOW'] = found_tv_shows
             tv_overview_plots_dict[found_tv_shows]['PLOT'] = 'NO PLOT AVAILABLE'
 
-    for found_tv_plots in tv_overview_plots_dict.items():
-
-        if str(found_tv_plots[1]['SHOW']).lower() == str(tv_title_key).lower():
-
-            if str(found_tv_plots[1]['PLOT']).lower() == str('NO PLOT AVAILABLE').lower():
-                tv_overview_plots_nfo_list.append(found_tv_plots)
-
-    separator_3()
-    for tv_show_plots in tv_overview_plots_dict.items():
-        print(tv_show_plots)
-    separator_3()
-    print(tv_overview_plots_nfo_list)
-    separator_3()
-
     tv_scan_end = time.time()
     readable_tv_scan_time = round(tv_scan_end - tv_scan_start, 2)
-    print('TV INFORMATION SCAN COMPLETE - TIME ELAPSED: ', readable_tv_scan_time, 'Seconds')
+    print('TV PLOT INFORMATION SCAN COMPLETE - TIME ELAPSED: ', readable_tv_scan_time, 'Seconds')
     separator_3()
 
 
