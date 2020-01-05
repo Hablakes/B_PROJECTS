@@ -92,8 +92,6 @@ def tv_show_episode_information_index():
                 g_tv_episode_title = g_tv_title.get('alternative_title')
                 g_season_number = g_tv_title.get('season')
                 g_episode_number = g_tv_title.get('episode')
-                if type(g_episode_number) == list:
-                    g_episode_number = g_episode_number[0]
 
                 tv_results_list[tv_file[0]]['FILE-TYPE'] = g_tv_title.get('container')
 
@@ -127,10 +125,19 @@ def tv_show_episode_information_index():
                         tv_overview_plots_dict[tv_title_key]['PLOT'] = item_plot[0].split('::')[0].strip()
 
                     if 'episodes' in found_result[0]:
-                        episode_title = found_result[0]['episodes'][g_season_number][g_episode_number].get('title')
-                        episode_year = found_result[0]['episodes'][g_season_number][g_episode_number].get('year')
-                        episode_plot = found_result[0]['episodes'][g_season_number][g_episode_number].get('plot')
-                        episode_rating = found_result[0]['episodes'][g_season_number][g_episode_number].get('rating')
+                        if type(g_episode_number) == list:
+                            for episode_list in g_episode_number:
+                                episode_title = found_result[0]['episodes'][g_season_number][episode_list].get('title')
+                                episode_year = found_result[0]['episodes'][g_season_number][episode_list].get('year')
+                                episode_plot = found_result[0]['episodes'][g_season_number][episode_list].get('plot')
+                                episode_rating = \
+                                    found_result[0]['episodes'][g_season_number][episode_list].get('rating')
+                        else:
+                            episode_title = found_result[0]['episodes'][g_season_number][g_episode_number].get('title')
+                            episode_year = found_result[0]['episodes'][g_season_number][g_episode_number].get('year')
+                            episode_plot = found_result[0]['episodes'][g_season_number][g_episode_number].get('plot')
+                            episode_rating = \
+                                found_result[0]['episodes'][g_season_number][g_episode_number].get('rating')
 
                         tv_results_list[tv_file[0]]['GUESSIT TV SHOW SEARCH TERM'] = g_tv_title_to_query
                         tv_results_list[tv_file[0]]['TV SHOW ID #'] = found_result[0].movieID
@@ -161,7 +168,11 @@ def tv_show_episode_information_index():
                     else:
                         tv_results_list[tv_file[0]]['SEASON #'] = 'NO SEASON # FOUND'
                     if g_episode_number:
-                        tv_results_list[tv_file[0]]['EPISODE #'] = g_episode_number
+                        if type(g_episode_number) == list:
+                            for episode_list in g_episode_number:
+                                tv_results_list[tv_file[0]]['EPISODE #'] = episode_list
+                        else:
+                            tv_results_list[tv_file[0]]['EPISODE #'] = g_episode_number
                     else:
                         tv_results_list[tv_file[0]]['EPISODE #'] = 'NO EPISODE # MATCHED'
                     if g_tv_episode_title:
