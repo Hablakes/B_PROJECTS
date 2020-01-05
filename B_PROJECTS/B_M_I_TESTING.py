@@ -12,7 +12,6 @@ import guessit
 import numpy
 import pyfiglet
 import pymediainfo
-import youtube_dl
 
 from datetime import datetime
 from difflib import SequenceMatcher
@@ -46,10 +45,10 @@ def change_directory_selection():
 
 
 def create_media_information_indices():
-    tv_show_episode_information_index()
+    create_tv_show_episode_information_and_plot_indices()
 
 
-def tv_show_episode_information_index():
+def create_tv_show_episode_information_and_plot_indices():
     tv_results_list = {}
     tv_overview_plots_dict = {}
 
@@ -102,7 +101,7 @@ def tv_show_episode_information_index():
                 if tv_title_key not in tv_overview_plots_dict:
                     tv_overview_plots_dict[tv_title_key] = {}
 
-                found_result = find_imdb_show(g_tv_title_to_query)
+                found_result = find_imdb_tv_show(g_tv_title_to_query)
 
                 if found_result is not None:
 
@@ -280,32 +279,29 @@ def directory_selection():
         separator_3()
 
 
-def find_imdb_show(show_name):
-    ia = IMDb()
+def find_imdb_tv_show(show_name):
     search_confidence_percentage = 0
 
-    tv_imdb = ia.search_movie(show_name)
+    tv_imdb = IMDb().search_movie(show_name)
 
     possible_tv_show_matches_list = []
 
     for found_tv_plots in tv_imdb:
-        if found_tv_plots['kind'] != 'tv series':
+        if found_tv_plots['kind'] not in ('tv series', 'tv miniseries', 'tv movie'):
             continue
 
-        search_confidence_percentage = match_similar_strings(show_name.lower(),
-                                                             found_tv_plots['title'].lower())
+        search_confidence_percentage = match_similar_strings(show_name.lower(), found_tv_plots['title'].lower())
 
-        possible_tv_show_matches = \
-            (found_tv_plots['title'], found_tv_plots.movieID, search_confidence_percentage)
+        possible_tv_show_matches = (found_tv_plots['title'], found_tv_plots.movieID, search_confidence_percentage)
         possible_tv_show_matches_list.append(possible_tv_show_matches)
 
     possible_tv_show_matches_list.sort(key=lambda x: x[2], reverse=True)
 
     if possible_tv_show_matches_list:
         tv_id = possible_tv_show_matches_list[0][1]
-        tv_info_set = ia.get_movie(tv_id)
-        return search_confidence_percentage, tv_info_set
-    return None
+        tv_info_set = IMDb().get_movie(tv_id)
+
+        return [tv_info_set, search_confidence_percentage]
 
 
 def launch_media_index():
