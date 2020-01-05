@@ -12,7 +12,6 @@ import guessit
 import numpy
 import pyfiglet
 import pymediainfo
-import youtube_dl
 
 from datetime import datetime
 from difflib import SequenceMatcher
@@ -93,6 +92,8 @@ def tv_show_episode_information_index():
                 g_tv_episode_title = g_tv_title.get('alternative_title')
                 g_season_number = g_tv_title.get('season')
                 g_episode_number = g_tv_title.get('episode')
+                if type(g_episode_number) == list:
+                    g_episode_number = g_episode_number[0]
 
                 tv_results_list[tv_file[0]]['FILE-TYPE'] = g_tv_title.get('container')
 
@@ -195,6 +196,12 @@ def tv_show_episode_information_index():
     readable_tv_scan_time = round(tv_scan_end - tv_scan_start, 2)
     separator_3()
     print('TV INFORMATION SCAN COMPLETE - TIME ELAPSED: ', readable_tv_scan_time, 'Seconds')
+    separator_3()
+    for items in tv_overview_plots_dict.items():
+        print(items)
+    separator_3()
+    for items in tv_results_list.items():
+        print(items)
     separator_3()
 
 
