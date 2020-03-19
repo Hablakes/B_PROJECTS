@@ -35,7 +35,8 @@ def interface():
     print(pyfiglet.figlet_format('BX_FILE_AUDITOR', font='cybermedium'))
     separator_1()
     print('\n', 'OPTIONS: ', '\n', '\n', '1) COMPARE TWO DIRECTORIES                         2) AUDIT A DIRECTORY',
-          '\n', '\n', '3) FIND SUB-DIRECTORIES IN A DIRECTORY             0) EXIT')
+          '\n', '\n', '3) FIND SUB-DIRECTORIES IN A DIRECTORY             4) FIND EXTRAS / FEATURETTES FOLDERS',
+          '\n', '\n', '0) EXIT')
 
     separator_3()
     user_input = input('ENTER OPTION #: ')
@@ -50,6 +51,9 @@ def interface():
 
         elif int(user_input) == 3:
             scan_for_sub_directories()
+
+        elif int(user_input) == 4:
+            scan_for_extras_and_featurettes_sub_directories()
 
         elif int(user_input) == 0:
             exit()
@@ -217,6 +221,23 @@ def scan_directory_folders():
                 return
 
     sub_interface()
+
+
+def scan_for_extras_and_featurettes_sub_directories():
+    print(pyfiglet.figlet_format('SUB_DIRECTORY', font='cybermedium'))
+    print(pyfiglet.figlet_format('FINDER', font='cybermedium'))
+    separator_3()
+
+    directory_selected_in_function_for_search = [get_directory_to_scan()]
+
+    for found_directories in os.listdir(directory_selected_in_function_for_search[0]):
+        directory_path = directory_selected_in_function_for_search[0] + '/' + found_directories
+
+        for found_items in os.listdir(directory_path):
+            if os.path.isdir(directory_path + '/' + found_items):
+                if found_items.lower() == str('Extras').lower() or found_items.lower() == str('Featurettes').lower():
+                    print('SUB-DIRECTORIES: ', (directory_path + '/' + found_items), '\n', '\n')
+    separator_1()
 
 
 def scan_for_sub_directories():
