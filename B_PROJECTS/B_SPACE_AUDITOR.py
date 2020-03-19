@@ -235,7 +235,8 @@ def scan_for_extras_and_featurettes_sub_directories():
 
         for found_items in os.listdir(directory_path):
             if os.path.isdir(directory_path + '/' + found_items):
-                if found_items.lower() == str('Extras').lower() or found_items.lower() == str('Featurettes').lower():
+                if found_items.lower() == str('Extras').lower() or found_items.lower() == str(
+                        'Featurettes').lower() or found_items.lower() == str('Specials').lower():
                     print('SUB-DIRECTORIES: ', (directory_path + '/' + found_items), '\n', '\n')
     separator_1()
 
