@@ -81,6 +81,7 @@ def create_movie_information_index():
 
                 movie_filename_key = movie_file[0].rsplit('/', 1)[-1]
                 movie_title_key = movie_file[0].rsplit('/')[-2]
+                title_folder_year = movie_title_key[-5:-1]
 
                 if not movie_filename_key.lower().endswith('.nfo'):
 
@@ -108,8 +109,12 @@ def create_movie_information_index():
 
                         movie_title = guessit.guessit(movie_filename_key, options={'type': 'movie'})
                         movie_title_to_query = movie_title.get('title')
+                        movie_title_year = movie_title.get('year')
                         movie_results_list[movie_file[0]]['GUESSIT SEARCH TERM'] = movie_title_to_query
-                        movie_results_list[movie_file[0]]['YEAR'] = []
+                        if movie_title_year:
+                            movie_results_list[movie_file[0]]['YEAR'] = movie_title_year
+                        else:
+                            movie_results_list[movie_file[0]]['YEAR'] = title_folder_year
                         movie_results_list[movie_file[0]]['FILE-TYPE'] = movie_title.get('container')
 
                     except OSError as e:
@@ -182,6 +187,7 @@ def create_tv_information_index():
 
                 tv_filename_key = tv_file[0].rsplit('/', 1)[-1]
                 tv_title_key = tv_file[0].rsplit('/')[-2]
+                title_folder_year = tv_title_key[-5:-1]
 
                 if not tv_filename_key.lower().endswith('.nfo'):
 
@@ -209,10 +215,14 @@ def create_tv_information_index():
 
                         tv_title = guessit.guessit(tv_filename_key, options={'type': 'episode'})
                         tv_title_to_query = tv_title.get('title')
+                        tv_title_year = tv_title.get('year')
                         g_season_number = tv_title.get('season')
                         g_episode_number = tv_title.get('episode')
                         tv_results_list[tv_file[0]]['GUESSIT SEARCH TERM'] = tv_title_to_query
-                        tv_results_list[tv_file[0]]['YEAR'] = []
+                        if tv_title_year:
+                            tv_results_list[tv_file[0]]['YEAR'] = tv_title_year
+                        else:
+                            tv_results_list[tv_file[0]]['YEAR'] = title_folder_year
                         tv_results_list[tv_file[0]]['SEASON #'] = g_season_number
                         tv_results_list[tv_file[0]]['EPISODE #'] = g_episode_number
                         tv_results_list[tv_file[0]]['FILE-TYPE'] = tv_title.get('container')
