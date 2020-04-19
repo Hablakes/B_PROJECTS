@@ -129,30 +129,30 @@ def create_movie_information_index():
                         print('-' * 100, '\n')
                         continue
 
+                    audio_tracks_list = []
+                    text_tracks_list = []
+
                     try:
 
                         for track in movie_media_info.tracks:
-
-                            audio_tracks_list = []
-                            text_tracks_list = []
 
                             if track.track_type == 'General':
                                 duration_integer = track.duration
                                 movie_results_list[movie_file[0]]['RUN-TIME'] = duration_integer
 
                             elif track.track_type == 'Audio':
-                                audio_tracks_list.append([movie_title_key, track.track_id, track.language,
-                                                          track.other_language, track.commercial_name, track.bit_rate])
-                                print(audio_tracks_list)
+                                audio_tracks_list.append([movie_title_key, track.track_id, track.other_language,
+                                                          track.commercial_name, track.bit_rate, track.track_type])
 
                             elif track.track_type == 'Text':
-                                text_tracks_list.append([movie_title_key, track.track_id, track.language,
-                                                         track.other_language])
-
-                                separator_3()
-                                print(text_tracks_list)
+                                text_tracks_list.append([movie_title_key, track.track_id, track.other_language,
+                                                         track.track_type])
+                                movie_results_list[movie_file[0]]['SUBTITLE TRACKS'] = len(text_tracks_list)
 
                             elif track.track_type == 'Video':
+                                movie_results_list[movie_file[0]]['ASPECT RATIO'] = \
+                                    track.other_display_aspect_ratio[0].replace(':', 'x')
+                                movie_results_list[movie_file[0]]['CODEC'] = track.encoded_library_name
                                 movie_results_list[movie_file[0]]['RESOLUTION'] = \
                                     str(track.width) + 'x' + str(track.height)
 
@@ -173,8 +173,8 @@ def create_movie_information_index():
               encoding='UTF-8', newline='') as m_i_i:
 
         csv_writer = csv.DictWriter(m_i_i, ['MEDIA-PATH', 'MEDIA-TYPE', 'FOLDER-NAME', 'FILE-NAME', 'FILE-SIZE',
-                                            'GUESSIT SEARCH TERM', 'YEAR', 'FILE-TYPE', 'RUN-TIME', 'RESOLUTION',
-                                            'MOVIE-HASH'])
+                                            'GUESSIT SEARCH TERM', 'YEAR', 'FILE-TYPE', 'RUN-TIME', 'SUBTITLE TRACKS',
+                                            'ASPECT RATIO', 'CODEC', 'RESOLUTION', 'MOVIE-HASH'])
 
         for movie_row in movie_results_list.values():
             csv_writer.writerow(movie_row)
