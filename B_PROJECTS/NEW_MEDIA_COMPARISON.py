@@ -132,9 +132,25 @@ def create_movie_information_index():
                     try:
 
                         for track in movie_media_info.tracks:
+
+                            audio_tracks_list = []
+                            text_tracks_list = []
+
                             if track.track_type == 'General':
                                 duration_integer = track.duration
                                 movie_results_list[movie_file[0]]['RUN-TIME'] = duration_integer
+
+                            elif track.track_type == 'Audio':
+                                audio_tracks_list.append([movie_title_key, track.track_id, track.language,
+                                                          track.other_language, track.commercial_name, track.bit_rate])
+                                print(audio_tracks_list)
+
+                            elif track.track_type == 'Text':
+                                text_tracks_list.append([movie_title_key, track.track_id, track.language,
+                                                         track.other_language])
+
+                                separator_3()
+                                print(text_tracks_list)
 
                             elif track.track_type == 'Video':
                                 movie_results_list[movie_file[0]]['RESOLUTION'] = \
@@ -356,7 +372,8 @@ def launch_media_index():
     try:
 
         global username
-        username = input('ENTER YOUR USERNAME (CASE-SENSITIVE): ')
+        username = 'TESTING'
+        # username = input('ENTER YOUR USERNAME (CASE-SENSITIVE): ')
         if username == '':
             separator_3()
             print('USERNAME CANNOT BE LEFT BLANK: ')
