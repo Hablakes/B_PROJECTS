@@ -142,7 +142,9 @@ def create_movie_information_index():
 
                             elif track.track_type == 'Audio':
                                 audio_tracks_list.append([movie_title_key, track.track_id, track.other_language,
-                                                          track.commercial_name, track.bit_rate, track.track_type])
+                                                          track.commercial_name, track.other_bit_rate,
+                                                          track.other_sampling_rate, track.channel_s, track.codec_id,
+                                                          track.track_type])
 
                             elif track.track_type == 'Text':
                                 text_tracks_list.append([movie_title_key, track.track_id, track.other_language,
@@ -168,6 +170,13 @@ def create_movie_information_index():
                 print('INPUT ERROR: ', e, '\n', 'MOVIE FILE(S): ', movie_file[0])
                 print('-' * 100, '\n')
                 continue
+
+            for items in audio_tracks_list:
+                print(items)
+            separator_3()
+            for items in text_tracks_list:
+                print(items)
+            separator_3()
 
     with open(os.path.expanduser((index_folder + '/MOVIE_INFORMATION_INDEX.csv').format(username)), 'w',
               encoding='UTF-8', newline='') as m_i_i:
