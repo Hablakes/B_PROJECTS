@@ -18,7 +18,6 @@ from ascii_graph.colors import *
 from ascii_graph.colordata import vcolor
 from datetime import datetime
 from difflib import SequenceMatcher
-from imdb import IMDb
 from tkinter import filedialog, Tk
 
 date_string = str(datetime.today().strftime('%Y_%m_%d'))
@@ -70,7 +69,6 @@ def create_movie_information_index():
     movie_results_list = {}
 
     movie_scan_start = time.time()
-    ia = IMDb()
 
     with open(os.path.expanduser((index_folder + '/MOVIE_VIDEO_FILES_PATHS.csv').format(username)),
               encoding='UTF-8') as m_f_p:
@@ -176,7 +174,6 @@ def create_tv_information_index():
     tv_overview_plots_dict = {}
 
     tv_scan_start = time.time()
-    ia = IMDb()
 
     with open(os.path.expanduser((index_folder + '/TV_VIDEO_FILES_PATHS.csv').format(username)),
               encoding='UTF-8') as m_f_p:
