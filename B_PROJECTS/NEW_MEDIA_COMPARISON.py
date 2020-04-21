@@ -171,11 +171,17 @@ def create_movie_information_index():
                 print('-' * 100, '\n')
                 continue
 
+            print('AUDIO INFORMATION: ', '\n')
             for items in audio_tracks_list:
-                print(items)
-            separator_3()
-            for items in text_tracks_list:
-                print(items)
+                for sub_items in items:
+                    print(sub_items)
+            separator_1()
+            print('TEXT INFORMATION: ', '\n')
+            if text_tracks_list:
+                for items in text_tracks_list:
+                    print(items)
+            else:
+                print('NO TEXT INFORMATION AVAILABLE')
             separator_3()
 
     with open(os.path.expanduser((index_folder + '/MOVIE_INFORMATION_INDEX.csv').format(username)), 'w',
@@ -196,7 +202,6 @@ def create_movie_information_index():
 
 def create_tv_information_index():
     tv_results_list = {}
-    tv_overview_plots_dict = {}
 
     tv_scan_start = time.time()
 
