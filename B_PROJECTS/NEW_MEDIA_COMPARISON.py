@@ -68,9 +68,6 @@ def create_media_information_indices():
 def create_movie_information_index():
     movie_results_list = {}
 
-    audio_tracks_list = []
-    text_tracks_list = []
-
     movie_scan_start = time.time()
 
     with open(os.path.expanduser((index_folder + '/MOVIE_VIDEO_FILES_PATHS.csv').format(username)),
@@ -78,6 +75,7 @@ def create_movie_information_index():
         movie_index = csv.reader(m_f_p)
 
         for movie_file in sorted(movie_index):
+
             try:
 
                 movie_filename_key = movie_file[0].rsplit('/', 1)[-1]
@@ -90,8 +88,11 @@ def create_movie_information_index():
                         movie_results_list[movie_file[0]] = {}
 
                     movie_results_list[movie_file[0]]['MEDIA-PATH'] = movie_file[0]
+
                     movie_results_list[movie_file[0]]['MEDIA-TYPE'] = str('MOVIE')
+
                     movie_results_list[movie_file[0]]['FOLDER-NAME'] = movie_title_key
+
                     movie_results_list[movie_file[0]]['FILE-NAME'] = movie_filename_key
 
                     try:
@@ -99,6 +100,7 @@ def create_movie_information_index():
                         movie_file_size = os.path.getsize(movie_file[0])
                         movie_file_size_in_mb = (int(movie_file_size) / 1048576)
                         movie_file_size_in_mb_rounded = str(round(movie_file_size_in_mb, 2))
+
                         movie_results_list[movie_file[0]]['FILE-SIZE'] = movie_file_size_in_mb_rounded
 
                     except OSError as e:
@@ -111,11 +113,14 @@ def create_movie_information_index():
                         movie_title = guessit.guessit(movie_filename_key, options={'type': 'movie'})
                         movie_title_to_query = movie_title.get('title')
                         movie_title_year = movie_title.get('year')
+
                         movie_results_list[movie_file[0]]['GUESSIT-SEARCH-TERM'] = movie_title_to_query
+
                         if movie_title_year:
                             movie_results_list[movie_file[0]]['YEAR'] = movie_title_year
                         else:
                             movie_results_list[movie_file[0]]['YEAR'] = title_folder_year
+
                         movie_results_list[movie_file[0]]['FILE-TYPE'] = movie_title.get('container')
 
                     except OSError as e:
@@ -137,23 +142,27 @@ def create_movie_information_index():
                         for track in movie_media_info.tracks:
 
                             if track.track_type == 'General':
-                                duration_integer = track.duration
-                                movie_results_list[movie_file[0]]['RUN-TIME'] = duration_integer
+                                movie_results_list[movie_file[0]]['RUN-TIME'] = track.duration
 
                             elif track.track_type == 'Audio':
-                                audio_tracks_list.append([movie_title_key, track.track_id, track.other_language,
-                                                          track.commercial_name, track.other_bit_rate,
-                                                          track.other_sampling_rate, track.channel_s, track.codec_id,
-                                                          track.track_type])
+                                audio_track_info = [track.track_id, track.language, track.commercial_name,
+                                                    track.codec_id, track.track_type]
+
+                                if audio_track_info:
+                                    movie_results_list[movie_file[0]]['AUDIO-TRACKS'] = audio_track_info
 
                             elif track.track_type == 'Text':
-                                text_tracks_list.append([movie_title_key, track.track_id, track.other_language,
-                                                         track.track_type])
+                                subtitle_info = [track.track_id, track.language, track.track_type]
+
+                                if subtitle_info:
+                                    movie_results_list[movie_file[0]]['SUBTITLE-TRACKS'] = subtitle_info
 
                             elif track.track_type == 'Video':
                                 movie_results_list[movie_file[0]]['ASPECT-RATIO'] = \
                                     track.other_display_aspect_ratio[0].replace(':', 'x')
-                                movie_results_list[movie_file[0]]['CODEC'] = track.encoded_library_name
+
+                                movie_results_list[movie_file[0]]['VIDEO-CODEC'] = track.encoded_library_name
+
                                 movie_results_list[movie_file[0]]['RESOLUTION'] = \
                                     str(track.width) + 'x' + str(track.height)
 
@@ -162,12 +171,8 @@ def create_movie_information_index():
                         print('-' * 100, '\n')
                         continue
 
-                    if len(text_tracks_list) != 0:
-                        movie_results_list[movie_file[0]]['SUBTITLE-TRACKS'] = len(text_tracks_list)
-                    else:
-                        movie_results_list[movie_file[0]]['SUBTITLE-TRACKS'] = str('0')
-
                     movie_hash = str(str(movie_filename_key) + '_' + str(movie_file_size))
+
                     movie_results_list[movie_file[0]]['MOVIE-HASH'] = movie_hash
 
             except (IOError, KeyError, TypeError, ValueError) as e:
@@ -176,23 +181,18 @@ def create_movie_information_index():
                 continue
 
     for items in movie_results_list.items():
-        print(items)
-    separator_1()
-    for items in audio_tracks_list:
-        print(items)
-    separator_1()
-    for items in text_tracks_list:
-        print(items)
+        for sub_items in items:
+            print(sub_items)
+        separator_1()
     separator_3()
 
-
-"""
     with open(os.path.expanduser((index_folder + '/MOVIE_INFORMATION_INDEX.csv').format(username)), 'w',
               encoding='UTF-8', newline='') as m_i_i:
 
         csv_writer = csv.DictWriter(m_i_i, ['MEDIA-PATH', 'MEDIA-TYPE', 'FOLDER-NAME', 'FILE-NAME', 'FILE-SIZE',
-                                            'GUESSIT-SEARCH-TERM', 'YEAR', 'FILE-TYPE', 'RUN-TIME', 'SUBTITLE-TRACKS',
-                                            'ASPECT-RATIO', 'CODEC', 'RESOLUTION', 'MOVIE-HASH'])
+                                            'GUESSIT-SEARCH-TERM', 'YEAR', 'FILE-TYPE', 'RUN-TIME', 'AUDIO-TRACKS', 
+                                            'SUBTITLE-TRACKS', 'ASPECT-RATIO', 'VIDEO-CODEC', 'RESOLUTION', 
+                                            'MOVIE-HASH'])
 
         for movie_row in movie_results_list.values():
             csv_writer.writerow(movie_row)
@@ -201,14 +201,10 @@ def create_movie_information_index():
     readable_movie_scan_time = round(movie_scan_end - movie_scan_start, 2)
     print('MOVIE INFORMATION SCAN COMPLETE - TIME ELAPSED: ', readable_movie_scan_time, 'Seconds')
     separator_3()
-"""
 
 
 def create_tv_information_index():
     tv_results_list = {}
-
-    audio_tracks_list = []
-    text_tracks_list = []
 
     tv_scan_start = time.time()
 
@@ -217,6 +213,7 @@ def create_tv_information_index():
         tv_index = csv.reader(m_f_p)
 
         for tv_file in sorted(tv_index):
+
             try:
 
                 tv_filename_key = tv_file[0].rsplit('/', 1)[-1]
@@ -229,8 +226,11 @@ def create_tv_information_index():
                         tv_results_list[tv_file[0]] = {}
 
                     tv_results_list[tv_file[0]]['MEDIA-PATH'] = tv_file[0]
+
                     tv_results_list[tv_file[0]]['MEDIA-TYPE'] = str('TV SHOW')
+
                     tv_results_list[tv_file[0]]['FOLDER-NAME'] = tv_title_key
+
                     tv_results_list[tv_file[0]]['FILE-NAME'] = tv_filename_key
 
                     try:
@@ -238,6 +238,7 @@ def create_tv_information_index():
                         tv_file_size = os.path.getsize(tv_file[0])
                         tv_file_size_in_mb = (int(tv_file_size) / 1048576)
                         tv_file_size_in_mb_rounded = str(round(tv_file_size_in_mb, 2))
+
                         tv_results_list[tv_file[0]]['FILE-SIZE'] = tv_file_size_in_mb_rounded
 
                     except OSError as e:
@@ -252,13 +253,18 @@ def create_tv_information_index():
                         tv_title_year = tv_title.get('year')
                         g_season_number = tv_title.get('season')
                         g_episode_number = tv_title.get('episode')
+
                         tv_results_list[tv_file[0]]['GUESSIT-SEARCH-TERM'] = tv_title_to_query
+
                         if tv_title_year:
                             tv_results_list[tv_file[0]]['YEAR'] = tv_title_year
                         else:
                             tv_results_list[tv_file[0]]['YEAR'] = title_folder_year
+
                         tv_results_list[tv_file[0]]['SEASON #'] = g_season_number
+
                         tv_results_list[tv_file[0]]['EPISODE #'] = g_episode_number
+
                         tv_results_list[tv_file[0]]['FILE-TYPE'] = tv_title.get('container')
 
                     except OSError as e:
@@ -280,23 +286,27 @@ def create_tv_information_index():
                         for track in tv_media_info.tracks:
 
                             if track.track_type == 'General':
-                                duration_integer = track.duration
-                                tv_results_list[tv_file[0]]['RUN-TIME'] = duration_integer
+                                tv_results_list[tv_file[0]]['RUN-TIME'] = track.duration
 
                             elif track.track_type == 'Audio':
-                                audio_tracks_list.append([tv_title_key, track.track_id, track.other_language,
-                                                          track.commercial_name, track.other_bit_rate,
-                                                          track.other_sampling_rate, track.channel_s, track.codec_id,
-                                                          track.track_type])
+                                audio_track_info = [track.track_id, track.language, track.commercial_name,
+                                                    track.codec_id, track.track_type]
+
+                                if audio_track_info:
+                                    tv_results_list[tv_file[0]]['AUDIO-TRACKS'] = audio_track_info
 
                             elif track.track_type == 'Text':
-                                text_tracks_list.append([tv_title_key, track.track_id, track.other_language,
-                                                         track.track_type])
+                                subtitle_info = [track.track_id, track.language, track.track_type]
+
+                                if subtitle_info:
+                                    tv_results_list[tv_file[0]]['SUBTITLE-TRACKS'] = subtitle_info
 
                             elif track.track_type == 'Video':
                                 tv_results_list[tv_file[0]]['ASPECT-RATIO'] = \
                                     track.other_display_aspect_ratio[0].replace(':', 'x')
-                                tv_results_list[tv_file[0]]['CODEC'] = track.encoded_library_name
+
+                                tv_results_list[tv_file[0]]['VIDEO-CODEC'] = track.encoded_library_name
+
                                 tv_results_list[tv_file[0]]['RESOLUTION'] = \
                                     str(track.width) + 'x' + str(track.height)
 
@@ -305,12 +315,8 @@ def create_tv_information_index():
                         print('-' * 100, '\n')
                         continue
 
-                    if len(text_tracks_list) != 0:
-                        tv_results_list[tv_file[0]]['SUBTITLE-TRACKS'] = len(text_tracks_list)
-                    else:
-                        tv_results_list[tv_file[0]]['SUBTITLE-TRACKS'] = str('0')
-
                     tv_hash = str(str(tv_filename_key) + '_' + str(tv_file_size))
+
                     tv_results_list[tv_file[0]]['TV-HASH'] = tv_hash
 
             except (IOError, KeyError, TypeError, ValueError) as e:
@@ -319,24 +325,18 @@ def create_tv_information_index():
                 continue
 
     for items in tv_results_list.items():
-        print(items)
-    separator_1()
-    for items in audio_tracks_list:
-        print(items)
-    separator_1()
-    for items in text_tracks_list:
-        print(items)
+        for sub_items in items:
+            print(sub_items)
+        separator_1()
     separator_3()
 
-
-"""
     with open(os.path.expanduser((index_folder + '/TV_INFORMATION_INDEX.csv').format(username)), 'w',
               encoding='UTF-8', newline='') as m_i_i:
 
         csv_writer = csv.DictWriter(m_i_i, ['MEDIA-PATH', 'MEDIA-TYPE', 'FOLDER-NAME', 'FILE-NAME', 'FILE-SIZE',
                                             'GUESSIT-SEARCH-TERM', 'YEAR', 'SEASON #', 'EPISODE #', 'FILE-TYPE',
-                                            'RUN-TIME', 'SUBTITLE-TRACKS', 'ASPECT-RATIO', 'CODEC', 'RESOLUTION',
-                                            'TV-HASH'])
+                                            'RUN-TIME', 'AUDIO-TRACKS', 'SUBTITLE-TRACKS', 'ASPECT-RATIO', 
+                                            'VIDEO-CODEC', 'RESOLUTION', 'TV-HASH'])
 
         for tv_row in tv_results_list.values():
             csv_writer.writerow(tv_row)
@@ -345,7 +345,6 @@ def create_tv_information_index():
     readable_tv_scan_time = round(tv_scan_end - tv_scan_start, 2)
     print('TV INFORMATION SCAN COMPLETE - TIME ELAPSED: ', readable_tv_scan_time, 'Seconds')
     separator_3()
-"""
 
 
 def directory_selection():
