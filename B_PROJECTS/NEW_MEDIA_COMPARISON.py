@@ -68,6 +68,9 @@ def create_media_information_indices():
 def create_movie_information_index():
     movie_results_list = {}
 
+    audio_tracks_list = []
+    text_tracks_list = []
+
     movie_scan_start = time.time()
 
     with open(os.path.expanduser((index_folder + '/MOVIE_VIDEO_FILES_PATHS.csv').format(username)),
@@ -129,9 +132,6 @@ def create_movie_information_index():
                         print('-' * 100, '\n')
                         continue
 
-                    audio_tracks_list = []
-                    text_tracks_list = []
-
                     try:
 
                         for track in movie_media_info.tracks:
@@ -175,6 +175,18 @@ def create_movie_information_index():
                 print('-' * 100, '\n')
                 continue
 
+    for items in movie_results_list.items():
+        print(items)
+    separator_1()
+    for items in audio_tracks_list:
+        print(items)
+    separator_1()
+    for items in text_tracks_list:
+        print(items)
+    separator_3()
+
+
+"""
     with open(os.path.expanduser((index_folder + '/MOVIE_INFORMATION_INDEX.csv').format(username)), 'w',
               encoding='UTF-8', newline='') as m_i_i:
 
@@ -189,10 +201,14 @@ def create_movie_information_index():
     readable_movie_scan_time = round(movie_scan_end - movie_scan_start, 2)
     print('MOVIE INFORMATION SCAN COMPLETE - TIME ELAPSED: ', readable_movie_scan_time, 'Seconds')
     separator_3()
+"""
 
 
 def create_tv_information_index():
     tv_results_list = {}
+
+    audio_tracks_list = []
+    text_tracks_list = []
 
     tv_scan_start = time.time()
 
@@ -259,9 +275,6 @@ def create_tv_information_index():
                         print('-' * 100, '\n')
                         continue
 
-                    audio_tracks_list = []
-                    text_tracks_list = []
-
                     try:
 
                         for track in tv_media_info.tracks:
@@ -305,6 +318,18 @@ def create_tv_information_index():
                 print('-' * 100, '\n')
                 continue
 
+    for items in tv_results_list.items():
+        print(items)
+    separator_1()
+    for items in audio_tracks_list:
+        print(items)
+    separator_1()
+    for items in text_tracks_list:
+        print(items)
+    separator_3()
+
+
+"""
     with open(os.path.expanduser((index_folder + '/TV_INFORMATION_INDEX.csv').format(username)), 'w',
               encoding='UTF-8', newline='') as m_i_i:
 
@@ -320,6 +345,7 @@ def create_tv_information_index():
     readable_tv_scan_time = round(tv_scan_end - tv_scan_start, 2)
     print('TV INFORMATION SCAN COMPLETE - TIME ELAPSED: ', readable_tv_scan_time, 'Seconds')
     separator_3()
+"""
 
 
 def directory_selection():
