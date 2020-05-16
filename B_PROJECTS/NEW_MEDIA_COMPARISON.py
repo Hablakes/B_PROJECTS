@@ -149,7 +149,6 @@ def create_movie_information_index():
                             elif track.track_type == 'Text':
                                 text_tracks_list.append([movie_title_key, track.track_id, track.other_language,
                                                          track.track_type])
-                                movie_results_list[movie_file[0]]['SUBTITLE-TRACKS'] = len(text_tracks_list)
 
                             elif track.track_type == 'Video':
                                 movie_results_list[movie_file[0]]['ASPECT-RATIO'] = \
@@ -163,6 +162,11 @@ def create_movie_information_index():
                         print('-' * 100, '\n')
                         continue
 
+                    if len(text_tracks_list) != 0:
+                        movie_results_list[movie_file[0]]['SUBTITLE-TRACKS'] = len(text_tracks_list)
+                    else:
+                        movie_results_list[movie_file[0]]['SUBTITLE-TRACKS'] = str('0')
+
                     movie_hash = str(str(movie_filename_key) + '_' + str(movie_file_size))
                     movie_results_list[movie_file[0]]['MOVIE-HASH'] = movie_hash
 
@@ -170,19 +174,6 @@ def create_movie_information_index():
                 print('INPUT ERROR: ', e, '\n', 'MOVIE FILE(S): ', movie_file[0])
                 print('-' * 100, '\n')
                 continue
-
-            print('AUDIO INFORMATION: ', '\n')
-            for items in audio_tracks_list:
-                for sub_items in items:
-                    print(sub_items)
-            separator_1()
-            print('TEXT INFORMATION: ', '\n')
-            if text_tracks_list:
-                for items in text_tracks_list:
-                    print(items)
-            else:
-                print('NO TEXT INFORMATION AVAILABLE')
-            separator_3()
 
     with open(os.path.expanduser((index_folder + '/MOVIE_INFORMATION_INDEX.csv').format(username)), 'w',
               encoding='UTF-8', newline='') as m_i_i:
@@ -288,17 +279,23 @@ def create_tv_information_index():
                             elif track.track_type == 'Text':
                                 text_tracks_list.append([tv_title_key, track.track_id, track.other_language,
                                                          track.track_type])
-                                tv_results_list[tv_file[0]]['SUBTITLE-TRACKS'] = len(text_tracks_list)
 
                             elif track.track_type == 'Video':
                                 tv_results_list[tv_file[0]]['ASPECT-RATIO'] = \
                                     track.other_display_aspect_ratio[0].replace(':', 'x')
                                 tv_results_list[tv_file[0]]['CODEC'] = track.encoded_library_name
+                                tv_results_list[tv_file[0]]['RESOLUTION'] = \
+                                    str(track.width) + 'x' + str(track.height)
 
                     except (KeyError, OSError, TypeError, ValueError) as e:
                         print('OS ERROR / PY_MEDIA_INFO (TRACKS): ', e)
                         print('-' * 100, '\n')
                         continue
+
+                    if len(text_tracks_list) != 0:
+                        tv_results_list[tv_file[0]]['SUBTITLE-TRACKS'] = len(text_tracks_list)
+                    else:
+                        tv_results_list[tv_file[0]]['SUBTITLE-TRACKS'] = str('0')
 
                     tv_hash = str(str(tv_filename_key) + '_' + str(tv_file_size))
                     tv_results_list[tv_file[0]]['TV-HASH'] = tv_hash
@@ -307,19 +304,6 @@ def create_tv_information_index():
                 print('INPUT ERROR: ', e, '\n', 'TV SHOW FILE(S): ', tv_file[0])
                 print('-' * 100, '\n')
                 continue
-
-    print('AUDIO INFORMATION: ', '\n')
-    for items in audio_tracks_list:
-        for sub_items in items:
-            print(sub_items)
-    separator_1()
-    print('TEXT INFORMATION: ', '\n')
-    if text_tracks_list:
-        for items in text_tracks_list:
-            print(items)
-    else:
-        print('NO TEXT INFORMATION AVAILABLE')
-    separator_3()
 
     with open(os.path.expanduser((index_folder + '/TV_INFORMATION_INDEX.csv').format(username)), 'w',
               encoding='UTF-8', newline='') as m_i_i:
