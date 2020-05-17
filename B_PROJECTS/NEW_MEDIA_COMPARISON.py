@@ -144,14 +144,15 @@ def create_movie_information_index():
                             if track.track_type == 'General':
                                 movie_results_list[movie_file[0]]['RUN-TIME'] = track.duration
 
+                                if track.count_of_text_streams:
+                                    movie_results_list[movie_file[0]]['SUBTITLE-TRACKS'] = track.count_of_text_streams
+                                else:
+                                    movie_results_list[movie_file[0]]['SUBTITLE-TRACKS'] = str('NO EMBEDDED SUB-TITLES')
+
                             elif track.track_type == 'Audio':
                                 movie_results_list[movie_file[0]]['AUDIO-TRACKS'] = [track.language,
                                                                                      track.commercial_name,
-                                                                                     track.codec_id, track.track_type]
-
-                            elif track.track_type == 'Text':
-                                movie_results_list[movie_file[0]]['SUBTITLE-TRACKS'] = \
-                                    [track.track_id, track.track_type]
+                                                                                     track.codec_id]
 
                             elif track.track_type == 'Video':
                                 movie_results_list[movie_file[0]]['ASPECT-RATIO'] = \
@@ -175,12 +176,6 @@ def create_movie_information_index():
                 print('INPUT ERROR: ', e, '\n', 'MOVIE FILE(S): ', movie_file[0])
                 print('-' * 100, '\n')
                 continue
-
-    for items in movie_results_list.items():
-        for sub_items in items:
-            print(sub_items)
-        separator_1()
-    separator_3()
 
     with open(os.path.expanduser((index_folder + '/MOVIE_INFORMATION_INDEX.csv').format(username)), 'w',
               encoding='UTF-8', newline='') as m_i_i:
@@ -284,12 +279,14 @@ def create_tv_information_index():
                             if track.track_type == 'General':
                                 tv_results_list[tv_file[0]]['RUN-TIME'] = track.duration
 
+                                if track.count_of_text_streams:
+                                    tv_results_list[tv_file[0]]['SUBTITLE-TRACKS'] = track.count_of_text_streams
+                                else:
+                                    tv_results_list[tv_file[0]]['SUBTITLE-TRACKS'] = str('NO EMBEDDED SUB-TITLES')
+
                             elif track.track_type == 'Audio':
                                 tv_results_list[tv_file[0]]['AUDIO-TRACKS'] = [track.language, track.commercial_name,
-                                                                               track.codec_id, track.track_type]
-
-                            elif track.track_type == 'Text':
-                                tv_results_list[tv_file[0]]['SUBTITLE-TRACKS'] = [track.track_id, track.track_type]
+                                                                               track.codec_id]
 
                             elif track.track_type == 'Video':
                                 tv_results_list[tv_file[0]]['ASPECT-RATIO'] = \
@@ -313,12 +310,6 @@ def create_tv_information_index():
                 print('INPUT ERROR: ', e, '\n', 'TV SHOW FILE(S): ', tv_file[0])
                 print('-' * 100, '\n')
                 continue
-
-    for items in tv_results_list.items():
-        for sub_items in items:
-            print(sub_items)
-        separator_1()
-    separator_3()
 
     with open(os.path.expanduser((index_folder + '/TV_INFORMATION_INDEX.csv').format(username)), 'w',
               encoding='UTF-8', newline='') as m_i_i:
