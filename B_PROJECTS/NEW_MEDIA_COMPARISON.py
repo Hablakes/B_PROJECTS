@@ -104,7 +104,7 @@ def create_movie_information_index():
                         movie_results_list[movie_file[0]]['FILE-SIZE'] = movie_file_size_in_mb_rounded
 
                     except OSError as e:
-                        print('OS ERROR / FILE-SIZE: ', e)
+                        print('FILE-SIZE ERROR: ', e)
                         print('-' * 100, '\n')
                         continue
 
@@ -124,7 +124,7 @@ def create_movie_information_index():
                         movie_results_list[movie_file[0]]['FILE-TYPE'] = movie_title.get('container')
 
                     except OSError as e:
-                        print('OS ERROR / GUESSIT: ', e)
+                        print('GUESSIT ERROR: ', e)
                         print('-' * 100, '\n')
                         continue
 
@@ -133,7 +133,7 @@ def create_movie_information_index():
                         movie_media_info = pymediainfo.MediaInfo.parse(movie_file[0])
 
                     except OSError as e:
-                        print('OS ERROR / PY_MEDIA_INFO: ', e)
+                        print('PY_MEDIA_INFO ERROR: ', e)
                         print('-' * 100, '\n')
                         continue
 
@@ -145,17 +145,13 @@ def create_movie_information_index():
                                 movie_results_list[movie_file[0]]['RUN-TIME'] = track.duration
 
                             elif track.track_type == 'Audio':
-                                audio_track_info = [track.track_id, track.language, track.commercial_name,
-                                                    track.codec_id, track.track_type]
-
-                                if audio_track_info:
-                                    movie_results_list[movie_file[0]]['AUDIO-TRACKS'] = audio_track_info
+                                movie_results_list[movie_file[0]]['AUDIO-TRACKS'] = [track.language,
+                                                                                     track.commercial_name,
+                                                                                     track.codec_id, track.track_type]
 
                             elif track.track_type == 'Text':
-                                subtitle_info = [track.track_id, track.language, track.track_type]
-
-                                if subtitle_info:
-                                    movie_results_list[movie_file[0]]['SUBTITLE-TRACKS'] = subtitle_info
+                                movie_results_list[movie_file[0]]['SUBTITLE-TRACKS'] = \
+                                    [track.track_id, track.track_type]
 
                             elif track.track_type == 'Video':
                                 movie_results_list[movie_file[0]]['ASPECT-RATIO'] = \
@@ -167,7 +163,7 @@ def create_movie_information_index():
                                     str(track.width) + 'x' + str(track.height)
 
                     except (KeyError, OSError, TypeError, ValueError) as e:
-                        print('OS ERROR / PY_MEDIA_INFO (TRACKS): ', e)
+                        print('PY_MEDIA_INFO ERROR (TRACKS): ', e)
                         print('-' * 100, '\n')
                         continue
 
@@ -242,7 +238,7 @@ def create_tv_information_index():
                         tv_results_list[tv_file[0]]['FILE-SIZE'] = tv_file_size_in_mb_rounded
 
                     except OSError as e:
-                        print('OS ERROR / FILE-SIZE: ', e)
+                        print('FILE-SIZE ERROR: ', e)
                         print('-' * 100, '\n')
                         continue
 
@@ -268,7 +264,7 @@ def create_tv_information_index():
                         tv_results_list[tv_file[0]]['FILE-TYPE'] = tv_title.get('container')
 
                     except OSError as e:
-                        print('OS ERROR / GUESSIT: ', e)
+                        print('GUESSIT ERROR: ', e)
                         print('-' * 100, '\n')
                         continue
 
@@ -277,7 +273,7 @@ def create_tv_information_index():
                         tv_media_info = pymediainfo.MediaInfo.parse(tv_file[0])
 
                     except OSError as e:
-                        print('OS ERROR / PY_MEDIA_INFO: ', e)
+                        print('PY_MEDIA_INFO ERROR: ', e)
                         print('-' * 100, '\n')
                         continue
 
@@ -289,17 +285,11 @@ def create_tv_information_index():
                                 tv_results_list[tv_file[0]]['RUN-TIME'] = track.duration
 
                             elif track.track_type == 'Audio':
-                                audio_track_info = [track.track_id, track.language, track.commercial_name,
-                                                    track.codec_id, track.track_type]
-
-                                if audio_track_info:
-                                    tv_results_list[tv_file[0]]['AUDIO-TRACKS'] = audio_track_info
+                                tv_results_list[tv_file[0]]['AUDIO-TRACKS'] = [track.language, track.commercial_name,
+                                                                               track.codec_id, track.track_type]
 
                             elif track.track_type == 'Text':
-                                subtitle_info = [track.track_id, track.language, track.track_type]
-
-                                if subtitle_info:
-                                    tv_results_list[tv_file[0]]['SUBTITLE-TRACKS'] = subtitle_info
+                                tv_results_list[tv_file[0]]['SUBTITLE-TRACKS'] = [track.track_id, track.track_type]
 
                             elif track.track_type == 'Video':
                                 tv_results_list[tv_file[0]]['ASPECT-RATIO'] = \
@@ -311,7 +301,7 @@ def create_tv_information_index():
                                     str(track.width) + 'x' + str(track.height)
 
                     except (KeyError, OSError, TypeError, ValueError) as e:
-                        print('OS ERROR / PY_MEDIA_INFO (TRACKS): ', e)
+                        print('PY_MEDIA_INFO ERROR (TRACKS): ', e)
                         print('-' * 100, '\n')
                         continue
 
