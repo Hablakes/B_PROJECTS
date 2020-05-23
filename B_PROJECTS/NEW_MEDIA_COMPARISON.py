@@ -46,7 +46,7 @@ def change_directory_selection():
     directory_selection()
 
 
-def compare_results(results_one, results_two):
+def compare_completed_results(results_one, results_two):
     output_one = []
 
     for line in results_one:
@@ -564,7 +564,7 @@ def select_users_indices_to_compare():
             with open(os.path.expanduser(
                     (index_folder + '/FILES/MOVIE_COMPARISON_INDEX.csv').format(username)),
                     'w', encoding='UTF-8', newline='') as outFile_m:
-                for line in compare_results(user_movie_results, comparison_movie_results):
+                for line in compare_completed_results(user_movie_results, comparison_movie_results):
                     outFile_m.write(line)
 
         with open(t_0, 'r', encoding='UTF-8') as tv_0, open(t_1, 'r', encoding='UTF-8') as tv_1:
@@ -574,7 +574,7 @@ def select_users_indices_to_compare():
             with open(os.path.expanduser(
                     (index_folder + '/FILES/TV_COMPARISON_INDEX.csv').format(username)),
                     'w', encoding='UTF-8', newline='') as outFile_t:
-                for line in compare_results(user_tv_results, comparison_tv_results):
+                for line in compare_completed_results(user_tv_results, comparison_tv_results):
                     outFile_t.write(line)
 
     except (OSError, TypeError, ValueError) as e:
