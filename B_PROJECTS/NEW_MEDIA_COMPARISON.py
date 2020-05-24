@@ -655,7 +655,7 @@ def query_tv_information_index(tv_episode_query):
         try:
 
             for tv_file in tv_files_results_list:
-                if str(tv_episode_query.lower()) in str(tv_file[9].lower()):
+                if str(tv_episode_query.lower()) in str(tv_file[3].lower()):
 
                     separator_2()
                     print('TV SHOW PATH: ', '\n', tv_file[0])
@@ -712,13 +712,10 @@ def select_users_indices_to_compare():
 
         print('SELECT USER MOVIE INFORMATION INDEX: ')
         m_0 = tk_gui_file_selection_window()
-
         print('SELECT COMPARISON MOVIE INFORMATION INDEX: ')
         m_1 = tk_gui_file_selection_window()
-
         print('SELECT USER TV INFORMATION INDEX: ')
         t_0 = tk_gui_file_selection_window()
-
         print('SELECT COMPARISON TV INFORMATION INDEX: ')
         t_1 = tk_gui_file_selection_window()
         separator_3()
