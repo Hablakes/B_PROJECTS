@@ -170,7 +170,7 @@ def create_movie_information_index():
 
                     movie_hash = str(str(movie_filename_key) + '_' + str(movie_file_size))
 
-                    movie_results_list[movie_file[0]]['MOVIE-HASH'] = movie_hash
+                    movie_results_list[movie_file[0]]['MOVIE-HASH-CODE'] = movie_hash
 
             except (IOError, KeyError, TypeError, ValueError) as e:
                 print('INPUT ERROR: ', e, '\n', 'MOVIE FILE(S): ', movie_file[0])
@@ -183,7 +183,7 @@ def create_movie_information_index():
         csv_writer = csv.DictWriter(m_i_i, ['MEDIA-PATH', 'MEDIA-TYPE', 'FOLDER-NAME', 'FILE-NAME', 'FILE-SIZE',
                                             'GUESSIT-SEARCH-TERM', 'YEAR', 'FILE-TYPE', 'RUN-TIME', 'AUDIO-TRACKS', 
                                             'SUBTITLE-TRACKS', 'ASPECT-RATIO', 'VIDEO-CODEC', 'RESOLUTION', 
-                                            'MOVIE-HASH'])
+                                            'MOVIE-HASH-CODE'])
 
         for movie_row in movie_results_list.values():
             csv_writer.writerow(movie_row)
@@ -241,6 +241,7 @@ def create_tv_information_index():
 
                         tv_title = guessit.guessit(tv_filename_key, options={'type': 'episode'})
                         tv_title_to_query = tv_title.get('title')
+                        tv_episode_name = tv_title.get('episode_title')
                         tv_title_year = tv_title.get('year')
                         g_season_number = tv_title.get('season')
                         g_episode_number = tv_title.get('episode')
@@ -255,6 +256,8 @@ def create_tv_information_index():
                         tv_results_list[tv_file[0]]['SEASON #'] = g_season_number
 
                         tv_results_list[tv_file[0]]['EPISODE #'] = g_episode_number
+
+                        tv_results_list[tv_file[0]]['EPISODE-TITLE'] = tv_episode_name
 
                         tv_results_list[tv_file[0]]['FILE-TYPE'] = tv_title.get('container')
 
@@ -304,7 +307,7 @@ def create_tv_information_index():
 
                     tv_hash = str(str(tv_filename_key) + '_' + str(tv_file_size))
 
-                    tv_results_list[tv_file[0]]['TV-HASH'] = tv_hash
+                    tv_results_list[tv_file[0]]['TV-HASH-CODE'] = tv_hash
 
             except (IOError, KeyError, TypeError, ValueError) as e:
                 print('INPUT ERROR: ', e, '\n', 'TV SHOW FILE(S): ', tv_file[0])
@@ -315,9 +318,9 @@ def create_tv_information_index():
               encoding='UTF-8', newline='') as m_i_i:
 
         csv_writer = csv.DictWriter(m_i_i, ['MEDIA-PATH', 'MEDIA-TYPE', 'FOLDER-NAME', 'FILE-NAME', 'FILE-SIZE',
-                                            'GUESSIT-SEARCH-TERM', 'YEAR', 'SEASON #', 'EPISODE #', 'FILE-TYPE',
-                                            'RUN-TIME', 'AUDIO-TRACKS', 'SUBTITLE-TRACKS', 'ASPECT-RATIO', 
-                                            'VIDEO-CODEC', 'RESOLUTION', 'TV-HASH'])
+                                            'GUESSIT-SEARCH-TERM', 'YEAR', 'SEASON #', 'EPISODE #', 'EPISODE-TITLE',
+                                            'FILE-TYPE', 'RUN-TIME', 'AUDIO-TRACKS', 'SUBTITLE-TRACKS', 'ASPECT-RATIO',
+                                            'VIDEO-CODEC', 'RESOLUTION', 'TV-HASH-CODE'])
 
         for tv_row in tv_results_list.values():
             csv_writer.writerow(tv_row)
@@ -430,8 +433,9 @@ def media_index_home():
     print(pyfiglet.figlet_format('MEDIA_INDEX', font='cybermedium'))
     separator_3()
 
-    print('1) ADD / CHANGE DATABASE DIRECTORIES             2) CREATE PATH INDICES', '\n')
-    print('3) CREATE / UPDATE MEDIA INFORMATION INDICES     4) COMPARE TWO USERS INFORMATION INDICES', '\n')
+    print('1) ADD / CHANGE DATABASE DIRECTORIES                 2) CREATE PATH INDICES', '\n')
+    print('3) CREATE / UPDATE MEDIA INFORMATION INDICES         4) COMPARE TWO USERS INFORMATION INDICES', '\n')
+    print('5) QUERY DETAILED MEDIA INFORMATION', '\n')
     separator_2()
     print('0) EXIT MEDIA-INDEX')
     separator_3()
@@ -533,9 +537,171 @@ def media_index_home():
                 print('\n', 'INPUT ERROR: ', e, '\n', '\n', 'PLEASE RETRY YOUR SELECTION USING THE NUMBER KEYS')
                 separator_3()
 
+        elif lmi_input_action == 5:
+
+            try:
+
+                print('CONFIRM: ')
+                separator_1()
+                print('1) QUERY DETAILED MEDIA INFORMATION                  0) MAIN MENU')
+                separator_3()
+                comparison_scan_sub_input = int(input('ENTER #: '))
+                separator_3()
+
+                if comparison_scan_sub_input == 0:
+                    media_index_home()
+
+                elif comparison_scan_sub_input == 1:
+                    media_queries_sub_menu()
+
+            except (TypeError, ValueError) as e:
+                print('\n', 'INPUT ERROR: ', e, '\n', '\n', 'PLEASE RETRY YOUR SELECTION USING THE NUMBER KEYS')
+                separator_3()
+
     except (TypeError, ValueError) as e:
         print('\n', 'INPUT ERROR: ', e, '\n', '\n', 'PLEASE RETRY YOUR SELECTION USING THE NUMBER KEYS')
         separator_3()
+
+
+def media_queries_sub_menu():
+    print(pyfiglet.figlet_format('MEDIA_QUERIES', font='cybermedium'))
+    separator_3()
+
+    print('SEARCH FOR DETAILED INFORMATION OF:                  1) MOVIES (BY MOVIE TITLE)', '\n')
+    print('SEARCH FOR DETAILED INFORMATION OF:                  2) TV SHOWS (BY EPISODE TITLE)')
+    separator_2()
+    print('0) MAIN MENU')
+    separator_3()
+
+    try:
+
+        title_search_type = int(input('ENTER #: '))
+        separator_3()
+
+        if title_search_type == 0:
+            media_index_home()
+
+        elif title_search_type == 1:
+            movie_title_query_input = str(input('ENTER SEARCH QUERY (MOVIES): ').lower())
+            separator_3()
+            query_movie_information_index(movie_query=movie_title_query_input)
+
+        elif title_search_type == 2:
+            tv_episode_query_input = str(input('ENTER SEARCH QUERY (TV SHOWS): ').lower())
+            separator_3()
+            query_tv_information_index(tv_episode_query=tv_episode_query_input)
+
+    except (TypeError, ValueError) as e:
+        print('\n', 'INPUT ERROR: ', e, '\n', '\n', 'PLEASE RETRY YOUR SELECTION USING THE NUMBER KEYS')
+        separator_3()
+
+
+def query_movie_information_index(movie_query):
+    with open(os.path.expanduser((index_folder + '/MOVIE_INFORMATION_INDEX.csv').format(username)),
+              encoding='UTF-8') as m_i_i:
+        mv_files_results_list = csv.reader(m_i_i)
+
+        try:
+
+            for movie_file in mv_files_results_list:
+                if str(movie_query.lower()) in str(movie_file[2].lower()):
+
+                    separator_2()
+                    print('MOVIE PATH: ', '\n', movie_file[0])
+                    separator_2()
+                    print('MEDIA TYPE: ', '\n', movie_file[1])
+                    separator_2()
+                    print('MOVIE FOLDER NAME: ', '\n', movie_file[2])
+                    separator_2()
+                    print('MOVIE FILE-NAME: ', '\n', movie_file[3])
+                    separator_2()
+                    if int(len(movie_file[4])) != 0:
+                        print('FILE-SIZE: ', '\n', movie_file[4], 'MB')
+                        separator_2()
+                    print('GUESSIT-SEARCH-TERM: ', '\n', movie_file[5])
+                    separator_2()
+                    print('MOVIE YEAR: ', '\n', movie_file[6])
+                    separator_2()
+                    print('MOVIE FILE-TYPE: ', '\n', movie_file[7])
+                    separator_2()
+                    if int(len(movie_file[8])) != 0:
+                        print('RUN-TIME: ', '\n', int(movie_file[8]) // 60000, 'MINUTES')
+                        separator_2()
+                    print('MOVIE AUDIO-TRACKS: ', '\n', movie_file[9])
+                    separator_2()
+                    print('MOVIE SUBTITLE TRACKS: ', '\n', movie_file[10])
+                    separator_2()
+                    print('MOVIE ASPECT-RATIO: ', '\n', movie_file[11])
+                    separator_2()
+                    print('MOVIE VIDEO-CODEC: ', '\n', movie_file[12])
+                    separator_2()
+                    print('MOVIE RESOLUTION: ', '\n', movie_file[13])
+                    separator_2()
+                    print('MOVIE HASH-CODE: ', '\n', movie_file[14])
+                    separator_2()
+
+            separator_2()
+
+        except (TypeError, ValueError) as e:
+            print('\n', 'INPUT ERROR: ', e, '\n', '\n', 'INVALID QUERY, PLEASE RETRY')
+            separator_3()
+
+
+def query_tv_information_index(tv_episode_query):
+    with open(os.path.expanduser((index_folder + '/TV_INFORMATION_INDEX.csv').format(username)),
+              encoding='UTF-8') as t_i_i:
+        tv_files_results_list = csv.reader(t_i_i)
+
+        try:
+
+            for tv_file in tv_files_results_list:
+                if str(tv_episode_query.lower()) in str(tv_file[9].lower()):
+
+                    separator_2()
+                    print('TV SHOW PATH: ', '\n', tv_file[0])
+                    separator_2()
+                    print('MEDIA TYPE: ', '\n', tv_file[1])
+                    separator_2()
+                    print('TV SHOW FOLDER NAME: ', '\n', tv_file[2])
+                    separator_2()
+                    print('TV SHOW FILE-NAME: ', '\n', tv_file[3])
+                    separator_2()
+                    if int(len(tv_file[4])) != 0:
+                        print('FILE-SIZE: ', '\n', tv_file[4], 'MB')
+                        separator_2()
+                    print('GUESSIT-SEARCH-TERM: ', '\n', tv_file[5])
+                    separator_2()
+                    print('TV SHOW YEAR: ', '\n', tv_file[6])
+                    separator_2()
+                    print('TV SHOW SEASON #: ', '\n', tv_file[7])
+                    separator_2()
+                    print('TV SHOW EPISODE #: ', '\n', tv_file[8])
+                    separator_2()
+                    print('TV SHOW EPISODE TITLE: ', '\n', tv_file[9])
+                    separator_2()
+                    print('TV SHOW FILE-TYPE: ', '\n', tv_file[10])
+                    separator_2()
+                    if int(len(tv_file[11])) != 0:
+                        print('RUN-TIME: ', '\n', int(tv_file[11]) // 60000, 'MINUTES')
+                        separator_2()
+                    print('TV SHOW AUDIO-TRACKS: ', '\n', tv_file[12])
+                    separator_2()
+                    print('TV SHOW SUBTITLE TRACKS: ', '\n', tv_file[13])
+                    separator_2()
+                    print('TV SHOW ASPECT-RATIO: ', '\n', tv_file[14])
+                    separator_2()
+                    print('TV SHOW VIDEO-CODEC: ', '\n', tv_file[15])
+                    separator_2()
+                    print('TV SHOW RESOLUTION: ', '\n', tv_file[16])
+                    separator_2()
+                    print('TV SHOW HASH-CODE: ', '\n', tv_file[17])
+                    separator_2()
+
+            separator_2()
+
+        except (TypeError, ValueError) as e:
+            print('\n', 'INPUT ERROR: ', e, '\n', '\n', 'INVALID QUERY, PLEASE RETRY')
+            separator_3()
 
 
 def select_users_indices_to_compare():
