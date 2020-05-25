@@ -61,8 +61,94 @@ def compare_completed_results(results_one, results_two):
 
 
 def create_media_information_indices():
+    create_media_title_index()
     create_movie_information_index()
     create_tv_information_index()
+
+
+def create_media_title_index():
+    movie_title_items = []
+    tv_title_items = []
+
+    naming_scan_start = time.time()
+
+    try:
+
+        if movie_dir_input != '':
+            movie_dir_list = os.listdir(movie_dir_input)
+
+            for movie_found in sorted(movie_dir_list):
+                movie_scrape_info = guessit.guessit(movie_found)
+                title_item_check = ['MOVIE', movie_scrape_info.get('title'), str(movie_scrape_info.get('year'))]
+
+                if ',' in title_item_check[2]:
+                    title_item_check.append(title_item_check[2][-5:-1])
+                    title_item_check.remove(title_item_check[2])
+                movie_title_items.append(title_item_check)
+
+        if movie_alt_dir_input != '':
+            found_alt_movie_directories_list = []
+
+            for alternate_movie_directories in movie_alt_dir_input:
+                movie_alt_dir_list = os.listdir(alternate_movie_directories)
+
+                for found_alt_movie_directories in movie_alt_dir_list:
+                    found_alt_movie_directories_list.append(found_alt_movie_directories)
+                for movie_found in sorted(found_alt_movie_directories_list):
+                    movie_scrape_info = guessit.guessit(movie_found)
+                    title_item_check = ['MOVIE', movie_scrape_info.get('title'), str(movie_scrape_info.get('year'))]
+
+                    if ',' in title_item_check[2]:
+                        title_item_check.append(title_item_check[2][-5:-1])
+                        title_item_check.remove(title_item_check[2])
+                    movie_title_items.append(title_item_check)
+
+        if tv_dir_input != '':
+            tv_dir_list = os.listdir(tv_dir_input)
+
+            for tv_found in sorted(tv_dir_list):
+                tv_scrape_info = guessit.guessit(tv_found)
+                title_item_check = ['TV', tv_scrape_info.get('title'), str(tv_scrape_info.get('year'))]
+
+                if ',' in title_item_check[2]:
+                    title_item_check.append(title_item_check[2][-5:-1])
+                    title_item_check.remove(title_item_check[2])
+                tv_title_items.append(title_item_check)
+
+        if tv_alt_dir_input != '':
+            found_alt_tv_directories_list = []
+
+            for alternate_tv_directories in tv_alt_dir_input:
+                tv_alt_dir_list = os.listdir(alternate_tv_directories)
+
+                for found_alt_tv_directories in tv_alt_dir_list:
+                    found_alt_tv_directories_list.append(found_alt_tv_directories)
+                for tv_found in sorted(found_alt_tv_directories_list):
+                    tv_scrape_info = guessit.guessit(tv_found)
+                    title_item_check = ['TV', tv_scrape_info.get('title'), str(tv_scrape_info.get('year'))]
+
+                    if ',' in title_item_check[2]:
+                        title_item_check.append(title_item_check[2][-5:-1])
+                        title_item_check.remove(title_item_check[2])
+                    tv_title_items.append(title_item_check)
+
+        with open(os.path.expanduser((index_folder + '/MEDIA_TITLE_INDEX.csv').format(username)), 'w',
+                  encoding='UTF-8', newline='') as m_t_i:
+            csv_writer = csv.writer(m_t_i)
+            for file_row in movie_title_items:
+                csv_writer.writerow(file_row)
+
+            for file_row in tv_title_items:
+                csv_writer.writerow(file_row)
+
+    except (OSError, TypeError, ValueError) as e:
+        print('\n', 'INPUT ERROR: ', e, '\n', '\n', 'INCORRECT DIRECTORY INPUT(S), PLEASE RETRY')
+        separator_3()
+
+    naming_scan_end = time.time()
+    readable_naming_scan_time = round(naming_scan_end - naming_scan_start, 2)
+    print('MEDIA TITLES SCAN COMPLETE - TIME ELAPSED: ', readable_naming_scan_time, 'Seconds')
+    separator_3()
 
 
 def create_movie_information_index():
@@ -403,6 +489,192 @@ def directory_selection():
         separator_3()
 
 
+def graph_options_advanced(terminal_graph_options_int):
+    m_4k_found_list = []
+    m_1080_found_list = []
+    m_720_found_list = []
+    m_640_found_list = []
+    m_empty_response_list = []
+    movies_total_list = []
+
+    tv_4k_found_list = []
+    tv_1080_found_list = []
+    tv_720_found_list = []
+    tv_640_found_list = []
+    tv_empty_response_list = []
+    tv_total_list = []
+
+    with open(os.path.expanduser((index_folder + '/MOVIE_INFORMATION_INDEX.csv').format(username)),
+              encoding='UTF-8') as m_i_i:
+        movie_files_results_list = list(csv.reader(m_i_i))
+    with open(os.path.expanduser((index_folder + '/TV_INFORMATION_INDEX.csv').format(username)),
+              encoding='UTF-8') as t_i_i:
+        tv_files_results_list = list(csv.reader(t_i_i))
+
+        for res in movie_files_results_list:
+            if re.findall(r'[2-9]\d{3}x', res[13]):
+                m_4k_found_list.append(res)
+
+            elif re.findall(r'19\d{2}x', res[13]):
+                m_1080_found_list.append(res)
+
+            elif re.findall(r'1[0-8]\d{2}x', res[13]):
+                m_720_found_list.append(res)
+
+            elif re.findall(r'\d{3}x', res[13]):
+                m_640_found_list.append(res)
+
+            else:
+                m_empty_response_list.append(+1)
+            movies_total_list.append(+1)
+
+        movies_graph_terminal_results = [('4k', float(len(m_4k_found_list))),
+                                         ('1080p', float(len(m_1080_found_list))),
+                                         ('720p', float(len(m_720_found_list))),
+                                         ('640p', float(len(m_640_found_list)))]
+
+        for res in tv_files_results_list:
+            if re.findall(r'[2-9]\d{3}x', res[16]):
+                tv_4k_found_list.append(res)
+
+            elif re.findall(r'19\d{2}x', res[16]):
+                tv_1080_found_list.append(res)
+
+            elif re.findall(r'1[0-8]\d{2}x', res[16]):
+                tv_720_found_list.append(res)
+
+            elif re.findall(r'\d{3}x', res[16]):
+                tv_640_found_list.append(res)
+
+            else:
+                tv_empty_response_list.append(+1)
+            tv_total_list.append(+1)
+
+        tv_shows_graph_terminal_results = [('4k', float(len(tv_4k_found_list))),
+                                           ('1080p', float(len(tv_1080_found_list))),
+                                           ('720p', float(len(tv_720_found_list))),
+                                           ('640p', float(len(tv_640_found_list)))]
+
+        graph_color_pattern = [IBlu, BCya, Blu, Pur]
+
+        if terminal_graph_options_int == 5:
+            color_movies_graph_terminal_results = vcolor(movies_graph_terminal_results, graph_color_pattern)
+            graph = Pyasciigraph()
+            for line in graph.graph('MOVIES: RESOLUTION PERCENTAGES: ', color_movies_graph_terminal_results):
+                print('\n', line)
+            separator_3()
+
+        elif terminal_graph_options_int == 6:
+            color_tv_shows_graph_terminal_results = vcolor(tv_shows_graph_terminal_results, graph_color_pattern)
+            graph = Pyasciigraph()
+            for line in graph.graph('TV SHOWS: RESOLUTION PERCENTAGES: ', color_tv_shows_graph_terminal_results):
+                print('\n', line)
+            separator_3()
+
+
+def graph_options_base(terminal_graph_options_int):
+    movie_years_dict = {}
+    movie_decades_dict = {}
+    tv_years_dict = {}
+    tv_decades_amount_dict = {}
+    movie_year_totals_dict = {}
+    movie_decades_totals_dict = {}
+    tv_year_totals_dict = {}
+    tv_decades_totals_dict = {}
+
+    graph_color_pattern = [IBlu, BCya, Blu, Pur]
+
+    with open(os.path.expanduser((index_folder + '/MEDIA_TITLE_INDEX.csv').format(username)),
+              encoding='UTF-8') as m_t_i:
+        media_index_list = list(csv.reader(m_t_i))
+
+        for title_item in media_index_list:
+            title_item_year = re.split(r'(.+) \((\d{4})\)', title_item[2], flags=0)
+            title_item_year_int = int(title_item_year[0])
+            title_item_decade_int = int(title_item_year[0][:-1] + '0')
+
+            if title_item_year_int in range(1900, 2100, 1):
+                if 'MOVIE' in title_item:
+                    if title_item_year_int not in movie_years_dict:
+                        movie_years_dict[title_item_year_int] = []
+                    movie_years_dict[title_item_year_int].append(title_item)
+
+                    if title_item_decade_int not in movie_decades_dict:
+                        movie_decades_dict[title_item_decade_int] = []
+                    movie_decades_dict[title_item_decade_int].append(title_item)
+
+                if 'TV' in title_item:
+                    if title_item_year_int not in tv_years_dict:
+                        tv_years_dict[title_item_year_int] = []
+                    tv_years_dict[title_item_year_int].append(title_item)
+
+                    if title_item_decade_int not in tv_decades_amount_dict:
+                        tv_decades_amount_dict[title_item_decade_int] = []
+                    tv_decades_amount_dict[title_item_decade_int].append(title_item)
+
+        if terminal_graph_options_int == 1:
+            for movie_year_values, value in sorted(movie_years_dict.items()):
+                movie_year_totals_dict[movie_year_values] = len(value)
+            movie_data = sorted(movie_year_totals_dict.items())
+            movie_years_terminal_graph_list = []
+
+            for key, value in movie_data:
+                movie_years_terminal_graph_list.append((str(key), value))
+
+            color_movie_years_terminal_graph_list = vcolor(movie_years_terminal_graph_list, graph_color_pattern)
+            graph = Pyasciigraph()
+
+            for line in graph.graph('MOVIES: YEAR AMOUNTS: ', color_movie_years_terminal_graph_list):
+                print('\n', line)
+            separator_3()
+
+        elif terminal_graph_options_int == 2:
+            for tv_year_values, value in sorted(tv_years_dict.items()):
+                tv_year_totals_dict[tv_year_values] = len(value)
+            tv_data = sorted(tv_year_totals_dict.items())
+            tv_years_terminal_graph_list = []
+
+            for key, value in tv_data:
+                tv_years_terminal_graph_list.append((str(key), value))
+
+            color_tv_years_terminal_graph_list = vcolor(tv_years_terminal_graph_list, graph_color_pattern)
+            graph = Pyasciigraph()
+
+            for line in graph.graph('TV SHOWS: YEAR AMOUNTS: ', color_tv_years_terminal_graph_list):
+                print('\n', line)
+            separator_3()
+
+        elif terminal_graph_options_int == 3:
+            for movie_year_values, value in sorted(movie_decades_dict.items()):
+                movie_decades_totals_dict[movie_year_values] = len(value)
+            movie_decades_terminal_graph_list = []
+
+            for key, value in movie_decades_totals_dict.items():
+                movie_decades_terminal_graph_list.append((str(key), value))
+
+            color_movie_decades_terminal_graph_list = vcolor(movie_decades_terminal_graph_list, graph_color_pattern)
+            graph = Pyasciigraph()
+
+            for line in graph.graph('MOVIES: DECADE AMOUNTS: ', color_movie_decades_terminal_graph_list):
+                print('\n', line)
+            separator_3()
+
+        elif terminal_graph_options_int == 4:
+            for tv_year_values, value in sorted(tv_decades_amount_dict.items()):
+                tv_decades_totals_dict[tv_year_values] = len(value)
+            tv_decades_terminal_graph_list = []
+
+            for key, value in tv_decades_totals_dict.items():
+                tv_decades_terminal_graph_list.append((str(key), value))
+
+            color_tv_decades_terminal_graph_list = vcolor(tv_decades_terminal_graph_list, graph_color_pattern)
+            graph = Pyasciigraph()
+
+            for line in graph.graph('TV SHOWS: DECADE AMOUNTS: ', color_tv_decades_terminal_graph_list):
+                print('\n', line)
+            separator_3()
+
+
 def launch_media_index():
     print(pyfiglet.figlet_format('MEDIA_INDEX', font='cybermedium'))
     separator_3()
@@ -435,7 +707,7 @@ def media_index_home():
 
     print('1) ADD / CHANGE DATABASE DIRECTORIES                 2) CREATE PATH INDICES', '\n')
     print('3) CREATE / UPDATE MEDIA INFORMATION INDICES         4) COMPARE TWO USERS INFORMATION INDICES', '\n')
-    print('5) QUERY DETAILED MEDIA INFORMATION', '\n')
+    print('5) QUERY DETAILED MEDIA INFORMATION                  6) TERMINAL GRAPH OPTIONS', '\n')
     separator_2()
     print('0) EXIT MEDIA-INDEX')
     separator_3()
@@ -558,6 +830,9 @@ def media_index_home():
                 print('\n', 'INPUT ERROR: ', e, '\n', '\n', 'PLEASE RETRY YOUR SELECTION USING THE NUMBER KEYS')
                 separator_3()
 
+        elif lmi_input_action == 6:
+            terminal_graph_options_sub_menu()
+
     except (TypeError, ValueError) as e:
         print('\n', 'INPUT ERROR: ', e, '\n', '\n', 'PLEASE RETRY YOUR SELECTION USING THE NUMBER KEYS')
         separator_3()
@@ -594,6 +869,69 @@ def media_queries_sub_menu():
     except (TypeError, ValueError) as e:
         print('\n', 'INPUT ERROR: ', e, '\n', '\n', 'PLEASE RETRY YOUR SELECTION USING THE NUMBER KEYS')
         separator_3()
+
+
+def query_file_type_totals(terminal_graph_options_int):
+    movie_extensions_dictionary = {}
+    movie_extensions_totals = {}
+    tv_extensions_dictionary = {}
+    tv_extensions_totals = {}
+
+    graph_color_pattern = [IBlu, BCya, Blu, Pur]
+
+    with open(os.path.expanduser((index_folder + '/MOVIE_INFORMATION_INDEX.csv').format(username)),
+              encoding='UTF-8') as m_i_i:
+        movie_files_results_list = list(csv.reader(m_i_i))
+    with open(os.path.expanduser((index_folder + '/TV_INFORMATION_INDEX.csv').format(username)),
+              encoding='UTF-8') as t_i_i:
+        tv_files_results_list = list(csv.reader(t_i_i))
+
+        for file_type in movie_files_results_list:
+            if ',' not in file_type[7]:
+
+                if file_type[7] not in movie_extensions_dictionary:
+                    movie_extensions_dictionary[file_type[7]] = []
+                movie_extensions_dictionary[file_type[7]].append(file_type[7])
+
+        if terminal_graph_options_int == 7:
+
+            for file_type_values, value in sorted(movie_extensions_dictionary.items()):
+                movie_extensions_totals[file_type_values] = len(value)
+            file_type_totals_terminal_graph_list = []
+
+            for key, value in movie_extensions_totals.items():
+                file_type_totals_terminal_graph_list.append((str(key), value))
+
+            color_file_type_totals_terminal_graph_list = vcolor(file_type_totals_terminal_graph_list,
+                                                                graph_color_pattern)
+            graph = Pyasciigraph()
+
+            for line in graph.graph('MOVIES: FILE-TYPE AMOUNTS: ', color_file_type_totals_terminal_graph_list):
+                print('\n', line)
+            separator_3()
+
+        for file_type in tv_files_results_list:
+            if ',' not in file_type[10]:
+                if file_type[10] not in tv_extensions_dictionary:
+                    tv_extensions_dictionary[file_type[10]] = []
+                tv_extensions_dictionary[file_type[10]].append(file_type[10])
+
+        if terminal_graph_options_int == 8:
+
+            for file_type_values, value in sorted(tv_extensions_dictionary.items()):
+                tv_extensions_totals[file_type_values] = len(value)
+            file_type_totals_terminal_graph_list = []
+
+            for key, value in tv_extensions_totals.items():
+                file_type_totals_terminal_graph_list.append((str(key), value))
+
+            color_file_type_totals_terminal_graph_list = vcolor(file_type_totals_terminal_graph_list,
+                                                                graph_color_pattern)
+            graph = Pyasciigraph()
+
+            for line in graph.graph('TV SHOWS: FILE-TYPE AMOUNTS: ', color_file_type_totals_terminal_graph_list):
+                print('\n', line)
+            separator_3()
 
 
 def query_movie_information_index(movie_query):
@@ -760,6 +1098,43 @@ def separator_2():
 def separator_3():
     for items in '\n', '-' * 100, '\n':
         print(items)
+
+
+def terminal_graph_options_sub_menu():
+    print(pyfiglet.figlet_format('TERMINAL_GRAPHS', font='cybermedium'))
+    separator_3()
+
+    print('1) MOVIES (TITLES PER YEAR)                      2) TV SHOWS (TITLES PER YEAR)', '\n')
+    print('3) MOVIES (TITLES PER DECADE)                    4) TV SHOWS (TITLES PER DECADE)')
+    separator_2()
+    print('5) MOVIES (RESOLUTIONS PERCENTAGES)              6) TV SHOWS (RESOLUTIONS PERCENTAGES)')
+    separator_2()
+    print('7) MOVIES (FILE-TYPE AMOUNTS)                    8) TV SHOWS (FILE-TYPE AMOUNTS)')
+    separator_2()
+    print('0) MAIN MENU')
+    separator_3()
+
+    try:
+
+        terminal_graph_options = input('ENTER #: ')
+        separator_3()
+        terminal_graph_options_int = int(terminal_graph_options)
+
+        if terminal_graph_options_int == 0:
+            media_index_home()
+
+        elif 1 <= terminal_graph_options_int <= 4:
+            graph_options_base(terminal_graph_options_int=terminal_graph_options_int)
+
+        elif 5 <= terminal_graph_options_int <= 6:
+            graph_options_advanced(terminal_graph_options_int=terminal_graph_options_int)
+
+        elif 7 <= terminal_graph_options_int <= 8:
+            query_file_type_totals(terminal_graph_options_int=terminal_graph_options_int)
+
+    except (TypeError, ValueError) as e:
+        print('\n', 'INPUT ERROR: ', e, '\n', '\n', 'PLEASE RETRY YOUR SELECTION USING THE NUMBER KEYS')
+        separator_3()
 
 
 def tk_gui_file_browser_window():
