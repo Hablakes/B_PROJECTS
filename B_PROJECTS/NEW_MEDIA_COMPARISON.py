@@ -11,8 +11,6 @@ import numpy
 import pyfiglet
 import pymediainfo
 
-import matplotlib.pylab as plt
-
 from ascii_graph import Pyasciigraph
 from ascii_graph.colors import *
 from ascii_graph.colordata import vcolor
@@ -682,8 +680,8 @@ def launch_media_index():
     try:
 
         global username
-        username = 'TESTING'
-        # username = input('ENTER YOUR USERNAME (CASE-SENSITIVE): ')
+        username = input('ENTER YOUR USERNAME (CASE-SENSITIVE): ')
+
         if username == '':
             separator_3()
             print('USERNAME CANNOT BE LEFT BLANK: ')
