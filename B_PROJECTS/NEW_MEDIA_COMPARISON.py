@@ -1816,7 +1816,7 @@ def walk_directories_and_create_indices():
     if movie_dir_input != '':
         for root, dirs, files in os.walk(movie_dir_input):
             directory = str(pathlib.Path(root).as_posix())
-            if str('featurettes') not in directory.lower():
+            if '/featurettes' not in directory.lower():
                 for movie_file in sorted(files):
                     if movie_file.lower().endswith(extensions):
                         movie_video_files_results.append([(pathlib.Path(root) / movie_file).as_posix()])
@@ -1825,7 +1825,7 @@ def walk_directories_and_create_indices():
         for listed_alternate_movie_directories in movie_alt_dir_input:
             for root, dirs, files in os.walk(listed_alternate_movie_directories):
                 directory = str(pathlib.Path(root).as_posix())
-                if str('featurettes') not in directory.lower():
+                if '/featurettes' not in directory.lower():
                     for alt_movie_file in sorted(files):
                         if alt_movie_file.lower().endswith(extensions):
                             movie_video_files_results.append([(pathlib.Path(root) / alt_movie_file).as_posix()])
@@ -1841,7 +1841,7 @@ def walk_directories_and_create_indices():
     if tv_dir_input != '':
         for root, dirs, files in os.walk(tv_dir_input):
             directory = str(pathlib.Path(root).as_posix())
-            if str('featurettes') not in directory.lower():
+            if '/featurettes' not in directory.lower():
                 for tv_file in sorted(files):
                     if tv_file.lower().endswith(extensions):
                         tv_show_video_files_results.append([(pathlib.Path(root) / tv_file).as_posix()])
@@ -1850,7 +1850,7 @@ def walk_directories_and_create_indices():
         for listed_alternate_tv_directories in tv_alt_dir_input:
             for root, dirs, files in os.walk(listed_alternate_tv_directories):
                 directory = str(pathlib.Path(root).as_posix())
-                if str('featurettes') not in directory.lower():
+                if '/featurettes' not in directory.lower():
                     for alt_tv_file in sorted(files):
                         if alt_tv_file.lower().endswith(extensions):
                             tv_show_video_files_results.append([(pathlib.Path(root) / alt_tv_file).as_posix()])
