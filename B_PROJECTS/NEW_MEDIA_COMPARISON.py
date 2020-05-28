@@ -58,6 +58,10 @@ def compare_completed_results(results_one, results_two):
     return output_one
 
 
+def compare_individual_files():
+    pass
+
+
 def create_media_information_indices():
     create_media_title_index()
     create_movie_information_index()
@@ -795,7 +799,9 @@ def media_index_home():
 
                 print('CONFIRM: ')
                 separator_1()
-                print('1) COMPARE USER(S) INFORMATION INDICES               0) MAIN MENU')
+                print('1) COMPARE USER(S) INFORMATION INDICES               1) COMPARE NEW FILE(S) AGAINST DB')
+                separator_2()
+                print('0) MAIN MENU')
                 separator_3()
                 comparison_scan_sub_input = int(input('ENTER #: '))
                 separator_3()
@@ -805,6 +811,9 @@ def media_index_home():
 
                 elif comparison_scan_sub_input == 1:
                     select_users_indices_to_compare()
+
+                elif comparison_scan_sub_input == 2:
+                    compare_individual_files()
 
             except (TypeError, ValueError) as e:
                 print('\n', 'INPUT ERROR: ', e, '\n', '\n', 'PLEASE RETRY YOUR SELECTION USING THE NUMBER KEYS')
