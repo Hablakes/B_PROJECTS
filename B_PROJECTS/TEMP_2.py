@@ -8,6 +8,8 @@ def compare_completed_results(results_one, results_two):
     for line in results_one:
         if line not in results_two:
             output_one.append('REMOVAL: ' + line)
+        if line in results_two:
+            output_one.append('CONFLICT: ' + line)
 
     for line in results_two:
         if line not in results_one:
@@ -16,5 +18,4 @@ def compare_completed_results(results_one, results_two):
     return output_one
 
 
-print(compare_completed_results(l2, l1))
-
+print(compare_completed_results(l1, l2))
