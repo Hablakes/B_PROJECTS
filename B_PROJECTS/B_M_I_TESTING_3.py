@@ -27,6 +27,13 @@ extensions = ('.3gp', '.asf', '.asx', '.avc', '.avi', '.bdmv', '.bin', '.bivx', 
 
 index_folder = '~/{0}_MEDIA_INDEX'
 
+user_movie_dir_input = ()
+user_tv_dir_input = ()
+user_movie_alt_dir_input = ()
+user_tv_alt_dir_input = ()
+new_user_movie_dir_input = ()
+new_user_tv_dir_input = ()
+
 new_user_movies_dirs = '/FILES/NEW_MOVIE_VIDEO_FILES_PATHS.csv'
 new_user_tv_dirs = '/FILES/NEW_TV_VIDEO_FILES_PATHS.csv'
 
@@ -42,18 +49,18 @@ user_tv_index = '/TV_INFORMATION_INDEX.csv'
 username = None
 
 
-def main():
+def main(user_type):
     separator_3()
     launch_media_index()
 
     while True:
-        media_index_home()
+        media_index_home(user_type)
 
 
-def change_directory_selection():
+def change_directory_selection(user_type):
     print(pyfiglet.figlet_format('CHANGE_DIRECTORY', font='cybermedium'))
     separator_3()
-    directory_selection()
+    directory_selection(user_type)
 
 
 def compare_completed_results(results_one, results_two):
@@ -74,13 +81,14 @@ def compare_individual_files():
     pass
 
 
-def create_media_information_indices():
-    create_media_title_index()
-    create_information_index_movies()
-    create_information_index_tv()
+def create_media_information_indices(user_type, input_file, output_file):
+    create_media_title_index(movie_dir_input=user_movie_dir_input, tv_dir_input=user_tv_dir_input,
+                             movie_alt_dir_input=user_movie_alt_dir_input, tv_alt_dir_input=user_tv_alt_dir_input)
+    create_information_index_movies(user_type, input_file, output_file)
+    create_information_index_tv(user_type, input_file, output_file)
 
 
-def create_media_title_index():
+def create_media_title_index(movie_dir_input, tv_dir_input, movie_alt_dir_input, tv_alt_dir_input):
     movie_title_items = []
     tv_title_items = []
 
@@ -166,8 +174,16 @@ def create_media_title_index():
     separator_3()
 
 
-def create_information_index_movies(input_file, output_file):
+def create_information_index_movies(user_type, input_file, output_file):
     movie_results_list = {}
+
+    if user_type == 1:
+        input_file = user_movies_dirs
+        output_file = user_movies_index
+
+    elif user_type == 2:
+        input_file = new_user_movies_dirs
+        output_file = new_user_movies_index
 
     movie_scan_start = time.time()
 
@@ -304,8 +320,16 @@ def create_information_index_movies(input_file, output_file):
     separator_3()
 
 
-def create_information_index_tv(input_file, output_file):
+def create_information_index_tv(user_type, input_file, output_file):
     tv_results_list = {}
+
+    if user_type == 1:
+        input_file = user_tv_dirs
+        output_file = user_tv_index
+
+    elif user_type == 2:
+        input_file = new_user_tv_dirs
+        output_file = new_user_tv_index
 
     tv_scan_start = time.time()
 
@@ -455,7 +479,6 @@ def directory_selection(user_type):
 
         try:
 
-            global movie_dir_input, tv_dir_input, movie_alt_dir_input, tv_alt_dir_input
             user_info_file = os.path.expanduser((index_folder + '/{0}_USER_INFO.json').format(username))
 
             print('ENTER PATH OF MOVIE DIRECTORY, IF NONE HIT CANCEL: ')
@@ -792,7 +815,7 @@ def media_index_home(user_type):
                 separator_3()
 
                 if db_scan_sub_input == 0:
-                    media_index_home()
+                    media_index_home(user_type=1)
 
                 elif db_scan_sub_input == 1:
                     change_directory_selection(user_type=1)
@@ -1847,7 +1870,6 @@ def total_tv_episodes_in_show():
 def username_check_and_folder_creation():
     try:
 
-        global movie_dir_input, tv_dir_input, movie_alt_dir_input, tv_alt_dir_input
         user_info_file = os.path.expanduser((index_folder + '/{0}_USER_INFO.json').format(username))
 
         if os.path.isfile(user_info_file):
@@ -1938,4 +1960,4 @@ def walk_directories_and_create_indices(input_file_0, input_file_1):
 
 
 if __name__ == '__main__':
-    main()
+    main(user_type)
