@@ -51,7 +51,7 @@ username = None
 
 def main(user_type):
     separator_3()
-    launch_media_index()
+    launch_media_index(user_type=1)
 
     while True:
         media_index_home(user_type)
@@ -751,7 +751,7 @@ def graph_options_base(terminal_graph_options_int):
             separator_3()
 
 
-def launch_media_index():
+def launch_media_index(user_type):
     print(pyfiglet.figlet_format('MEDIA_INDEX', font='cybermedium'))
     separator_3()
 
@@ -764,20 +764,20 @@ def launch_media_index():
             separator_3()
             print('USERNAME CANNOT BE LEFT BLANK: ')
             separator_3()
-            launch_media_index()
+            launch_media_index(user_type=1)
         separator_3()
-        username_check_and_folder_creation()
+        username_check_and_folder_creation(user_type=1)
 
     except (TypeError, ValueError) as e:
         print('\n', 'INPUT ERROR: ', e, '\n', '\n', 'INVALID INPUT, PLEASE RETRY')
-        launch_media_index()
+        launch_media_index(user_type=1)
 
 
 def match_similar_strings(a, b):
     return SequenceMatcher(None, a, b).ratio()
 
 
-def media_index_home(user_type):
+def media_index_home(user_type, input_file_0, input_file_1, movies_dirs, tv_dirs, alt_movies_dirs, alt_tv_dirs):
     print(pyfiglet.figlet_format('MEDIA_INDEX', font='cybermedium'))
     separator_3()
 
@@ -841,10 +841,11 @@ def media_index_home(user_type):
                 separator_3()
 
                 if path_scan_sub_input == 0:
-                    media_index_home()
+                    media_index_home(user_type=1)
 
                 elif path_scan_sub_input == 1:
-                    walk_directories_and_create_indices()
+                    walk_directories_and_create_indices(input_file_0, input_file_1, movies_dirs, tv_dirs,
+                                                        alt_movies_dirs, alt_tv_dirs)
 
             except (TypeError, ValueError) as e:
                 print('\n', 'INPUT ERROR: ', e, '\n', '\n', 'PLEASE RETRY YOUR SELECTION USING THE NUMBER KEYS')
@@ -864,7 +865,7 @@ def media_index_home(user_type):
                 separator_3()
 
                 if information_scan_sub_input == 0:
-                    media_index_home()
+                    media_index_home(user_type=1)
 
                 elif information_scan_sub_input == 1:
                     create_media_information_indices()
@@ -887,7 +888,7 @@ def media_index_home(user_type):
                 separator_3()
 
                 if comparison_scan_sub_input == 0:
-                    media_index_home()
+                    media_index_home(user_type=1)
 
                 elif comparison_scan_sub_input == 1:
                     pass
@@ -919,7 +920,7 @@ def media_index_home(user_type):
         separator_3()
 
 
-def media_queries_sub_menu():
+def media_queries_sub_menu(user_type):
     print(pyfiglet.figlet_format('MEDIA_QUERIES', font='cybermedium'))
     separator_3()
 
@@ -940,7 +941,7 @@ def media_queries_sub_menu():
         separator_3()
 
         if title_search_type == 0:
-            media_index_home()
+            media_index_home(user_type=1)
 
         elif title_search_type == 1:
             movie_title_query_input = str(input('QUERY MOVIES: ').lower())
@@ -1149,7 +1150,7 @@ def query_tv_information_index(tv_episode_query):
             separator_3()
 
 
-def search_titles(title_search_type, movie_title_query, tv_show_query):
+def search_titles(user_type, title_search_type, movie_title_query, tv_show_query):
     episode_information_list = []
     episode_information_search_list = []
     episode_folder_titles_dictionary = {}
@@ -1257,7 +1258,7 @@ def search_titles(title_search_type, movie_title_query, tv_show_query):
                     separator_3()
 
                     if title_search_sub_query_input == 0:
-                        media_index_home()
+                        media_index_home(user_type=1)
 
                     elif title_search_sub_query_input == 1:
 
@@ -1558,7 +1559,7 @@ def sort_function_for_tv_episodes(sort_options_int):
             separator_3()
 
 
-def sort_options_sub_menu():
+def sort_options_sub_menu(user_type):
     print(pyfiglet.figlet_format('SORT_OPTIONS', font='cybermedium'))
     separator_3()
 
@@ -1588,7 +1589,7 @@ def sort_options_sub_menu():
         sort_options_int = int(sort_input)
 
         if sort_options_int == 0:
-            media_index_home()
+            media_index_home(user_type=1)
 
         elif 1 <= sort_options_int <= 8:
             sort_function_base(sort_options_int=sort_options_int)
@@ -1604,7 +1605,7 @@ def sort_options_sub_menu():
         separator_3()
 
 
-def terminal_graph_options_sub_menu():
+def terminal_graph_options_sub_menu(user_type):
     print(pyfiglet.figlet_format('TERMINAL_GRAPHS', font='cybermedium'))
     separator_3()
 
@@ -1625,7 +1626,7 @@ def terminal_graph_options_sub_menu():
         terminal_graph_options_int = int(terminal_graph_options)
 
         if terminal_graph_options_int == 0:
-            media_index_home()
+            media_index_home(user_type=1)
 
         elif 1 <= terminal_graph_options_int <= 4:
             graph_options_base(terminal_graph_options_int=terminal_graph_options_int)
@@ -1641,7 +1642,7 @@ def terminal_graph_options_sub_menu():
         separator_3()
 
 
-def time_queries_sub_menu():
+def time_queries_sub_menu(user_type):
     print(pyfiglet.figlet_format('TIME_QUERIES', font='cybermedium'))
     separator_3()
 
@@ -1722,7 +1723,7 @@ def time_queries_sub_menu():
     try:
 
         if int(time_queries_input_list[0]) == 0:
-            media_index_home()
+            media_index_home(user_type=1)
 
         elif int(time_queries_input_list[0]) == 1:
 
@@ -1867,7 +1868,7 @@ def total_tv_episodes_in_show():
         separator_3()
 
 
-def username_check_and_folder_creation():
+def username_check_and_folder_creation(user_type):
     try:
 
         user_info_file = os.path.expanduser((index_folder + '/{0}_USER_INFO.json').format(username))
@@ -1887,15 +1888,15 @@ def username_check_and_folder_creation():
             os.makedirs(os.path.expanduser((index_folder + '/GRAPHS').format(username)), exist_ok=True)
             os.makedirs(os.path.expanduser((index_folder + '/RESULTS').format(username)), exist_ok=True)
             os.makedirs(os.path.expanduser((index_folder + '/SEARCH').format(username)), exist_ok=True)
-            directory_selection()
+            directory_selection(user_type=1)
 
     except (OSError, TypeError, ValueError) as e:
         print('\n', 'INPUT ERROR: ', e, '\n', '\n', 'INVALID INPUT, PLEASE RETRY')
         separator_3()
-        main()
+        main(user_type=1)
 
 
-def walk_directories_and_create_indices(input_file_0, input_file_1):
+def walk_directories_and_create_indices(input_file_0, input_file_1, movies_dirs, tv_dirs, alt_movies_dirs, alt_tv_dirs):
     movie_video_files_results = []
     tv_show_video_files_results = []
 
@@ -1903,16 +1904,16 @@ def walk_directories_and_create_indices(input_file_0, input_file_1):
 
     try:
 
-        if movie_dir_input != '':
-            for root, dirs, files in os.walk(movie_dir_input):
+        if movies_dirs != '':
+            for root, dirs, files in os.walk(movies_dirs):
                 directory = str(pathlib.Path(root).as_posix())
                 if '/featurettes' not in directory.lower():
                     for movie_file in sorted(files):
                         if movie_file.lower().endswith(extensions):
                             movie_video_files_results.append([(pathlib.Path(root) / movie_file).as_posix()])
 
-        if movie_alt_dir_input != '':
-            for listed_alternate_movie_directories in movie_alt_dir_input:
+        if alt_movies_dirs != '':
+            for listed_alternate_movie_directories in alt_movies_dirs:
                 for root, dirs, files in os.walk(listed_alternate_movie_directories):
                     directory = str(pathlib.Path(root).as_posix())
                     if '/featurettes' not in directory.lower():
@@ -1926,16 +1927,16 @@ def walk_directories_and_create_indices(input_file_0, input_file_1):
             for movie_row in sorted(movie_video_files_results):
                 csv_writer.writerow(movie_row)
 
-        if tv_dir_input != '':
-            for root, dirs, files in os.walk(tv_dir_input):
+        if tv_dirs != '':
+            for root, dirs, files in os.walk(tv_dirs):
                 directory = str(pathlib.Path(root).as_posix())
                 if '/featurettes' not in directory.lower():
                     for tv_file in sorted(files):
                         if tv_file.lower().endswith(extensions):
                             tv_show_video_files_results.append([(pathlib.Path(root) / tv_file).as_posix()])
 
-        if tv_alt_dir_input != '':
-            for listed_alternate_tv_directories in tv_alt_dir_input:
+        if alt_tv_dirs != '':
+            for listed_alternate_tv_directories in alt_tv_dirs:
                 for root, dirs, files in os.walk(listed_alternate_tv_directories):
                     directory = str(pathlib.Path(root).as_posix())
                     if '/featurettes' not in directory.lower():
@@ -1960,4 +1961,4 @@ def walk_directories_and_create_indices(input_file_0, input_file_1):
 
 
 if __name__ == '__main__':
-    main(user_type)
+    main(user_type=1)
