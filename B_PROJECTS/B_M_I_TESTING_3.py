@@ -7,7 +7,6 @@ import textwrap
 import time
 
 import guessit
-import numpy
 import pyfiglet
 import pymediainfo
 
@@ -25,15 +24,16 @@ extensions = ('.3gp', '.asf', '.asx', '.avc', '.avi', '.bdmv', '.bin', '.bivx', 
               '.mp4', '.mpeg', '.mpg', '.mt2s', '.mts', '.nfo', '.nrg', '.nsv', '.nuv', '.ogm', '.pva', '.qt', '.rm',
               '.rmvb', '.strm', '.svq3', '.ts', '.ty', '.viv', '.vob', '.vp3', '.wmv', '.xvid', '.webm')
 
+username = None
+user_info = '{0}_USER_INFO.json'
+
 index_folder = '~/{0}_MEDIA_INDEX/'
 files_folder = '~/{0}_MEDIA_INDEX/FILES/'
 results_folder = '~/{0}_MEDIA_INDEX/RESULTS/'
 
-titles_index = 'MEDIA_TITLE_INDEX.csv'
-user_info = '{0}_USER_INFO.json'
-
 movies_comparison = 'MOVIE_COMPARISON_INDEX.csv'
 tv_comparison = 'TV_COMPARISON_INDEX.csv'
+titles_index = 'MEDIA_TITLE_INDEX.csv'
 
 new_user_movies_dirs = 'FILES/NEW_MOVIE_VIDEO_FILES_PATHS.csv'
 new_user_tv_dirs = 'FILES/NEW_TV_VIDEO_FILES_PATHS.csv'
@@ -44,8 +44,6 @@ user_movies_dirs = 'MOVIE_VIDEO_FILES_PATHS.csv'
 user_tv_dirs = 'TV_VIDEO_FILES_PATHS.csv'
 user_movies_index = 'MOVIES_INFORMATION_INDEX.csv'
 user_tv_index = 'TV_INFORMATION_INDEX.csv'
-
-username = None
 
 
 def main():
@@ -68,6 +66,10 @@ def compare_completed_results(results_one, results_two):
     for line in results_one:
         if line not in results_two:
             output_one.append('REMOVAL: ' + line)
+
+    for line in results_one:
+        if line in results_two:
+            output_one.append('CONFLICT: ' + line)
 
     for line in results_two:
         if line not in results_one:
@@ -102,6 +104,7 @@ def create_media_title_index():
 
                 for found_movie_directories in movie_dirs_list:
                     found_movie_directories_list.append(found_movie_directories)
+
             for movie_found in sorted(found_movie_directories_list):
                 movie_scrape_info = guessit.guessit(movie_found)
                 title_item_check = ['MOVIE', str(movie_scrape_info.get('title')),
@@ -120,6 +123,7 @@ def create_media_title_index():
 
                 for found_tv_directories in tv_dirs_list:
                     found_tv_directories_list.append(found_tv_directories)
+
             for tv_found in sorted(found_tv_directories_list):
                 tv_scrape_info = guessit.guessit(tv_found)
                 title_item_check = ['TV', str(tv_scrape_info.get('title')), str(tv_scrape_info.get('year'))]
@@ -132,6 +136,7 @@ def create_media_title_index():
         with open(os.path.expanduser((index_folder + titles_index).format(username)), 'w',
                   encoding='UTF-8', newline='') as m_t_i:
             csv_writer = csv.writer(m_t_i)
+
             for file_row in movie_title_items:
                 csv_writer.writerow(file_row)
 
