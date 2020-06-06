@@ -35,10 +35,10 @@ user_info = '{0}_USER_INFO.json'
 movies_comparison = 'MOVIE_COMPARISON_INDEX.csv'
 tv_comparison = 'TV_COMPARISON_INDEX.csv'
 
-new_user_movies_dirs = 'NEW_MOVIE_VIDEO_FILES_PATHS.csv'
-new_user_tv_dirs = 'NEW_TV_VIDEO_FILES_PATHS.csv'
-new_user_movies_index = 'NEW_MOVIES_INFORMATION_INDEX.csv'
-new_user_tv_index = 'NEW_TV_INFORMATION_INDEX.csv'
+new_user_movies_dirs = 'FILES/NEW_MOVIE_VIDEO_FILES_PATHS.csv'
+new_user_tv_dirs = 'FILES/NEW_TV_VIDEO_FILES_PATHS.csv'
+new_user_movies_index = 'FILES/NEW_MOVIES_INFORMATION_INDEX.csv'
+new_user_tv_index = 'FILES/NEW_TV_INFORMATION_INDEX.csv'
 
 user_movies_dirs = 'MOVIE_VIDEO_FILES_PATHS.csv'
 user_tv_dirs = 'TV_VIDEO_FILES_PATHS.csv'
@@ -493,7 +493,7 @@ def directory_selection():
         separator_3()
 
 
-def directory_selection_for_new_media():
+def directory_selection_for_new_media_to_compare():
     try:
 
         print('ENTER PATH OF MOVIE DIRECTORY TO COMPARE NEW FILES, IF NONE HIT CANCEL: ')
@@ -510,11 +510,10 @@ def directory_selection_for_new_media():
         print('\n', 'INPUT ERROR: ', e, '\n')
         separator_3()
 
-    path_scan_start = time.time()
     walk_directories_and_create_indices(user_type=2)
-    path_scan_end = time.time()
-    readable_path_scan_time = round(path_scan_end - path_scan_start, 2)
-    print('NEW MEDIA PATHS SCAN COMPLETE - TIME ELAPSED: ', readable_path_scan_time, 'Seconds')
+    create_information_index_movies(user_type=2)
+    create_information_index_tv(user_type=2)
+    print('COMPLETE: COMPARISON SCAN(S) & INDICES CAN BE FOUND IN THE USER MEDIA-INDEX FOLDER, "FILES" SUB-FOLDER')
     separator_3()
 
 
@@ -837,10 +836,10 @@ def media_index_home():
                     media_index_home()
 
                 elif comparison_scan_sub_input == 1:
-                    pass
+                    select_users_indices_to_compare()
 
                 elif comparison_scan_sub_input == 2:
-                    pass
+                    directory_selection_for_new_media_to_compare()
 
             except (TypeError, ValueError) as e:
                 print('\n', 'INPUT ERROR: ', e, '\n', '\n', 'PLEASE RETRY YOUR SELECTION USING THE NUMBER KEYS')
