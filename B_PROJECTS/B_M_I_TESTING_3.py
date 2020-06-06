@@ -533,10 +533,10 @@ def graph_options_advanced(terminal_graph_options_int):
     tv_empty_response_list = []
     tv_total_list = []
 
-    with open(os.path.expanduser((index_folder + '/MOVIE_INFORMATION_INDEX.csv').format(username)),
+    with open(os.path.expanduser((index_folder + user_movies_index).format(username)),
               encoding='UTF-8') as m_i_i:
         movie_files_results_list = list(csv.reader(m_i_i))
-    with open(os.path.expanduser((index_folder + '/TV_INFORMATION_INDEX.csv').format(username)),
+    with open(os.path.expanduser((index_folder + user_tv_index).format(username)),
               encoding='UTF-8') as t_i_i:
         tv_files_results_list = list(csv.reader(t_i_i))
 
@@ -613,7 +613,7 @@ def graph_options_base(terminal_graph_options_int):
 
     graph_color_pattern = [IBlu, BCya, Blu, Pur]
 
-    with open(os.path.expanduser((index_folder + '/MEDIA_TITLE_INDEX.csv').format(username)),
+    with open(os.path.expanduser((index_folder + titles_index).format(username)),
               encoding='UTF-8') as m_t_i:
         media_index_list = list(csv.reader(m_t_i))
 
@@ -933,10 +933,10 @@ def query_file_type_totals(terminal_graph_options_int):
 
     graph_color_pattern = [IBlu, BCya, Blu, Pur]
 
-    with open(os.path.expanduser((index_folder + '/MOVIE_INFORMATION_INDEX.csv').format(username)),
+    with open(os.path.expanduser((index_folder + user_movies_index).format(username)),
               encoding='UTF-8') as m_i_i:
         movie_files_results_list = list(csv.reader(m_i_i))
-    with open(os.path.expanduser((index_folder + '/TV_INFORMATION_INDEX.csv').format(username)),
+    with open(os.path.expanduser((index_folder + user_tv_index).format(username)),
               encoding='UTF-8') as t_i_i:
         tv_files_results_list = list(csv.reader(t_i_i))
 
@@ -989,7 +989,7 @@ def query_file_type_totals(terminal_graph_options_int):
 
 
 def query_movie_information_index(movie_query):
-    with open(os.path.expanduser((index_folder + '/MOVIE_INFORMATION_INDEX.csv').format(username)),
+    with open(os.path.expanduser((index_folder + user_movies_index).format(username)),
               encoding='UTF-8') as m_i_i:
         mv_files_results_list = csv.reader(m_i_i)
 
@@ -1040,7 +1040,7 @@ def query_movie_information_index(movie_query):
 
 
 def query_tv_information_index(tv_episode_query):
-    with open(os.path.expanduser((index_folder + '/TV_INFORMATION_INDEX.csv').format(username)),
+    with open(os.path.expanduser((index_folder + user_tv_index).format(username)),
               encoding='UTF-8') as t_i_i:
         tv_files_results_list = csv.reader(t_i_i)
 
@@ -1102,10 +1102,10 @@ def search_titles(title_search_type, movie_title_query, tv_show_query):
     episode_folder_titles_dictionary = {}
     episode_folder_titles_list = []
 
-    with open(os.path.expanduser((index_folder + '/MEDIA_TITLE_INDEX.csv').format(username)),
+    with open(os.path.expanduser((index_folder + titles_index).format(username)),
               encoding='UTF-8') as m_t_i:
         media_index_list = list(csv.reader(m_t_i))
-    with open(os.path.expanduser((index_folder + '/TV_INFORMATION_INDEX.csv').format(username)),
+    with open(os.path.expanduser((index_folder + user_tv_index).format(username)),
               encoding='UTF-8') as t_i_i:
         tv_files_results_list = csv.reader(t_i_i)
 
@@ -1247,7 +1247,7 @@ def select_users_indices_to_compare():
             comparison_movie_results = movies_1.readlines()
 
             with open(os.path.expanduser(
-                    (index_folder + '/RESULTS/MOVIE_COMPARISON_INDEX.csv').format(username)),
+                    (results_folder + movies_comparison).format(username)),
                     'w', encoding='UTF-8', newline='') as outFile_m:
                 for line in compare_completed_results(user_movie_results, comparison_movie_results):
                     outFile_m.write(line)
@@ -1257,7 +1257,7 @@ def select_users_indices_to_compare():
             comparison_tv_results = tv_1.readlines()
 
             with open(os.path.expanduser(
-                    (index_folder + '/RESULTS/TV_COMPARISON_INDEX.csv').format(username)),
+                    (results_folder + tv_comparison).format(username)),
                     'w', encoding='UTF-8', newline='') as outFile_t:
                 for line in compare_completed_results(user_tv_results, comparison_tv_results):
                     outFile_t.write(line)
@@ -1288,11 +1288,11 @@ def sort_function_base(sort_options_int):
     movie_info_list = []
     tv_info_list = []
 
-    with open(os.path.expanduser((index_folder + '/MOVIE_INFORMATION_INDEX.csv').format(username)),
+    with open(os.path.expanduser((index_folder + user_movies_index).format(username)),
               encoding='UTF-8') as m_i_i:
         movie_files_results_list = list(csv.reader(m_i_i))
 
-    with open(os.path.expanduser((index_folder + '/TV_INFORMATION_INDEX.csv').format(username)),
+    with open(os.path.expanduser((index_folder + user_tv_index).format(username)),
               encoding='UTF-8') as t_i_i:
         tv_files_results_list = list(csv.reader(t_i_i))
 
@@ -1381,7 +1381,7 @@ def sort_function_base(sort_options_int):
                 print('\n', episode_run_times[0], '-', episode_run_times[1], '-', episode_run_times[3], ': Minutes')
             separator_3()
 
-    with open(os.path.expanduser((index_folder + '/MEDIA_TITLE_INDEX.csv').format(username)),
+    with open(os.path.expanduser((index_folder + titles_index).format(username)),
               encoding='UTF-8') as m_t_i:
         media_index = list(csv.reader(m_t_i))
 
@@ -1419,7 +1419,7 @@ def sort_function_for_tv_episodes(sort_options_int):
     tv_show_run_times_total_list = []
     tv_show_file_sizes_total_list = []
 
-    with open(os.path.expanduser((index_folder + '/TV_INFORMATION_INDEX.csv').format(username)),
+    with open(os.path.expanduser((index_folder + user_tv_index).format(username)),
               encoding='UTF-8') as t_i_i:
         tv_results_list = list(csv.reader(t_i_i))
 
@@ -1616,7 +1616,7 @@ def time_queries_sub_menu():
         print('\n', 'INPUT ERROR: ', e, '\n', '\n', 'PLEASE RETRY YOUR SELECTION USING THE NUMBER KEYS')
         separator_3()
 
-    with open(os.path.expanduser((index_folder + '/MOVIE_INFORMATION_INDEX.csv').format(username)),
+    with open(os.path.expanduser((index_folder + user_movies_index).format(username)),
               encoding='UTF-8') as m_i_i:
         movie_files_results_list = csv.reader(m_i_i)
 
@@ -1624,7 +1624,7 @@ def time_queries_sub_menu():
             movie_times_list.append(movie_times[8])
             all_media_times_list.append(movie_times[8])
 
-    with open(os.path.expanduser((index_folder + '/TV_INFORMATION_INDEX.csv').format(username)),
+    with open(os.path.expanduser((index_folder + user_tv_index).format(username)),
               encoding='UTF-8') as t_i_i:
         tv_files_results_list = csv.reader(t_i_i)
 
@@ -1748,10 +1748,10 @@ def total_media_library_amount():
     episode_amounts_list = []
     movie_amounts_list = []
 
-    with open(os.path.expanduser((index_folder + '/MEDIA_TITLE_INDEX.csv').format(username)),
+    with open(os.path.expanduser((index_folder + titles_index).format(username)),
               encoding='UTF-8') as m_t_i:
         media_index_list = list(csv.reader(m_t_i))
-    with open(os.path.expanduser((index_folder + '/TV_VIDEO_FILES_PATHS.csv').format(username)),
+    with open(os.path.expanduser((index_folder + user_tv_dirs).format(username)),
               encoding='UTF-8') as t_f_p:
         tv_index_list = list(csv.reader(t_f_p))
 
@@ -1786,7 +1786,7 @@ def total_tv_episodes_in_show():
     tv_show_episodes_found = []
     tv_show_found = {}
 
-    with open(os.path.expanduser((index_folder + '/TV_INFORMATION_INDEX.csv').format(username)),
+    with open(os.path.expanduser((index_folder + user_tv_index).format(username)),
               encoding='UTF-8') as t_i_i:
         tv_results_list = list(csv.reader(t_i_i))
 
