@@ -94,27 +94,15 @@ def create_media_title_index():
 
     try:
 
-        if movie_dir_input != '':
-            movie_dir_list = os.listdir(movie_dir_input)
+        if movie_dirs_input != '':
+            found_movie_directories_list = []
 
-            for movie_found in sorted(movie_dir_list):
-                movie_scrape_info = guessit.guessit(movie_found)
-                title_item_check = ['MOVIE', str(movie_scrape_info.get('title')), str(movie_scrape_info.get('year'))]
+            for movie_directories in movie_dirs_input:
+                movie_dirs_list = os.listdir(movie_directories)
 
-                if ',' in title_item_check[2]:
-                    title_item_check.append(title_item_check[2][-5:-1])
-                    title_item_check.remove(title_item_check[2])
-                movie_title_items.append(title_item_check)
-
-        if movie_alt_dir_input != '':
-            found_alt_movie_directories_list = []
-
-            for alternate_movie_directories in movie_alt_dir_input:
-                movie_alt_dir_list = os.listdir(alternate_movie_directories)
-
-                for found_alt_movie_directories in movie_alt_dir_list:
-                    found_alt_movie_directories_list.append(found_alt_movie_directories)
-                for movie_found in sorted(found_alt_movie_directories_list):
+                for found_movie_directories in movie_dirs_list:
+                    found_movie_directories_list.append(found_movie_directories)
+                for movie_found in sorted(found_movie_directories_list):
                     movie_scrape_info = guessit.guessit(movie_found)
                     title_item_check = ['MOVIE', str(movie_scrape_info.get('title')),
                                         str(movie_scrape_info.get('year'))]
@@ -124,27 +112,15 @@ def create_media_title_index():
                         title_item_check.remove(title_item_check[2])
                     movie_title_items.append(title_item_check)
 
-        if tv_dir_input != '':
-            tv_dir_list = os.listdir(tv_dir_input)
+        if tv_dirs_input != '':
+            found_tv_directories_list = []
 
-            for tv_found in sorted(tv_dir_list):
-                tv_scrape_info = guessit.guessit(tv_found)
-                title_item_check = ['TV', str(tv_scrape_info.get('title')), str(tv_scrape_info.get('year'))]
+            for tv_directories in tv_dirs_input:
+                tv_dirs_list = os.listdir(tv_directories)
 
-                if ',' in title_item_check[2]:
-                    title_item_check.append(title_item_check[2][-5:-1])
-                    title_item_check.remove(title_item_check[2])
-                tv_title_items.append(title_item_check)
-
-        if tv_alt_dir_input != '':
-            found_alt_tv_directories_list = []
-
-            for alternate_tv_directories in tv_alt_dir_input:
-                tv_alt_dir_list = os.listdir(alternate_tv_directories)
-
-                for found_alt_tv_directories in tv_alt_dir_list:
-                    found_alt_tv_directories_list.append(found_alt_tv_directories)
-                for tv_found in sorted(found_alt_tv_directories_list):
+                for found_tv_directories in tv_dirs_list:
+                    found_tv_directories_list.append(found_tv_directories)
+                for tv_found in sorted(found_tv_directories_list):
                     tv_scrape_info = guessit.guessit(tv_found)
                     title_item_check = ['TV', str(tv_scrape_info.get('title')), str(tv_scrape_info.get('year'))]
 
@@ -1844,7 +1820,7 @@ def total_tv_episodes_in_show():
 def username_check_and_folder_creation():
     try:
 
-        global movie_dir_input, tv_dir_input, movie_alt_dir_input, tv_alt_dir_input
+        global movie_dir_input, tv_dir_input, movie_alt_dir_input, tv_dirs_input
         user_info_file = os.path.expanduser((index_folder + user_info).format(username))
 
         if os.path.isfile(user_info_file):
@@ -1854,7 +1830,7 @@ def username_check_and_folder_creation():
                 movie_dir_input = user_data['movie_dir:']
                 tv_dir_input = user_data['tv_dir:']
                 movie_alt_dir_input = user_data['movie_alt_dir:']
-                tv_alt_dir_input = user_data['tv_alt_dir:']
+                tv_dirs_input = user_data['tv_alt_dir:']
 
         else:
             os.makedirs(os.path.expanduser((index_folder + '/').format(username)), exist_ok=True)
