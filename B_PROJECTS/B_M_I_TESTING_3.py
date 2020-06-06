@@ -37,12 +37,12 @@ titles_index = 'MEDIA_TITLE_INDEX.csv'
 
 new_user_movies_dirs = 'FILES/NEW_MOVIE_VIDEO_FILES_PATHS.csv'
 new_user_tv_dirs = 'FILES/NEW_TV_VIDEO_FILES_PATHS.csv'
-new_user_movies_index = 'FILES/NEW_MOVIES_INFORMATION_INDEX.csv'
+new_user_movies_index = 'FILES/NEW_MOVIE_INFORMATION_INDEX.csv'
 new_user_tv_index = 'FILES/NEW_TV_INFORMATION_INDEX.csv'
 
 user_movies_dirs = 'MOVIE_VIDEO_FILES_PATHS.csv'
 user_tv_dirs = 'TV_VIDEO_FILES_PATHS.csv'
-user_movies_index = 'MOVIES_INFORMATION_INDEX.csv'
+user_movies_index = 'MOVIE_INFORMATION_INDEX.csv'
 user_tv_index = 'TV_INFORMATION_INDEX.csv'
 
 
