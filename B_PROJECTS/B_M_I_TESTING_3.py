@@ -949,7 +949,26 @@ def media_index_home():
                 separator_3()
 
         elif lmi_input_action == 4:
-            create_plots_indices()
+            try:
+
+                print('CONFIRM: ')
+                separator_1()
+                print('THIS OPERATION CAN TAKE A LONG TIME (SEVERAL HOURS FOR LARGE LIBRARIES)')
+                separator_2()
+                print('1) CONTINUE WITH MEDIA PLOT(S) SCAN                  0) MAIN MENU')
+                separator_3()
+                plot_scan_sub_input = int(input('ENTER #: '))
+                separator_3()
+
+                if plot_scan_sub_input == 0:
+                    media_index_home()
+
+                elif plot_scan_sub_input == 1:
+                    create_plots_indices()
+
+            except (TypeError, ValueError) as e:
+                print('\n', 'INPUT ERROR: ', e, '\n', '\n', 'PLEASE RETRY YOUR SELECTION USING THE NUMBER KEYS')
+                separator_3()
 
         elif lmi_input_action == 5:
 
