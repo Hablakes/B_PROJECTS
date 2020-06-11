@@ -228,6 +228,8 @@ def scan_for_extras_and_featurettes_sub_directories():
     print(pyfiglet.figlet_format('FINDER', font='cybermedium'))
     separator_3()
 
+    found_list = []
+
     directory_selected_in_function_for_search = [get_directory_to_scan()]
 
     for found_directories in os.listdir(directory_selected_in_function_for_search[0]):
@@ -237,7 +239,10 @@ def scan_for_extras_and_featurettes_sub_directories():
             if os.path.isdir(directory_path + '/' + found_items):
                 if found_items.lower() == str('Extras').lower() or found_items.lower() == str(
                         'Featurettes').lower() or found_items.lower() == str('Specials').lower():
-                    print('SUB-DIRECTORIES: ', (directory_path + '/' + found_items), '\n', '\n')
+                    found_list.append(directory_path + '/' + found_items)
+
+    for items in sorted(found_list):
+        print('SUB-DIRECTORIES: ', items, '\n', '\n')
     separator_1()
 
 
