@@ -477,8 +477,9 @@ def create_plots_indices():
         for movie_file in sorted(movie_path_file):
 
             movie_filename_key = movie_file[0].rsplit('/', 1)[-1]
-            movie_plot_results_dict[movie_filename_key] = {}
-            movie_plot_results_dict[movie_filename_key]['MOVIE'] = movie_filename_key
+            movie_title_key = movie_file[0].rsplit('/')[-2]
+            movie_plot_results_dict[movie_title_key] = {}
+            movie_plot_results_dict[movie_title_key]['MOVIE'] = movie_title_key
 
             try:
 
@@ -490,7 +491,7 @@ def create_plots_indices():
 
                             for line_item in o_f.readlines():
                                 if '<plot>' in line_item:
-                                    movie_plot_results_dict[movie_filename_key]['PLOT'] = line_item
+                                    movie_plot_results_dict[movie_title_key]['PLOT'] = line_item
 
                     except Exception as e:
                         print('NFO ERROR: ', e, '\n', 'FILE: ', movie_file[0])
@@ -508,34 +509,17 @@ def create_plots_indices():
 
         for tv_file in sorted(tv_path_file):
 
-            tv_filename_key = tv_file[0].rsplit('/', 1)[-1]
-            tv_title_key = tv_file[0].rsplit('/')[-2]
-
-            if str(tv_filename_key.lower()) == str('tvshow.nfo'):
-                tv_show_plot_results_dict[tv_title_key] = {}
-                tv_show_plot_results_dict[tv_title_key]['SHOW'] = tv_title_key
-
-                try:
-
-                    with open(tv_file[0]) as o_f:
-
-                        for line in o_f.readlines():
-                            if '<plot>' in line:
-                                tv_show_plot_results_dict[tv_title_key]['PLOT'] = line
-
-                except Exception as e:
-                    print('NFO ERROR: ', e, '\n', 'FILE: ', tv_file[0])
-                    print('-' * 100)
-                    continue
-
             try:
+
+                tv_filename_key = tv_file[0].rsplit('/', 1)[-1]
+                tv_title_key = tv_file[0].rsplit('/')[-2]
 
                 if tv_filename_key.lower().endswith('.nfo'):
 
-                    if tv_title_key not in tv_episode_plot_results_dict:
-                        tv_episode_plot_results_dict[tv_file[0]] = {}
-                        tv_show_plot_results_dict[tv_file[0]]['SHOW'] = tv_title_key
-                        tv_show_plot_results_dict[tv_file[0]]['EPISODE'] = tv_filename_key
+                    if tv_filename_key not in tv_episode_plot_results_dict:
+                        tv_episode_plot_results_dict[tv_filename_key] = {}
+                        tv_episode_plot_results_dict[tv_filename_key]['SHOW'] = tv_title_key
+                        tv_episode_plot_results_dict[tv_filename_key]['EPISODE'] = tv_filename_key
 
                     if str(tv_filename_key.lower()) != str('tvshow.nfo'):
 
@@ -545,15 +529,32 @@ def create_plots_indices():
 
                                 for line in o_f.readlines():
                                     if '<plot>' in line:
-                                        tv_episode_plot_results_dict[tv_file[0]]['PLOT'] = line
+                                        tv_episode_plot_results_dict[tv_filename_key]['PLOT'] = line
 
                         except Exception as e:
                             print('NFO ERROR: ', e, '\n', 'FILE: ', tv_file[0])
                             print('-' * 100)
                             continue
 
+                if str(tv_filename_key.lower()) == str('tvshow.nfo'):
+                    tv_show_plot_results_dict[tv_title_key] = {}
+                    tv_show_plot_results_dict[tv_title_key]['SHOW'] = tv_title_key
+
+                    try:
+
+                        with open(tv_file[0]) as o_f:
+
+                            for line in o_f.readlines():
+                                if '<plot>' in line:
+                                    tv_show_plot_results_dict[tv_title_key]['PLOT'] = line
+
+                    except Exception as e:
+                        print('NFO ERROR: ', e, '\n', 'FILE: ', tv_file[0])
+                        print('-' * 100)
+                        continue
+
             except (IOError, KeyError, TypeError, ValueError) as e:
-                print('INPUT ERROR: ', e, '\n', 'TV SHOW(S) FILE(S): ', movie_file[0])
+                print('INPUT ERROR: ', e, '\n', 'TV SHOW(S) FILE(S): ', tv_file[0])
                 print('-' * 100, '\n')
                 continue
 
