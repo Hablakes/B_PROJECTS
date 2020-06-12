@@ -477,12 +477,12 @@ def create_plots_indices():
         for movie_file in sorted(movie_path_file):
 
             movie_filename_key = movie_file[0].rsplit('/', 1)[-1]
+            movie_plot_results_dict[movie_filename_key] = {}
+            movie_plot_results_dict[movie_filename_key]['MOVIE'] = movie_filename_key
 
             try:
 
                 if movie_filename_key.lower().endswith('.nfo'):
-                    movie_plot_results_dict[movie_filename_key] = {}
-                    movie_plot_results_dict[movie_filename_key]['MOVIE'] = movie_filename_key
 
                     try:
 
@@ -2105,11 +2105,15 @@ def walk_directories_and_create_indices(user_type):
         if movie_dirs_input != '':
             for listed_movie_directories in movie_dirs_input:
                 for root, dirs, files in os.walk(listed_movie_directories):
-                    directory = str(pathlib.Path(root).as_posix())
-                    if '/featurettes' not in directory.lower():
-                        for alt_movie_file in sorted(files):
-                            if alt_movie_file.lower().endswith(extensions):
-                                movie_video_files_results.append([(pathlib.Path(root) / alt_movie_file).as_posix()])
+                    directory = str(pathlib.Path(root).as_posix()).lower()
+                    if '/extras' not in directory:
+                        if '/deleted scenes' not in directory:
+                            if '/featurettes' not in directory:
+                                if '/special features' not in directory:
+                                    for alt_movie_file in sorted(files):
+                                        if alt_movie_file.lower().endswith(extensions):
+                                            movie_video_files_results.append([(pathlib.Path(root) / alt_movie_file).
+                                                                             as_posix()])
 
         with open(os.path.expanduser((index_folder + movies_paths).format(username)), 'w',
                   encoding='UTF-8', newline='') as m_f_p:
@@ -2120,11 +2124,15 @@ def walk_directories_and_create_indices(user_type):
         if tv_dirs_input != '':
             for listed_tv_directories in tv_dirs_input:
                 for root, dirs, files in os.walk(listed_tv_directories):
-                    directory = str(pathlib.Path(root).as_posix())
-                    if '/featurettes' not in directory.lower():
-                        for alt_tv_file in sorted(files):
-                            if alt_tv_file.lower().endswith(extensions):
-                                tv_show_video_files_results.append([(pathlib.Path(root) / alt_tv_file).as_posix()])
+                    directory = str(pathlib.Path(root).as_posix()).lower()
+                    if '/extras' not in directory:
+                        if '/deleted scenes' not in directory:
+                            if '/featurettes' not in directory:
+                                if '/special features' not in directory:
+                                    for alt_tv_file in sorted(files):
+                                        if alt_tv_file.lower().endswith(extensions):
+                                            tv_show_video_files_results.append([(pathlib.Path(root) / alt_tv_file).
+                                                                               as_posix()])
 
         with open(os.path.expanduser((index_folder + tv_paths).format(username)), 'w',
                   encoding='UTF-8', newline='') as t_f_p:
