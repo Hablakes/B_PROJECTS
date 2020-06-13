@@ -2109,9 +2109,9 @@ def walk_directories_and_create_indices(user_type):
                         if '/deleted scenes' not in directory:
                             if '/featurettes' not in directory:
                                 if '/special features' not in directory:
-                                    for alt_movie_file in sorted(files):
-                                        if alt_movie_file.lower().endswith(extensions):
-                                            movie_video_files_results.append([(pathlib.Path(root) / alt_movie_file).
+                                    for movie_file in sorted(files):
+                                        if movie_file.lower().endswith(extensions):
+                                            movie_video_files_results.append([(pathlib.Path(root) / movie_file).
                                                                              as_posix()])
 
         with open(os.path.expanduser((index_folder + movies_paths).format(username)), 'w',
@@ -2128,9 +2128,9 @@ def walk_directories_and_create_indices(user_type):
                         if '/deleted scenes' not in directory:
                             if '/featurettes' not in directory:
                                 if '/special features' not in directory:
-                                    for alt_tv_file in sorted(files):
-                                        if alt_tv_file.lower().endswith(extensions):
-                                            tv_show_video_files_results.append([(pathlib.Path(root) / alt_tv_file).
+                                    for tv_file in sorted(files):
+                                        if tv_file.lower().endswith(extensions):
+                                            tv_show_video_files_results.append([(pathlib.Path(root) / tv_file).
                                                                                as_posix()])
 
         with open(os.path.expanduser((index_folder + tv_paths).format(username)), 'w',
