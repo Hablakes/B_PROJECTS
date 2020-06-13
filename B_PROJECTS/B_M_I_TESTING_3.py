@@ -1303,7 +1303,9 @@ def search_plots(plot_search_type, plot_search_keywords):
 
             for items in plots_list:
                 if plot_search_keywords.lower() in items.lower():
-                    print('\n', textwrap.fill(items, 100))
+                    p1 = ''.join(items.split('<plot>'))
+                    p2 = ''.join(p1.split('</plot>'))
+                    print('\n', textwrap.fill(p2, 100))
             separator_3()
 
         elif int(plot_search_type) == 2:
@@ -1312,7 +1314,9 @@ def search_plots(plot_search_type, plot_search_keywords):
 
             for items in plots_list:
                 if plot_search_keywords.lower() in items.lower():
-                    print('\n', textwrap.fill(items, 100))
+                    p1 = ''.join(items.split('<plot>'))
+                    p2 = ''.join(p1.split('</plot>'))
+                    print('\n', textwrap.fill(p2, 100))
             separator_3()
 
         elif int(plot_search_type) == 3:
@@ -1324,7 +1328,9 @@ def search_plots(plot_search_type, plot_search_keywords):
 
             for items in plots_list:
                 if plot_search_keywords.lower() in items.lower():
-                    print('\n', textwrap.fill(items, 100))
+                    p1 = ''.join(items.split('<plot>'))
+                    p2 = ''.join(p1.split('</plot>'))
+                    print('\n', textwrap.fill(p2, 100))
             separator_3()
 
         elif int(plot_search_type) == 4:
@@ -1333,7 +1339,9 @@ def search_plots(plot_search_type, plot_search_keywords):
 
             for items in plots_list:
                 if plot_search_keywords.lower() in items.lower():
-                    print('\n', textwrap.fill(items, 100))
+                    p1 = ''.join(items.split('<plot>'))
+                    p2 = ''.join(p1.split('</plot>'))
+                    print('\n', textwrap.fill(p2, 100))
             separator_3()
 
 
