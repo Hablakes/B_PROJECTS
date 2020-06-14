@@ -1287,62 +1287,68 @@ def query_tv_information_index(tv_episode_query):
 def search_plots(plot_search_type, plot_search_keywords):
     plots_list = []
 
-    with open(os.path.expanduser(
-            (index_folder + movie_plots_index).format(username)), encoding='UTF-8') as m_p_i:
-        movie_files_results_list = list(csv.reader(m_p_i))
-    with open(os.path.expanduser(
-            (index_folder + tv_episode_plots_index).format(username)), encoding='UTF-8') as t_e_p:
-        tv_episodes_results_list = list(csv.reader(t_e_p))
-    with open(os.path.expanduser(
-            (index_folder + tv_show_plots_index).format(username)), encoding='UTF-8') as t_s_p:
-        tv_show_plots_list = list(csv.reader(t_s_p))
+    try:
 
-        if int(plot_search_type) == 1:
-            for plot in movie_files_results_list:
-                plots_list.append('MOVIE' + ' - ' + plot[0] + ' - ' + plot[1])
+        with open(os.path.expanduser(
+                (index_folder + movie_plots_index).format(username)), encoding='UTF-8') as m_p_i:
+            movie_files_results_list = list(csv.reader(m_p_i))
+        with open(os.path.expanduser(
+                (index_folder + tv_episode_plots_index).format(username)), encoding='UTF-8') as t_e_p:
+            tv_episodes_results_list = list(csv.reader(t_e_p))
+        with open(os.path.expanduser(
+                (index_folder + tv_show_plots_index).format(username)), encoding='UTF-8') as t_s_p:
+            tv_show_plots_list = list(csv.reader(t_s_p))
 
-            for items in plots_list:
-                if plot_search_keywords.lower() in items.lower():
-                    p1 = ''.join(items.split('<plot>'))
-                    p2 = ''.join(p1.split('</plot>'))
-                    print('\n', textwrap.fill(p2, 100))
-            separator_3()
+            if int(plot_search_type) == 1:
+                for plot in movie_files_results_list:
+                    plots_list.append('MOVIE' + ' - ' + plot[0] + ' - ' + plot[1])
 
-        elif int(plot_search_type) == 2:
-            for plot in tv_episodes_results_list:
-                plots_list.append('TV SHOW' + ' - ' + plot[0] + ' - ' + plot[1] + ' - ' + plot[2])
+                for items in plots_list:
+                    if plot_search_keywords.lower() in items.lower():
+                        p1 = ''.join(items.split('<plot>'))
+                        p2 = ''.join(p1.split('</plot>'))
+                        print('\n', textwrap.fill(p2, 100))
+                separator_3()
 
-            for items in plots_list:
-                if plot_search_keywords.lower() in items.lower():
-                    p1 = ''.join(items.split('<plot>'))
-                    p2 = ''.join(p1.split('</plot>'))
-                    print('\n', textwrap.fill(p2, 100))
-            separator_3()
+            elif int(plot_search_type) == 2:
+                for plot in tv_episodes_results_list:
+                    plots_list.append('TV SHOW' + ' - ' + plot[0] + ' - ' + plot[1] + ' - ' + plot[2])
 
-        elif int(plot_search_type) == 3:
-            for plot in movie_files_results_list:
-                plots_list.append('MOVIE' + ' - ' + plot[0] + ' - ' + plot[1])
+                for items in plots_list:
+                    if plot_search_keywords.lower() in items.lower():
+                        p1 = ''.join(items.split('<plot>'))
+                        p2 = ''.join(p1.split('</plot>'))
+                        print('\n', textwrap.fill(p2, 100))
+                separator_3()
 
-            for plot in tv_episodes_results_list:
-                plots_list.append('TV SHOW' + ' - ' + plot[0] + ' - ' + plot[1] + ' - ' + plot[2])
+            elif int(plot_search_type) == 3:
+                for plot in movie_files_results_list:
+                    plots_list.append('MOVIE' + ' - ' + plot[0] + ' - ' + plot[1])
 
-            for items in plots_list:
-                if plot_search_keywords.lower() in items.lower():
-                    p1 = ''.join(items.split('<plot>'))
-                    p2 = ''.join(p1.split('</plot>'))
-                    print('\n', textwrap.fill(p2, 100))
-            separator_3()
+                for plot in tv_episodes_results_list:
+                    plots_list.append('TV SHOW' + ' - ' + plot[0] + ' - ' + plot[1] + ' - ' + plot[2])
 
-        elif int(plot_search_type) == 4:
-            for plot in tv_show_plots_list:
-                plots_list.append('TV SHOW' + ' - ' + plot[0] + ' - ' + plot[1])
+                for items in plots_list:
+                    if plot_search_keywords.lower() in items.lower():
+                        p1 = ''.join(items.split('<plot>'))
+                        p2 = ''.join(p1.split('</plot>'))
+                        print('\n', textwrap.fill(p2, 100))
+                separator_3()
 
-            for items in plots_list:
-                if plot_search_keywords.lower() in items.lower():
-                    p1 = ''.join(items.split('<plot>'))
-                    p2 = ''.join(p1.split('</plot>'))
-                    print('\n', textwrap.fill(p2, 100))
-            separator_3()
+            elif int(plot_search_type) == 4:
+                for plot in tv_show_plots_list:
+                    plots_list.append('TV SHOW' + ' - ' + plot[0] + ' - ' + plot[1])
+
+                for items in plots_list:
+                    if plot_search_keywords.lower() in items.lower():
+                        p1 = ''.join(items.split('<plot>'))
+                        p2 = ''.join(p1.split('</plot>'))
+                        print('\n', textwrap.fill(p2, 100))
+                separator_3()
+
+    except (FileNotFoundError, TypeError, ValueError) as e:
+        print('\n', 'INPUT ERROR: ', e, '\n', '\n', 'INVALID INPUT, PLEASE RETRY')
+        separator_3()
 
 
 def search_titles(title_search_type, movie_title_query, tv_show_query):
