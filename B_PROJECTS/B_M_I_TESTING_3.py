@@ -480,10 +480,11 @@ def create_plots_indices():
             movie_title_key = movie_file[0].rsplit('/')[-2]
             movie_plot_results_dict[movie_title_key] = {}
             movie_plot_results_dict[movie_title_key]['MOVIE'] = movie_title_key
+            movie_plot_results_dict[movie_title_key]['PLOT'] = 'NO PLOT INFORMATION AVAILABLE'
 
             try:
 
-                if movie_filename_key.lower().endswith('.nfo'):
+                if movie_filename_key.lower().endswith('.nfo') and str(movie_filename_key.lower()) == str('movie.nfo'):
 
                     try:
 
@@ -493,12 +494,12 @@ def create_plots_indices():
                                 if '<plot>' in line_item:
                                     movie_plot_results_dict[movie_title_key]['PLOT'] = line_item
 
-                    except Exception as e:
+                    except (FileNotFoundError, Exception) as e:
                         print('NFO ERROR: ', e, '\n', 'FILE: ', movie_file[0])
                         print('-' * 100)
                         continue
 
-            except (IOError, KeyError, TypeError, ValueError) as e:
+            except (FileNotFoundError, IOError, KeyError, TypeError, ValueError) as e:
                 print('INPUT ERROR: ', e, '\n', 'MOVIE FILE(S): ', movie_file[0])
                 print('-' * 100, '\n')
                 continue
@@ -520,6 +521,7 @@ def create_plots_indices():
                         tv_episode_plot_results_dict[tv_filename_key] = {}
                         tv_episode_plot_results_dict[tv_filename_key]['SHOW'] = tv_title_key
                         tv_episode_plot_results_dict[tv_filename_key]['EPISODE'] = tv_filename_key
+                        tv_episode_plot_results_dict[tv_filename_key]['PLOT'] = 'NO PLOT INFORMATION AVAILABLE'
 
                         try:
 
@@ -529,7 +531,7 @@ def create_plots_indices():
                                     if '<plot>' in line:
                                         tv_episode_plot_results_dict[tv_filename_key]['PLOT'] = line
 
-                        except Exception as e:
+                        except (FileNotFoundError, Exception) as e:
                             print('NFO ERROR: ', e, '\n', 'FILE: ', tv_file[0])
                             print('-' * 100)
                             continue
@@ -537,6 +539,7 @@ def create_plots_indices():
                 if str(tv_filename_key.lower()) == str('tvshow.nfo'):
                     tv_show_plot_results_dict[tv_title_key] = {}
                     tv_show_plot_results_dict[tv_title_key]['SHOW'] = tv_title_key
+                    tv_show_plot_results_dict[tv_title_key]['PLOT'] = 'NO PLOT INFORMATION AVAILABLE'
 
                     try:
 
@@ -546,12 +549,12 @@ def create_plots_indices():
                                 if '<plot>' in line:
                                     tv_show_plot_results_dict[tv_title_key]['PLOT'] = line
 
-                    except Exception as e:
+                    except (FileNotFoundError, Exception) as e:
                         print('NFO ERROR: ', e, '\n', 'FILE: ', tv_file[0])
                         print('-' * 100)
                         continue
 
-            except (IOError, KeyError, TypeError, ValueError) as e:
+            except (FileNotFoundError, IOError, KeyError, TypeError, ValueError) as e:
                 print('INPUT ERROR: ', e, '\n', 'TV SHOW(S) FILE(S): ', tv_file[0])
                 print('-' * 100, '\n')
                 continue
