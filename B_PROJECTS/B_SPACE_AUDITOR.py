@@ -216,8 +216,8 @@ def scan_directory_folders():
                 elif int(bct_input) == 0:
                     return
 
-            except (TypeError, ValueError, UnicodeDecodeError, ZeroDivisionError) as e:
-                print(e, '\n', ('-' * 100), '\n', 'INPUT ERROR, PLEASE RETRY SELECTION USING NUMBER KEYS: ')
+            except (TypeError, ValueError, UnicodeDecodeError, ZeroDivisionError) as er:
+                print(er, '\n', ('-' * 100), '\n', 'INPUT ERROR, PLEASE RETRY SELECTION USING NUMBER KEYS: ')
                 return
 
     sub_interface()
@@ -237,8 +237,9 @@ def scan_for_extras_and_featurettes_sub_directories():
 
         for found_items in os.listdir(directory_path):
             if os.path.isdir(directory_path + '/' + found_items):
-                if found_items.lower() == str('Extras').lower() or found_items.lower() == str(
-                        'Featurettes').lower() or found_items.lower() == str('Specials').lower():
+                if found_items.lower() == str('Deleted Scenes').lower() or found_items.lower() == str('Extras').lower()\
+                        or found_items.lower() == str('Featurettes').lower() or found_items.lower()\
+                        == str('Specials').lower():
                     found_list.append(directory_path + '/' + found_items)
 
     for items in sorted(found_list):
