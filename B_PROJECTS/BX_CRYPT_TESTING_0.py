@@ -408,6 +408,7 @@ def decrypt(key_list, encrypted_numbers_list):
 
 # read out the file or message in file-bytes
 def get_bytes_from_files(filename):
+
     try:
 
         with open(filename, 'rb') as f:
