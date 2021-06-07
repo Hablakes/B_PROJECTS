@@ -11,23 +11,12 @@ def main():
         interface()
 
 
-def get_directory_to_scan():
-    root = Tk()
-    root.withdraw()
-    root.update()
-    selected_directory = filedialog.askdirectory()
-    root.destroy()
-    print("DIRECTORY INPUT: ", selected_directory)
-    separator_3()
-    return selected_directory
-
-
 def interface():
-    separator_1()
+    separator_3()
     print(pyfiglet.figlet_format('DIRECTORY', font='cybermedium'))
     print(pyfiglet.figlet_format('COMPARISON', font='cybermedium'))
     separator_3()
-    print('1) COMPARE MEDIA FROM TWO DIRECTORIES', '\n', '\n'
+    print('1) COMPARE MEDIA FROM TWO DIRECTORIES:       2) COMPARE TEXT LIST AGAINST DIRECTORIES', '\n', '\n'
           '0) MAIN MENU')
 
     separator_3()
@@ -37,6 +26,9 @@ def interface():
     try:
         if int(user_input) == 1:
             scan_and_compare_directories()
+
+        elif int(user_input) == 2:
+            scan_and_compare_text_list_to_directory()
 
         elif int(user_input) == 0:
             exit()
@@ -48,44 +40,99 @@ def interface():
 
 def scan_and_compare_directories():
     separator_3()
-    print('1) DISPLAY MEDIA ALREADY IN DATABASE             2) DISPLAY MEDIA NOT ALREADY IN DATABASE', '\n', '\n'
+    print('1) DISPLAY MEDIA IF ALREADY IN DATABASE:         2) DISPLAY MEDIA IF NOT ALREADY IN DATABASE: ', '\n', '\n'
           '0) MAIN MENU')
 
     separator_3()
     user_input = input('ENTER OPTION #: ')
     separator_3()
 
-    first_directory_found_items_list = []
-    second_directory_found_items_list = []
+    directory_one_found_items = []
+    directory_two_found_items = []
 
-    print('DIRECTORY (1): ', '\n')
-    first_directory_selected_in_function = [get_directory_to_scan()]
+    print('SELECT DIRECTORY (1): ', '\n')
+    first_directory_selected = [tk_gui_get_directory_to_scan()]
 
-    print('DIRECTORY (2): ', '\n')
-    second_directory_selected_in_function = [get_directory_to_scan()]
+    print('SELECT DIRECTORY (2): ', '\n')
+    second_directory_selected = [tk_gui_get_directory_to_scan()]
+
+    for items in os.listdir(first_directory_selected[0]):
+        if items in os.listdir(second_directory_selected[0]):
+            directory_one_found_items.append(items)
+
+    for items in os.listdir(first_directory_selected[0]):
+        if items not in os.listdir(second_directory_selected[0]):
+            directory_two_found_items.append(items)
 
     try:
         if int(user_input) == 1:
 
-            for items in os.listdir(first_directory_selected_in_function[0]):
-                if items in os.listdir(second_directory_selected_in_function[0]):
-                    first_directory_found_items_list.append(items)
-
             print('DUPLICATES FOUND: ', '\n', '\n')
-            for folders in first_directory_found_items_list:
-                print(folders)
-            separator_3()
+            for items in directory_one_found_items:
+                print(items)
 
         elif int(user_input) == 2:
 
-            for items in os.listdir(first_directory_selected_in_function[0]):
-                if items not in os.listdir(second_directory_selected_in_function[0]):
-                    first_directory_found_items_list.append(items)
-
             print('NEW MEDIA FOUND: ', '\n', '\n')
-            for items in first_directory_found_items_list:
+            for items in directory_two_found_items:
                 print(items)
-            separator_3()
+
+        elif int(user_input) == 0:
+            interface()
+
+    except (TypeError, ValueError, UnicodeDecodeError, ZeroDivisionError) as e:
+        print(e, '\n', ('-' * 100), '\n', 'INPUT ERROR, PLEASE RETRY SELECTION USING NUMBER KEYS: ')
+        return
+
+
+def scan_and_compare_text_list_to_directory():
+    separator_3()
+    print('1) DISPLAY MEDIA IF ALREADY IN DATABASE:         2) DISPLAY MEDIA IF NOT ALREADY IN DATABASE: ', '\n', '\n'
+          '0) MAIN MENU')
+
+    separator_3()
+    user_input = input('ENTER OPTION #: ')
+    separator_3()
+
+    text_list = []
+    items_found_in_db_from_text_list = []
+    items_not_found_in_db_from_text_list = []
+
+    print('SELECT TEXT LIST: ', '\n')
+    list_selected = [tk_gui_file_selection_window()]
+
+    print('SELECT DIRECTORY: ', '\n')
+    directory_selected = [tk_gui_get_directory_to_scan()]
+
+    try:
+        with open(list_selected[0], 'r') as f:
+            for items in f.read().splitlines():
+                text_list.append(items)
+
+    except (TypeError, ValueError, UnicodeDecodeError, ZeroDivisionError) as e:
+        print(e, '\n', ('-' * 100), '\n', 'INPUT ERROR, PLEASE RETRY SELECTION USING NUMBER KEYS: ')
+        return
+
+    for items in text_list:
+        if items in os.listdir(directory_selected[0]):
+            items_found_in_db_from_text_list.append(items)
+
+    for items in text_list:
+        if items not in os.listdir(directory_selected[0]):
+            items_not_found_in_db_from_text_list.append(items)
+
+    try:
+        if int(user_input) == 1:
+
+            print('MEDIA FILES FROM TEXT LIST THAT ARE IN THE DATABASE: ', '\n', '\n')
+            for items in items_found_in_db_from_text_list:
+                print(items)
+
+        elif int(user_input) == 2:
+
+            print('MEDIA FILES FROM TEXT LIST THAT ARE NOT IN THE DATABASE: ', '\n', '\n')
+            for items in items_not_found_in_db_from_text_list:
+                print(items)
 
         elif int(user_input) == 0:
             interface()
@@ -107,6 +154,29 @@ def separator_2():
 def separator_3():
     for items in '\n', '-' * 100, '\n':
         print(items)
+
+
+def tk_gui_get_directory_to_scan():
+    root = Tk()
+    root.withdraw()
+    root.update()
+    selected_directory = filedialog.askdirectory()
+    root.destroy()
+    print("DIRECTORY INPUT: ", selected_directory)
+    separator_3()
+    return selected_directory
+
+
+def tk_gui_file_selection_window():
+    root = Tk()
+    root.withdraw()
+    root.update()
+    selected_file = filedialog.askopenfilename()
+    root.destroy()
+    print("TEXT LIST INPUT: ", selected_file)
+    separator_3()
+
+    return selected_file
 
 
 if __name__ == '__main__':
