@@ -2,7 +2,6 @@ import os
 
 import pyfiglet
 
-from fuzzywuzzy import fuzz
 from tkinter import filedialog, Tk
 
 
@@ -14,9 +13,10 @@ def main():
 def interface():
     separator_3()
     print(pyfiglet.figlet_format('DIRECTORY', font='cybermedium'))
-    print(pyfiglet.figlet_format('COMPARISON', font='cybermedium'))
+    print(pyfiglet.figlet_format('COMPARISON TOOLS', font='cybermedium'))
     separator_3()
     print('1) COMPARE MEDIA FROM TWO DIRECTORIES:       2) COMPARE TEXT LIST AGAINST DIRECTORIES', '\n', '\n'
+          '3) CHECK A SINGLE DIRECTORY FOR POTENTIAL DOUBLES', '\n', '\n'
           '0) MAIN MENU')
 
     separator_3()
@@ -29,6 +29,9 @@ def interface():
 
         elif int(user_input) == 2:
             scan_and_compare_text_list_to_directory()
+
+        elif int(user_input) == 3:
+            scan_single_directory_for_doubles()
 
         elif int(user_input) == 0:
             exit()
@@ -140,6 +143,21 @@ def scan_and_compare_text_list_to_directory():
     except (TypeError, ValueError, UnicodeDecodeError, ZeroDivisionError) as e:
         print(e, '\n', ('-' * 100), '\n', 'INPUT ERROR, PLEASE RETRY SELECTION USING NUMBER KEYS: ')
         return
+
+
+def scan_single_directory_for_doubles():
+    directory_contents_dictionary = {}
+
+    print('SELECT DIRECTORY: ', '\n')
+    directory_selected = [tk_gui_get_directory_to_scan()]
+
+    for items in os.listdir(directory_selected[0]):
+        formatted_items = items.lower()[:-7]
+        if formatted_items not in directory_contents_dictionary:
+            directory_contents_dictionary[formatted_items] = []
+        directory_contents_dictionary[formatted_items].append(items)
+
+    print(directory_contents_dictionary)
 
 
 def separator_1():
