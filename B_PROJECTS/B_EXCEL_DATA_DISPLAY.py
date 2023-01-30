@@ -7,7 +7,7 @@ import json
 
 def select_directory():
     directory = filedialog.askdirectory()
-    with open('directory.json', 'w') as f:
+    with open('nx_directory.json', 'w') as f:
         json.dump(directory, f)
     return directory
 
@@ -18,7 +18,10 @@ def read_excel(file_path):
 
 
 def display_data(data):
-    display_space.config(text=data.to_string(index=False))
+    text.config(state='normal')
+    text.delete('1.0', tk.END)
+    text.insert('1.0', data.to_string())
+    text.config(state='disabled')
 
 
 def submit():
@@ -28,10 +31,10 @@ def submit():
 
 
 root = tk.Tk()
-root.title("Excel Data Display")
+root.title("NetXPerts Customer Information Directory")
 
 try:
-    with open("directory.json", "r") as f:
+    with open("nx_directory.json", "r") as f:
         directory = json.load(f)
 
 except Exception:
@@ -44,7 +47,7 @@ select_dir_button.pack()
 # Create a dropdown list to select Excel file
 file_dict = {}
 for file_name in os.listdir(directory):
-    if file_name.endswith(".xlsx"):
+    if file_name.endswith('.xls') or file_name.endswith(".xlsx"):
         file_path = os.path.join(directory, file_name)
         df = pd.read_excel(file_path)
         key = df.columns[0]
@@ -56,12 +59,12 @@ dropdown = tk.OptionMenu(root, dropdown_var, *file_dict.keys())
 dropdown.pack()
 
 # Create a submit button
-submit_button = tk.Button(root, text="Submit", command=submit)
+submit_button = tk.Button(root, text="ENTER", command=submit)
 submit_button.pack()
 
-# Create a space to display data
-display_space = tk.Label(root)
-display_space.pack()
+# Create the text box
+text = tk.Text(root, state='disabled')
+text.pack()
 
 root.geometry('600x400')
 root.mainloop()
