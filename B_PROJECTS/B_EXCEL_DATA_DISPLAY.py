@@ -1,14 +1,18 @@
+import json
+import os
+
+import pandas as pd
+
 import tkinter as tk
 from tkinter import filedialog
-import pandas as pd
-import os
-import json
+
+nx_directory = 'nx_directory.json'
 
 
 def select_directory():
     try:
         directory = filedialog.askdirectory()
-        with open('nx_directory.json', 'w') as f:
+        with open(nx_directory, 'w+') as f:
             json.dump(directory, f)
         return directory
     except (IndexError, TypeError, ValueError):
@@ -37,10 +41,13 @@ root = tk.Tk()
 root.title("NetXPerts Customer Information Directory")
 
 try:
-    with open("nx_directory.json", "w+") as f:
-        directory = json.load(f)
+    if os.path.isfile(nx_directory):
+        with open(nx_directory, "r") as f:
+            directory = json.load(f)
+    else:
+        directory = select_directory()
 except (IndexError, TypeError, ValueError):
-    directory = select_directory()
+    print("Error: ")
 
 # Create a button to select directory
 select_dir_button = tk.Button(root, text="Select Directory", command=select_directory)
