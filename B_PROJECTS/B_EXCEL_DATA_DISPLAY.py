@@ -6,10 +6,13 @@ import json
 
 
 def select_directory():
-    directory = filedialog.askdirectory()
-    with open('nx_directory.json', 'w') as f:
-        json.dump(directory, f)
-    return directory
+    try:
+        directory = filedialog.askdirectory()
+        with open('nx_directory.json', 'w') as f:
+            json.dump(directory, f)
+        return directory
+    except (IndexError, TypeError, ValueError):
+        print("Error, No Excel Files in Directory")
 
 
 def read_excel(file_path):
@@ -34,10 +37,9 @@ root = tk.Tk()
 root.title("NetXPerts Customer Information Directory")
 
 try:
-    with open("nx_directory.json", "r") as f:
+    with open("nx_directory.json", "w+") as f:
         directory = json.load(f)
-
-except Exception:
+except (IndexError, TypeError, ValueError):
     directory = select_directory()
 
 # Create a button to select directory
@@ -53,10 +55,13 @@ for file_name in os.listdir(directory):
         key = df.columns[0]
         file_dict[key] = file_path
 
-dropdown_var = tk.StringVar(root)
-dropdown_var.set(list(file_dict.keys())[0])
-dropdown = tk.OptionMenu(root, dropdown_var, *file_dict.keys())
-dropdown.pack()
+try:
+    dropdown_var = tk.StringVar(root)
+    dropdown_var.set(list(file_dict.keys())[0])
+    dropdown = tk.OptionMenu(root, dropdown_var, *file_dict.keys())
+    dropdown.pack()
+except (IndexError, TypeError, ValueError):
+    print("Error: ")
 
 # Create a submit button
 submit_button = tk.Button(root, text="ENTER", command=submit)
@@ -68,3 +73,4 @@ text.pack()
 
 root.geometry('600x400')
 root.mainloop()
+
