@@ -6,13 +6,14 @@ import pandas as pd
 import tkinter as tk
 from tkinter import filedialog
 
+
 nx_directory = 'nx_directory.json'
 
 
 def select_directory():
     try:
         directory = filedialog.askdirectory()
-        with open(nx_directory, 'w+') as f:
+        with open(directory + "/" + nx_directory, 'w+') as f:
             json.dump(directory, f)
         return directory
     except (IndexError, TypeError, ValueError):
